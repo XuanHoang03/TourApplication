@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootRegisterContainer"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.RegisterStep1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerContainer"
+        android:orientation="vertical"
+        android:background="@drawable/top_gradient_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp"
+        app:layout_constraintVertical_bias="0.0">
+
+        <FrameLayout
+            android:id="@+id/gradientTop"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/top_gradient_background">
+
+            <TextView
+                android:id="@+id/tvLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="TourOperav"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToOutline="true"
+            android:background="@drawable/rounded_top_corners"
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Your Account"
+                android:textColor="#3A3A50"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textStyle="bold" />
+
+            <!-- Full Name -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Full Name *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtFullName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Enter your full name"
+                android:inputType="textPersonName"
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <!-- Phone Number -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Phone Number *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Enter your phone number"
+                android:inputType="phone"
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <!-- Address -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Address *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtAddress"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Enter your address"
+                android:inputType="textPostalAddress"
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <!-- Birth of Date -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Birth of Date *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtBirthDate"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="dd/MM/yyyy"
+                android:padding="12dp"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <!-- Gender -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Gender *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:spinnerMode="dropdown"
+                android:popupBackground="@color/white"
+                android:entries="@array/gender_options"
+                android:textAlignment="viewStart"/>
+
+            <!-- Next button -->
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/blue_gradient_button"
+                android:text="Next"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "223695498749",
+    "firebase_url": "https://chatapp-f93f7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chatapp-f93f7",
+    "storage_bucket": "chatapp-f93f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223695498749:android:40e0df43ef32691328fd94",
+        "android_client_info": {
+          "package_name": "com.example.touroperator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP3soR70m50NzLaEuiD3izqg1unDMge0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223695498749:android:abb3e29b9dad825a28fd94",
+        "android_client_info": {
+          "package_name": "com.hash.tour_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP3soR70m50NzLaEuiD3izqg1unDMge0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223695498749:android:1c2ed7b2ffd2a02f28fd94",
+        "android_client_info": {
+          "package_name": "com.hashmal.tourapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP3soR70m50NzLaEuiD3izqg1unDMge0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

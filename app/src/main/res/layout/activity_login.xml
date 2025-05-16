@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootContainer"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/formContainer"
+        android:orientation="vertical"
+        android:background="@drawable/top_gradient_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="16dp">
+
+        <FrameLayout
+            android:id="@+id/gradientTop"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/top_gradient_background">
+
+            <TextView
+                android:id="@+id/tvLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="TourOperav"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToOutline="true"
+            android:background="@drawable/rounded_top_corners"
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
+            android:paddingTop="32dp">
+
+
+            <!-- Welcome text -->
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome Buddy,"
+                android:textColor="#3A3A50"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/loginText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="Login to explore the world!"
+                android:textColor="#00A3FF"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textStyle="bold" />
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Username *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtUsername"
+                android:layout_width="match_parent"
+                android:fontFamily="@font/montserrat_regular"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Enter your username"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:textSize="15sp" />
+
+            <!-- Password -->
+            <TextView
+                android:fontFamily="@font/montserrat_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Password *"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/montserrat_regular"
+                android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="#222222"
+                android:textSize="15sp" />
+
+            <!-- Forgot password -->
+            <TextView
+                android:id="@+id/txtForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Forgot password"
+                android:textColor="#0077CC"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Login button -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/blue_gradient_button"
+                android:text="Login"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <!-- Register button -->
+            <Button
+                android:id="@+id/txtCreateAccount"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:background="@drawable/outlined_button"
+                android:text="Register"
+                android:textColor="#0077CC"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <!-- Guest login -->
+            <TextView
+                android:id="@+id/txtGuestLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Or Continue as guest"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#7A7A7A"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

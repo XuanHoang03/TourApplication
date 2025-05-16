@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootVerifyContainer"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.VerifyAccountActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/verifyContainer"
+        android:orientation="vertical"
+        android:background="@drawable/top_gradient_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp"
+        app:layout_constraintVertical_bias="0.0">
+
+        <FrameLayout
+            android:id="@+id/gradientTop"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/top_gradient_background">
+
+            <TextView
+                android:id="@+id/tvLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="TourOperav"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToOutline="true"
+            android:background="@drawable/rounded_top_corners"
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/loginText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Check your email"
+                android:textColor="#3A3A50"
+                android:layout_marginBottom="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/titleText_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="We have sent you an email, please check your mail and type your 4-digits code"
+                android:textColor="#00A3FF"
+                android:textSize="20sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textStyle="bold" />
+
+            <!-- Full Name -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="OTP *"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/otpContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                >
+
+                <EditText
+                    android:id="@+id/otp1"
+                    style="@style/OtpEditTextStyle"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:id="@+id/otp2"
+                    style="@style/OtpEditTextStyle"
+                    android:layout_weight="1"
+                    android:layout_marginStart="24dp"/>
+
+                <EditText
+                    android:id="@+id/otp3"
+                    style="@style/OtpEditTextStyle"
+                    android:layout_weight="1"
+                    android:layout_marginStart="24dp"/>
+
+                <EditText
+                    android:id="@+id/otp4"
+                    style="@style/OtpEditTextStyle"
+                    android:layout_weight="1"
+                    android:layout_marginStart="24dp"/>
+            </LinearLayout>
+
+
+
+            <!-- Next button -->
+            <Button
+                android:id="@+id/btnVerify"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/blue_gradient_button"
+                android:text="Verify"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
