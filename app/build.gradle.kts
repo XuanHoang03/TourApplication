@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation("com.mapbox.maps:android:11.12.0")
+    implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:6.8.1")
     implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:5.6.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

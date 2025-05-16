@@ -17,6 +17,7 @@ constraintlayout = "2.2.1"
 firebaseFirestore = "25.1.4"
 googleGmsGoogleServices = "4.4.2"
 playServicesMaps = "19.2.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +36,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 navigation-android = { module = "com.mapbox.navigation:android", version.ref = "androidVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
