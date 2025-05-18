@@ -15,8 +15,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
+import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.utils.DataUtils;
 
@@ -46,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button txtCreateAccount;
     private ApiService apiService;
     private LinearLayout formContainer;
+    private LocalDataService localDataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +92,13 @@ public class LoginActivity extends AppCompatActivity {
         txtGuestLogin = findViewById(R.id.txtGuestLogin);
         txtCreateAccount = findViewById(R.id.txtCreateAccount);
 
+        //TODO: mock for test
+        edtUsername.setText("0123456789");
+        edtPassword.setText("1");
+
         // Khởi tạo service
         apiService = ApiClient.getApiService();
+        localDataService = LocalDataService.getInstance(this);
 
         // Sự kiện bấm nút login
         btnLogin.setOnClickListener(v -> {
@@ -98,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = edtPassword.getText().toString().trim();
             if (!username.isEmpty() && !password.isEmpty()) {
                 login(username, password);
+
             } else {
                 Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             }
@@ -114,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         txtCreateAccount.setOnClickListener(v -> {
-                Intent intent = new Intent(LoginActivity.this, RegisterStep1.class);
-                startActivity(intent);
+            Intent intent = new Intent(LoginActivity.this, RegisterStep1.class);
+            startActivity(intent);
         });
     }
 
@@ -131,6 +140,11 @@ public class LoginActivity extends AppCompatActivity {
                     BaseResponse res = response.body();
                     Toast.makeText(LoginActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     // TODO: Chuyển màn hình / lưu token nếu có
+                    if (res.getCode().equals(Code.SUCCESS.getCode())) {
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        localDataService.saveUserInfo(res.getData());
+                        startActivity(intent);
+                    }
                 } else {
                     Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }

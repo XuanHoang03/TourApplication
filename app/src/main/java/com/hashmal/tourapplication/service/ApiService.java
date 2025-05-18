@@ -2,11 +2,14 @@ package com.hashmal.tourapplication.service;
 
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.RegisterUserDTO;
+import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -29,4 +32,7 @@ public interface ApiService {
             @Query("phoneNumber") String phoneNumber,
             @Query("type") String type
     );
+
+    @GET("/api/v1/tours")
+    Call<List<TourResponseDTO>> getAllTours();
 }

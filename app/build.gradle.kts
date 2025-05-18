@@ -39,6 +39,7 @@ android {
 dependencies {
     implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:6.8.1")
     implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:5.6.0")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

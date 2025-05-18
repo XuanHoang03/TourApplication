@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.enums.MessageType;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,5 +76,9 @@ public class DataUtils {
             return bitmap;
         }
         return null;
+    }
+    public static String formatCurrency(long amount) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(amount) + " vnđ";
     }
 }
