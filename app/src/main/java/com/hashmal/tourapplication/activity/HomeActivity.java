@@ -41,6 +41,9 @@ public class HomeActivity extends AppCompatActivity implements TourAdapter.OnTou
 
     private LocalDataService localDataService;
     private Gson gson = new Gson();
+    private String fullName = "Guest";
+    private String avatarUrl = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +69,16 @@ public class HomeActivity extends AppCompatActivity implements TourAdapter.OnTou
 
         // Load user data
         UserDTO userDTO = localDataService.getCurrentUser();
-
-        userName.setText(userDTO.getProfile().getFullName());
-        Glide.with(this)
-                .load(userDTO.getProfile().getAvatarUrl())
-                .error(R.drawable.default_avatar)
-                .circleCrop()
-                .into(userAvatar);
+        if (userDTO != null) {
+            fullName = userDTO.getProfile().getFullName();
+             avatarUrl = userDTO.getProfile().getAvatarUrl();
+        }
+            userName.setText(fullName);
+            Glide.with(this)
+                    .load(avatarUrl)
+                    .error(R.drawable.default_avatar)
+                    .circleCrop()
+                    .into(userAvatar);
 
         // Load tours
         loadTours();
