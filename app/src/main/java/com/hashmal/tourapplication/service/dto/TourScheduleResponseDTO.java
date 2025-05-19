@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 public class TourScheduleResponseDTO {
     private String tourScheduleId;
     private String tourId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String startTime;
+    private String endTime;
     private Integer numberOfTicket;
     private String tourGuideId;
 
-    public TourScheduleResponseDTO(String tourScheduleId, String tourId, LocalDateTime startTime, LocalDateTime endTime, Integer numberOfTicket, String tourGuideId) {
+    public TourScheduleResponseDTO(String tourScheduleId, String tourId, String startTime, String endTime, Integer numberOfTicket, String tourGuideId) {
         this.tourScheduleId = tourScheduleId;
         this.tourId = tourId;
         this.startTime = startTime;
@@ -38,19 +38,19 @@ public class TourScheduleResponseDTO {
         this.tourId = tourId;
     }
 
-    public LocalDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

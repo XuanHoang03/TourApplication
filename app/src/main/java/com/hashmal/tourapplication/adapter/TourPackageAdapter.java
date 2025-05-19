@@ -21,6 +21,7 @@ public class TourPackageAdapter extends RecyclerView.Adapter<TourPackageAdapter.
     private List<TourPackageDTO> packages;
     private final Context context;
     private final OnPackageClickListener listener;
+    private int isPackageSelected = -1;
 
     public interface OnPackageClickListener {
         void onPackageClick(TourPackageDTO tourPackage);
@@ -45,6 +46,31 @@ public class TourPackageAdapter extends RecyclerView.Adapter<TourPackageAdapter.
         if (position < packages.size()) {
             TourPackageDTO tourPackage = packages.get(position);
             holder.bind(tourPackage);
+            View itemView = holder.itemView.findViewById(R.id.linearLayout);
+            Button selectBtn = holder.itemView.findViewById(R.id.selectPackageButton);
+            if (position == isPackageSelected) {
+                itemView.setBackgroundResource(R.drawable.schedule_item_selected);
+            } else {
+                itemView.setBackgroundResource(R.drawable.schedule_item_background);
+            }
+            selectBtn.setOnClickListener(v -> {
+
+
+                int previousSelected = isPackageSelected;
+                isPackageSelected = holder.getAdapterPosition();
+
+                // Update previous selected item
+                if (previousSelected != -1) {
+                    notifyItemChanged(previousSelected);
+                }
+
+                // Update newly selected item
+                notifyItemChanged(isPackageSelected);
+
+                if (listener != null) {
+                    listener.onPackageClick(tourPackage);
+                }
+            });
         }
     }
 

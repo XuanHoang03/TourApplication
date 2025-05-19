@@ -154,5 +154,42 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_tour_package" />
 
+        <!-- Tour Schedules Section -->
+        <TextView
+            android:id="@+id/schedulesTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Tour Schedule"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/packagesRecyclerView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/schedulesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/schedulesTitle"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_tour_schedule" />
+
+        <!-- Booking Button -->
+        <Button
+            android:id="@+id/bookingButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:padding="12dp"
+            android:text="Book"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/schedulesRecyclerView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView> 
