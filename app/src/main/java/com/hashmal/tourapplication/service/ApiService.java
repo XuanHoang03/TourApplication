@@ -1,6 +1,7 @@
 package com.hashmal.tourapplication.service;
 
 import com.hashmal.tourapplication.service.dto.BaseResponse;
+import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.RegisterUserDTO;
@@ -14,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -26,11 +28,13 @@ public interface ApiService {
 
     @POST("user/register")
     Call<BaseResponse> registerUser(@Body Map<String, Object> request);
+
     @POST("user/verify-code")
     Call<BaseResponse> verifyCode(
             @Query("code") String code,
             @Query("userId") String userId
     );
+
     @POST("user/send-otp")
     Call<BaseResponse> sendOtpViaEmail(
             @Query("phoneNumber") String phoneNumber,
@@ -39,6 +43,14 @@ public interface ApiService {
 
     @GET("/api/v1/tours")
     Call<List<TourResponseDTO>> getAllTours();
+
+    @POST("/api/v1/tours/bookings")
+    Call<BaseResponse> createBooking(@Body CreateBookingRequest request);
+
+    @PUT("/api/v1/tours/bookings/{bookingId}/payment-status")
+    Call<BaseResponse> updatePaymentStatus(
+            @Path("bookingId") Long bookingId,
+            @Query("paymentStatus") Integer paymentStatus);
 
     @GET("/api/v1/tours/{tourId}/schedules")
     Call<List<TourScheduleResponseDTO>> getTourSchedulesByTourId(@Path("tourId") String tourId);
