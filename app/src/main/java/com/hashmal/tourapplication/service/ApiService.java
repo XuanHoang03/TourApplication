@@ -1,6 +1,8 @@
 package com.hashmal.tourapplication.service;
 
 import com.hashmal.tourapplication.service.dto.BaseResponse;
+import com.hashmal.tourapplication.service.dto.PaymentRequest;
+import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.RegisterUserDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
@@ -40,4 +42,7 @@ public interface ApiService {
 
     @GET("/api/v1/tours/{tourId}/schedules")
     Call<List<TourScheduleResponseDTO>> getTourSchedulesByTourId(@Path("tourId") String tourId);
+
+    @POST("api/payment/create-payment")
+    Call<PaymentResponse> createPayment(@Body PaymentRequest paymentRequest);
 }
