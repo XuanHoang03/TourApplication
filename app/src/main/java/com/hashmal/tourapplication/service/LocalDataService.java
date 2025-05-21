@@ -52,4 +52,18 @@ public class LocalDataService {
         }
 //        return gson.fromJson(userJson, UserDTO.class);
     }
+
+    public void clearUserData() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Clear all user-related data
+        editor.remove(KEY_USER_JSON);
+        editor.remove(KEY_USERNAME);
+        editor.remove(KEY_EMAIL);
+        editor.remove(KEY_IS_LOGGED_IN);
+        editor.remove(KEY_EXPIRY_TIME);
+        editor.apply();
+        
+        // Log for debugging
+        Log.d("LocalDataService", "User data cleared successfully");
+    }
 }

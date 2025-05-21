@@ -53,13 +53,15 @@
             android:text="Hủy"
             android:layout_marginEnd="8dp"
             android:visibility="gone"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            android:background="@android:color/darker_gray"
+           />
 
         <Button
             android:id="@+id/positiveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Xác nhận"
+            android:background="@android:color/holo_green_light"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 </LinearLayout> 
