@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     // TODO: Chuyển màn hình / lưu token nếu có
                     if (res.getCode().equals(Code.SUCCESS.getCode())) {
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         localDataService.saveUserInfo(res.getData());
                         startActivity(intent);
                     }
