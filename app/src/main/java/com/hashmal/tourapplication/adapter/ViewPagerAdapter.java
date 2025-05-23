@@ -5,18 +5,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.hashmal.tourapplication.fragment.AccountFragment;
 import com.hashmal.tourapplication.fragment.HomeFragment;
 import com.hashmal.tourapplication.fragment.ProfileFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int NUM_PAGES = 2;
     private HomeFragment homeFragment;
-    private ProfileFragment profileFragment;
+    private AccountFragment accountFragment;
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
         homeFragment = new HomeFragment();
-        profileFragment = new ProfileFragment();
+        accountFragment = new AccountFragment();
     }
 
     @NonNull
@@ -26,7 +27,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return homeFragment;
             case 1:
-                return profileFragment;
+                return accountFragment;
             default:
                 return homeFragment;
         }
@@ -41,7 +42,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         return homeFragment;
     }
 
-    public ProfileFragment getProfileFragment() {
-        return profileFragment;
+    public AccountFragment getAccountFragment() {
+        return accountFragment;
     }
 } 

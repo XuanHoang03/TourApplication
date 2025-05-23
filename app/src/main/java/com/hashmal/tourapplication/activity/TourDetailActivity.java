@@ -379,8 +379,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                         .setIcon(getDrawable(R.drawable.ic_info))
                                         .setPositiveButton("Back to home", dialog -> {
                                             // Xử lý khi click nút xác nhận
-                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
-                                            startActivity(backToHome);
+//                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
+//                                            startActivity(backToHome);
                                             finish();
                                         })
                                         .setSingleButtonMode(true)
@@ -395,8 +395,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                         .setIcon(getDrawable(R.drawable.ic_info))
                                         .setPositiveButton("Back to home", dialog -> {
                                             // Xử lý khi click nút xác nhận
-                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
-                                            startActivity(backToHome);
+//                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
+//                                            startActivity(backToHome);
                                             finish();
                                         })
                                         .setSingleButtonMode(true)

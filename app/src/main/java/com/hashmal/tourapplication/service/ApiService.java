@@ -57,4 +57,7 @@ public interface ApiService {
 
     @POST("api/payment/create-payment")
     Call<PaymentResponse> createPayment(@Body PaymentRequest paymentRequest);
+
+    @GET("/bookings/user/{userId}")
+    Call<BaseResponse> getBookingsByUserId(@Path("userId") String userId);
 }

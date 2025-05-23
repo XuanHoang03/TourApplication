@@ -11,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.ViewPagerAdapter;
+import com.hashmal.tourapplication.fragment.AccountFragment;
 import com.hashmal.tourapplication.fragment.HomeFragment;
 import com.hashmal.tourapplication.fragment.ProfileFragment;
 
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         return viewPagerAdapter.getHomeFragment();
     }
 
-    public ProfileFragment getProfileFragment() {
-        return viewPagerAdapter.getProfileFragment();
+    public AccountFragment getProfileFragment() {
+        return viewPagerAdapter.getAccountFragment();
     }
 
     @Override
