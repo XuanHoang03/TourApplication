@@ -4,9 +4,9 @@ import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
-import com.hashmal.tourapplication.service.dto.RegisterUserDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+import com.hashmal.tourapplication.service.dto.YourTourDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -58,6 +58,12 @@ public interface ApiService {
     @POST("api/payment/create-payment")
     Call<PaymentResponse> createPayment(@Body PaymentRequest paymentRequest);
 
-    @GET("/bookings/user/{userId}")
+    @GET("/api/v1/tours/bookings/user/{userId}")
     Call<BaseResponse> getBookingsByUserId(@Path("userId") String userId);
+
+    @GET("/api/v1/tours/your-tour")
+    Call<YourTourDTO> getYourTour(
+            @Query("tourId") String tourId,
+            @Query("bookingId") String bookingId
+    );
 }

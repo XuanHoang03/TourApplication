@@ -17,8 +17,11 @@ import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.enums.MessageType;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DataUtils {
@@ -80,5 +83,22 @@ public class DataUtils {
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(amount) + " vnđ";
+    }
+
+    public static String formatDateTimeString(String dateString) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+        try {
+            // Cắt bớt phần dư nếu có
+            if (dateString.length() > 23) {
+                dateString = dateString.substring(0, 23); // "2025-05-22T16:17:19.035"
+            }
+            Date date = inputFormat.parse(dateString);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return dateString;  // fallback
+        }
     }
 }

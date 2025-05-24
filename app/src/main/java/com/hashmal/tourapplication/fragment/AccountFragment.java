@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.activity.ProfileActivity;
+import com.hashmal.tourapplication.activity.TourHistoryActivity;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -31,7 +32,7 @@ import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
     private Button logoutButton;
-    private LinearLayout profileTab;
+    private LinearLayout profileTab, bookingHistoryTab;
     private LocalDataService localDataService;
 
     @Override
@@ -49,6 +50,10 @@ public class AccountFragment extends Fragment {
         // Initialize views
         profileTab = view.findViewById(R.id.profileTab);
         profileTab.setOnClickListener(v -> openProfileActivity());
+
+        bookingHistoryTab = view.findViewById(R.id.bookingHistoryTab);
+        bookingHistoryTab.setOnClickListener(v -> openTourHistoryActivity());
+
         logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
         return view;
@@ -60,7 +65,8 @@ public class AccountFragment extends Fragment {
     }
 
     private void openTourHistoryActivity() {
-        Intent intent = new Intent(requireContext(),
+        Intent intent = new Intent(requireContext(), TourHistoryActivity.class);
+        startActivity(intent);
     }
 
 

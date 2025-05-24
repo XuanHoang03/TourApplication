@@ -144,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         localDataService.saveUserInfo(res.getData());
                         startActivity(intent);
+                        finish();
                     }
                 } else {
                     Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();

@@ -18,11 +18,14 @@
         android:theme="@style/Theme.TourApplication"
         tools:targetApi="31">
         <activity
+            android:name=".activity.YourTourActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.TourHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activity.AccountActivity"
             android:exported="true" />
