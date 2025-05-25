@@ -1,5 +1,6 @@
 package com.hashmal.tourapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -28,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TourHistoryActivity extends AppCompatActivity {
+public class TourHistoryActivity extends AppCompatActivity implements BookingHistoryAdapter.OnBookingClickListener {
     private RecyclerView recyclerView;
     private ApiService apiService;
     private LocalDataService localDataService;
@@ -105,7 +106,7 @@ public class TourHistoryActivity extends AppCompatActivity {
                         emptyStateView.setVisibility(View.GONE);
 
                         // Set up adapter with booking history data
-                        BookingHistoryAdapter adapter = new BookingHistoryAdapter(bookingHistory);
+                        BookingHistoryAdapter adapter = new BookingHistoryAdapter(bookingHistory, TourHistoryActivity.this, TourHistoryActivity.this);
                         recyclerView.setAdapter(adapter);
                     } else {
                         // Show empty state
@@ -128,5 +129,12 @@ public class TourHistoryActivity extends AppCompatActivity {
                 Toast.makeText(TourHistoryActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBookingClick(DisplayBookingDTO tour) {
+        Intent intent = new Intent(TourHistoryActivity.this, YourTourActivity.class);
+        intent.putExtra("bookingId", tour.getBookingId());
+        startActivity(intent);
     }
 }

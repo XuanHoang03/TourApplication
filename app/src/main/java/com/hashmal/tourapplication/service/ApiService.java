@@ -63,7 +63,6 @@ public interface ApiService {
 
     @GET("/api/v1/tours/your-tour")
     Call<YourTourDTO> getYourTour(
-            @Query("tourId") String tourId,
-            @Query("bookingId") String bookingId
+            @Query("bookingId") Long bookingId
     );
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.service.dto.DisplayBookingDTO;
+import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.text.SimpleDateFormat;
@@ -23,11 +24,16 @@ import java.util.Locale;
 public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAdapter.BookingViewHolder> {
     private List<DisplayBookingDTO> bookingList;
     private Context context;
-    private SimpleDateFormat dateFormat;
+    private OnBookingClickListener listener;
 
-    public BookingHistoryAdapter(List<DisplayBookingDTO> bookingList) {
+    public interface OnBookingClickListener {
+        void onBookingClick(DisplayBookingDTO tour);
+    }
+
+    public BookingHistoryAdapter(List<DisplayBookingDTO> bookingList, Context context, OnBookingClickListener listener) {
         this.bookingList = bookingList;
-        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -90,7 +96,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         notifyDataSetChanged();
     }
 
-    static class BookingViewHolder extends RecyclerView.ViewHolder {
+     class BookingViewHolder extends RecyclerView.ViewHolder {
         ImageView ivTourImage;
         TextView tvTourName;
         TextView tvBookingDate;
@@ -108,6 +114,14 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             tvNumberOfPeople = itemView.findViewById(R.id.tvNumberOfPeople);
             tvTotalPrice = itemView.findViewById(R.id.tvTotalPrice);
             tvStatus = itemView.findViewById(R.id.tvStatus);
+
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onBookingClick(bookingList.get(position));
+                }
+            });
         }
     }
 } 

@@ -13,8 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
+import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.enums.MessageType;
+import com.hashmal.tourapplication.enums.StatusEnum;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -82,7 +84,7 @@ public class DataUtils {
     }
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(amount) + " vnđ";
+        return formatter.format(amount) + " VND";
     }
 
     public static String formatDateTimeString(String dateString) {
@@ -100,5 +102,17 @@ public class DataUtils {
             e.printStackTrace();
             return dateString;  // fallback
         }
+    }
+
+    public static String convertStatusFromInt(Integer integer) {
+        switch (integer) {
+            case 1:
+                return StatusEnum.Completed.name();
+            case 0:
+                return StatusEnum.Pending.name();
+            case -1:
+                return StatusEnum.Cancelled.name();
+        }
+        return "";
     }
 }
