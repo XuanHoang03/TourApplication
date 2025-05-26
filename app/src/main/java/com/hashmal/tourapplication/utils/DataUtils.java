@@ -21,11 +21,13 @@ import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +93,23 @@ public class DataUtils {
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(amount) + " VND";
+    }
+
+    public static Date convertStringToDateV1 (String localDateTime) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(localDateTime);
+            return date;
+        } catch (Exception e) {
+            return new Date();
+        }
+
+    }
+
+    public static String formatDateValue(Date date) {
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return outputFormat.format(date);
     }
 
     public static String formatDateTimeString(String dateString) {
@@ -181,5 +200,13 @@ public class DataUtils {
             locations,
             packages
         );
+    }
+
+    public static CalendarDay buildCalendarDay(int year, int month, int day) {
+        return CalendarDay.from(year, month + 1, day);
+    }
+
+    public static Date buildDateFromCalendarDay(CalendarDay calendarDay) {
+        return calendarDay.getDate();
     }
 }

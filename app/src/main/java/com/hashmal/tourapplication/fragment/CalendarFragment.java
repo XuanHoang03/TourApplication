@@ -1,6 +1,9 @@
 package com.hashmal.tourapplication.fragment;
 
+import static com.hashmal.tourapplication.utils.DataUtils.formatDateValue;
+
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,36 +17,46 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.reflect.TypeToken;
 import com.hashmal.tourapplication.R;
-import com.hashmal.tourapplication.activity.TourDetailActivity;
+import com.hashmal.tourapplication.activity.YourTourActivity;
 import com.hashmal.tourapplication.adapter.BookingHistoryAdapter;
+import com.hashmal.tourapplication.decorator.SpecialDayDecorator;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.DisplayBookingDTO;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 import com.google.gson.Gson;
+import com.hashmal.tourapplication.utils.DataUtils;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CalendarFragment extends Fragment implements BookingHistoryAdapter.OnBookingClickListener {
-    private CalendarView calendarView;
+    private MaterialCalendarView calendarView;
     private TextView tvSelectedDate;
     private TextView tvNoTours;
     private RecyclerView rvBookingsOnDate;
     private BookingHistoryAdapter bookingAdapter;
     private List<DisplayBookingDTO> allBookings;
     private List<DisplayBookingDTO> filteredBookings;
-    private SimpleDateFormat dateFormat;
+    private List<CalendarDay> specialDates;
     private ApiService apiService;
     private LocalDataService localDataService;
     private Gson gson = new Gson();
@@ -52,8 +65,8 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         allBookings = new ArrayList<>();
+        specialDates = new ArrayList<>();
         filteredBookings = new ArrayList<>();
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         apiService = ApiClient.getApiService();
         localDataService = LocalDataService.getInstance(requireContext());
     }
@@ -62,8 +75,7 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
-        
-        calendarView = view.findViewById(R.id.calendarView);
+
         tvSelectedDate = view.findViewById(R.id.tvSelectedDate);
         tvNoTours = view.findViewById(R.id.tvNoTours);
         rvBookingsOnDate = view.findViewById(R.id.rvToursOnDate);
@@ -73,12 +85,12 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
         rvBookingsOnDate.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvBookingsOnDate.setAdapter(bookingAdapter);
 
-        // Setup CalendarView
-        setupCalendarView();
-
-        // Load user's bookings
         loadUserBookings();
 
+        calendarView = view.findViewById(R.id.calendarView);
+        calendarView.setOnDateChangedListener((widget, date, selected) -> {
+            filterBookingsForDate(DataUtils.buildDateFromCalendarDay(date));
+        });
         return view;
     }
 
@@ -90,15 +102,38 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
             return;
         }
 
-        apiService.getBookingHistory(currentUser.getId()).enqueue(new Callback<List<DisplayBookingDTO>>() {
+        apiService.getBookingsByUserId(currentUser.getAccount().getAccountId()).enqueue(new Callback<BaseResponse>() {
             @Override
-            public void onResponse(Call<List<DisplayBookingDTO>> call, Response<List<DisplayBookingDTO>> response) {
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    BaseResponse resp = response.body();
+                    String listBookings = gson.toJson(resp.getData());
+                    Type bookingType = new TypeToken<List<DisplayBookingDTO>>() {}.getType();
+                    List<DisplayBookingDTO> bookingHistory = gson.fromJson(listBookings, bookingType);
                     allBookings.clear();
-                    allBookings.addAll(response.body());
+                    allBookings.addAll(bookingHistory);
+                    
+                    // Create set of dates with tours
+                    Set<Date> datesWithTours = new HashSet<>();
+                    for (DisplayBookingDTO booking : bookingHistory) {
+                        if (booking.getBookingDate() != null) {
+                            try {
+                                Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
+                                if (bookingDate != null) {
+                                    datesWithTours.add(bookingDate);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    
+                    // Set the dates with tours and their colors
+                    specialDates = datesWithTours.stream().map(CalendarDay::from).collect(Collectors.toList());
+
+                    calendarView.addDecorator(new SpecialDayDecorator(requireContext(), specialDates));
                     // Filter for current selected date
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(calendarView.getDate());
                     filterBookingsForDate(calendar.getTime());
                 } else {
                     tvNoTours.setVisibility(View.VISIBLE);
@@ -107,34 +142,21 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
             }
 
             @Override
-            public void onFailure(Call<List<DisplayBookingDTO>> call, Throwable t) {
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
                 tvNoTours.setVisibility(View.VISIBLE);
                 tvNoTours.setText("Error: " + t.getMessage());
             }
         });
     }
 
-    private void setupCalendarView() {
-        // Set initial date
-        Calendar calendar = Calendar.getInstance();
-        updateSelectedDate(calendar.getTime());
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            Calendar selectedCalendar = Calendar.getInstance();
-            selectedCalendar.set(year, month, dayOfMonth);
-            updateSelectedDate(selectedCalendar.getTime());
-            filterBookingsForDate(selectedCalendar.getTime());
-        });
-    }
 
-    private void updateSelectedDate(Date date) {
-        String formattedDate = dateFormat.format(date);
-        tvSelectedDate.setText("Bookings on " + formattedDate);
-    }
+
 
     private void filterBookingsForDate(Date selectedDate) {
         filteredBookings.clear();
-        
+        tvSelectedDate.setText("Bookings on " + formatDateValue(selectedDate));
+
         // Convert selected date to start of day
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
@@ -150,10 +172,10 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
 
         // Filter bookings that start on the selected date
         for (DisplayBookingDTO booking : allBookings) {
-            if (booking.getTourDate() != null) {
+            if (booking.getBookingDate() != null) {
                 try {
-                    SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
-                    Date bookingDate = apiDateFormat.parse(booking.getTourDate());
+
+                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
                     if (bookingDate != null && bookingDate.after(startOfDay) && bookingDate.before(endOfDay)) {
                         filteredBookings.add(booking);
                     }
@@ -171,10 +193,8 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
 
     @Override
     public void onBookingClick(DisplayBookingDTO booking) {
-        // Navigate to TourDetailActivity when a booking is clicked
-        Intent intent = new Intent(requireContext(), TourDetailActivity.class);
-        String bookingJson = gson.toJson(booking);
-        intent.putExtra("booking", bookingJson);
+        Intent intent = new Intent(requireContext(), YourTourActivity.class);
+        intent.putExtra("bookingId", booking.getBookingId());
         startActivity(intent);
     }
 } 
