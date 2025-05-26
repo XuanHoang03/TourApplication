@@ -17,12 +17,18 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.enums.MessageType;
 import com.hashmal.tourapplication.enums.StatusEnum;
+import com.hashmal.tourapplication.service.dto.LocationDTO;
+import com.hashmal.tourapplication.service.dto.TourPackageDTO;
+import com.hashmal.tourapplication.service.dto.TourResponseDTO;
+import com.hashmal.tourapplication.service.dto.YourTourDTO;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -114,5 +120,66 @@ public class DataUtils {
                 return StatusEnum.Cancelled.name();
         }
         return "";
+    }
+
+    public static TourResponseDTO convertYourTourToTourResponse(YourTourDTO yourTour) {
+        if (yourTour == null || yourTour.getTour() == null) {
+            return null;
+        }
+
+        YourTourDTO.Tour tour = yourTour.getTour();
+        YourTourDTO.TourSchedule schedule = yourTour.getTourSchedule();
+        YourTourDTO.TourPackage tourPackage = yourTour.getTourPackage();
+
+        // Convert locations
+        List<LocationDTO> locations = new ArrayList<>();
+        if (yourTour.getTourLocationList() != null) {
+            for (YourTourDTO.TourLocation tourLocation : yourTour.getTourLocationList()) {
+                YourTourDTO.Location location = tourLocation.getLocation();
+                LocationDTO locationDTO = new LocationDTO(
+                    location.getId(),
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    location.getCountry(),
+                    location.getProvince(),
+                    location.getCity(),
+                    location.getFullAddress(),
+                    location.getOpeningHour(),
+                    location.getClosingHour(),
+                    location.getDescription(),
+                    location.getName(),
+                    location.getThumbnailUrl()
+                );
+                locations.add(locationDTO);
+            }
+        }
+
+        // Convert packages
+        List<TourPackageDTO> packages = new ArrayList<>();
+        if (tourPackage != null) {
+            TourPackageDTO packageDTO = new TourPackageDTO(
+                tourPackage.getId(),
+                tourPackage.getPackageName(),
+                tourPackage.getDescription(),
+                tourPackage.getPrice(),
+                tourPackage.isMain()
+            );
+            packages.add(packageDTO);
+        }
+
+        return new TourResponseDTO(
+            tour.getTourId(),
+            tour.getTourName(),
+            tour.getTourType(),
+            tour.getTourDescription(),
+            (long) tour.getNumberOfPeople(),
+            tour.isHaveTourGuide(),
+            tour.getDuration(),
+            tour.getThumbnailUrl(),
+            schedule != null ? schedule.getStartTime() : null,
+            schedule != null ? schedule.getEndTime() : null,
+            locations,
+            packages
+        );
     }
 }

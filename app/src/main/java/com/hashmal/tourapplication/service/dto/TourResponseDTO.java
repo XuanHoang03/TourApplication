@@ -12,6 +12,21 @@ public class TourResponseDTO {
     private String duration;
     private String thumbnailUrl;
 
+    public TourResponseDTO(String tourId, String tourName, String tourType, String tourDescription, Long numberOfPeople, Boolean haveTourGuide, String duration, String thumbnailUrl, String currentStartTime, String currentEndTime, List<LocationDTO> locations, List<TourPackageDTO> packages) {
+        this.tourId = tourId;
+        this.tourName = tourName;
+        this.tourType = tourType;
+        this.tourDescription = tourDescription;
+        this.numberOfPeople = numberOfPeople;
+        this.haveTourGuide = haveTourGuide;
+        this.duration = duration;
+        this.thumbnailUrl = thumbnailUrl;
+        this.currentStartTime = currentStartTime;
+        this.currentEndTime = currentEndTime;
+        this.locations = locations;
+        this.packages = packages;
+    }
+
     public String getTourId() {
         return tourId;
     }

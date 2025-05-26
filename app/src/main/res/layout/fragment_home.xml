@@ -46,6 +46,20 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Search View -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/search_background"
+        android:elevation="4dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search tours..."
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <!-- Tours List Section -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/toursRecyclerView"
@@ -54,7 +68,7 @@
         android:clipToPadding="false"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
         tools:itemCount="3"
         tools:listitem="@layout/item_tour" />
 

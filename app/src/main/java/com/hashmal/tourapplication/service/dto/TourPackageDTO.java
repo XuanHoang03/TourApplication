@@ -4,6 +4,14 @@ public class TourPackageDTO {
     private Long id;
     private String packageName;
 
+    public TourPackageDTO(Long id, String packageName, String description, Long price, boolean isMain) {
+        this.id = id;
+        this.packageName = packageName;
+        this.description = description;
+        this.price = price;
+        this.isMain = isMain;
+    }
+
     public String getDescription() {
         return description;
     }

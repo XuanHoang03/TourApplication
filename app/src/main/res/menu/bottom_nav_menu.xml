@@ -1,23 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
         android:title="Home" />
     <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="Calendar" />
+    <item
         android:id="@+id/navigation_account"
         android:icon="@drawable/ic_account"
         android:title="Account" />
-    <item
-        android:id="@+id/navigation_schedule"
-        android:icon="@drawable/ic_account"
-        android:title="Schedule" />
-    <item
-        android:id="@+id/navigation_message"
-        android:icon="@drawable/ic_account"
-        android:title="Message" />
-    <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_account"
-        android:title="Search" />
+<!--    <item-->
+<!--        android:id="@+id/navigation_schedule"-->
+<!--        android:icon="@drawable/ic_account"-->
+<!--        android:title="Schedule" />-->
+<!--    <item-->
+<!--        android:id="@+id/navigation_message"-->
+<!--        android:icon="@drawable/ic_account"-->
+<!--        android:title="Message" />-->
+<!--    <item-->
+<!--        android:id="@+id/navigation_search"-->
+<!--        android:icon="@drawable/ic_account"-->
+<!--        android:title="Search" />-->
 
 </menu>

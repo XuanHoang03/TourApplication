@@ -21,6 +21,9 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.LocationDTO;
+import com.hashmal.tourapplication.service.dto.TourPackageDTO;
+import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
@@ -119,13 +122,24 @@ public class YourTourActivity extends AppCompatActivity {
         // Set departure time
         TextView tvDepartureTime = findViewById(R.id.tvDepartureTime);
         String departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime()));
+        tvDepartureTime.setText(departureTime);
 
         // Set return time
         TextView tvReturnTime = findViewById(R.id.tvReturnTime);
         String returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime()));
+        tvReturnTime.setText(returnTime);
 
         TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
         tvNumberOfTickets.setText("Số vé: " + tour.getBooking().getQuantity());
+
+        TextView tvTour = findViewById(R.id.tvTour);
+        tvTour.setOnClickListener(v -> {
+            Intent tourProgIntent = new Intent(YourTourActivity.this, TourDetailActivity.class);
+            TourResponseDTO tourResponseDTO = DataUtils.convertYourTourToTourResponse(tour);
+            String tourJson = gson.toJson(tourResponseDTO);
+            tourProgIntent.putExtra("tour", tourJson);
+            startActivity(tourProgIntent);
+        });
 
         // Set total price
         TextView tvTotalPrice = findViewById(R.id.tvTotalPrice);
@@ -149,6 +163,15 @@ public class YourTourActivity extends AppCompatActivity {
                 tvStatus.setBackgroundTintList(getColorStateList(R.color.status_default));
                 break;
         }
+
+        TextView tvHighlightNote = findViewById(R.id.tvHighlightNote);
+        tvHighlightNote.setOnClickListener(v -> {
+
+            Intent mapIntent = new Intent(YourTourActivity.this, TourRouteActivity.class);
+            String locationString = gson.toJson(tour.getTourLocationList());
+            mapIntent.putExtra("locations", locationString);
+            startActivity(mapIntent);
+        });
     }
 
 

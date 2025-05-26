@@ -3,6 +3,9 @@ package com.hashmal.tourapplication.service.dto;
 public class LocationDTO {
     private Long id;
 
+    public LocationDTO(long id, double latitude, double longitude, String country, String province, String city, String fullAddress, int openingHour, int closingHour, String description, String name, String thumbnailUrl) {
+    }
+
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
