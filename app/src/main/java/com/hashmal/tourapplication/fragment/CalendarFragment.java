@@ -102,6 +102,10 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
             return;
         }
 
+        // Show loading state
+        tvNoTours.setVisibility(View.VISIBLE);
+        tvNoTours.setText("Loading bookings...");
+
         apiService.getBookingsByUserId(currentUser.getAccount().getAccountId()).enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
@@ -110,31 +114,40 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
                     String listBookings = gson.toJson(resp.getData());
                     Type bookingType = new TypeToken<List<DisplayBookingDTO>>() {}.getType();
                     List<DisplayBookingDTO> bookingHistory = gson.fromJson(listBookings, bookingType);
-                    allBookings.clear();
-                    allBookings.addAll(bookingHistory);
                     
-                    // Create set of dates with tours
-                    Set<Date> datesWithTours = new HashSet<>();
-                    for (DisplayBookingDTO booking : bookingHistory) {
-                        if (booking.getBookingDate() != null) {
-                            try {
-                                Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
-                                if (bookingDate != null) {
-                                    datesWithTours.add(bookingDate);
+                    // Process data in background
+                    new Thread(() -> {
+                        allBookings.clear();
+                        allBookings.addAll(bookingHistory);
+                        
+                        // Create set of dates with tours more efficiently
+                        Set<Date> datesWithTours = new HashSet<>();
+                        List<CalendarDay> calendarDays = new ArrayList<>();
+                        
+                        for (DisplayBookingDTO booking : bookingHistory) {
+                            if (booking.getBookingDate() != null) {
+                                try {
+                                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
+                                    if (bookingDate != null) {
+                                        datesWithTours.add(bookingDate);
+                                        calendarDays.add(CalendarDay.from(bookingDate));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
                         }
-                    }
-                    
-                    // Set the dates with tours and their colors
-                    specialDates = datesWithTours.stream().map(CalendarDay::from).collect(Collectors.toList());
-
-                    calendarView.addDecorator(new SpecialDayDecorator(requireContext(), specialDates));
-                    // Filter for current selected date
-                    Calendar calendar = Calendar.getInstance();
-                    filterBookingsForDate(calendar.getTime());
+                        
+                        // Update UI on main thread
+                        requireActivity().runOnUiThread(() -> {
+                            specialDates = calendarDays;
+                            calendarView.addDecorator(new SpecialDayDecorator(requireContext(), specialDates));
+                            
+                            // Filter for current selected date
+                            Calendar calendar = Calendar.getInstance();
+                            filterBookingsForDate(calendar.getTime());
+                        });
+                    }).start();
                 } else {
                     tvNoTours.setVisibility(View.VISIBLE);
                     tvNoTours.setText("Failed to load bookings");
@@ -148,10 +161,6 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
             }
         });
     }
-
-
-
-
 
     private void filterBookingsForDate(Date selectedDate) {
         filteredBookings.clear();
@@ -174,7 +183,6 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
         for (DisplayBookingDTO booking : allBookings) {
             if (booking.getBookingDate() != null) {
                 try {
-
                     Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
                     if (bookingDate != null && bookingDate.after(startOfDay) && bookingDate.before(endOfDay)) {
                         filteredBookings.add(booking);
