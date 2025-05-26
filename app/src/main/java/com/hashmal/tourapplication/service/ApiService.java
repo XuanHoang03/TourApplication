@@ -6,16 +6,21 @@ import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -64,5 +69,17 @@ public interface ApiService {
     @GET("/api/v1/tours/your-tour")
     Call<YourTourDTO> getYourTour(
             @Query("bookingId") Long bookingId
+    );
+
+    @PUT("user/update")
+    Call<BaseResponse> updateProfile(
+            @Body UpdateProfileRequest request
+            );
+
+    @Multipart
+    @POST("user/upload-avatar")
+    Call<BaseResponse> uploadAvatar(
+            @Part MultipartBody.Part file,
+            @Part("profileId") RequestBody profileId
     );
 }

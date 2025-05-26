@@ -121,12 +121,12 @@ public class YourTourActivity extends AppCompatActivity {
 
         // Set departure time
         TextView tvDepartureTime = findViewById(R.id.tvDepartureTime);
-        String departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime()));
+        String departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime(), true));
         tvDepartureTime.setText(departureTime);
 
         // Set return time
         TextView tvReturnTime = findViewById(R.id.tvReturnTime);
-        String returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime()));
+        String returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime(), true));
         tvReturnTime.setText(returnTime);
 
         TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);

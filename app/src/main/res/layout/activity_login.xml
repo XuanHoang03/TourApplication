@@ -172,5 +172,24 @@
                 android:textSize="15sp"
                 android:textStyle="italic" />
         </LinearLayout>
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/roleSwitchButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_circle_role"
+        android:clickable="true"
+        android:elevation="6dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="Alpha"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

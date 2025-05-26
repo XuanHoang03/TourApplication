@@ -52,7 +52,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         holder.tvTourName.setText(booking.getBookingName());
 
         // Set dates
-        holder.tvBookingDate.setText("Booked on: " + DataUtils.formatDateTimeString(booking.getBookingDate()));
+        holder.tvBookingDate.setText("Booked on: " + DataUtils.formatDateTimeString(booking.getBookingDate(), true));
         holder.tvTourDate.setText("Tour date: ");
 
         // Set number of people and price

@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
@@ -26,6 +27,8 @@ import com.hashmal.tourapplication.utils.DataUtils;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -44,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
-    private TextView txtForgotPassword, txtGuestLogin, welcomeText, loginText;
+    private TextView txtForgotPassword, txtGuestLogin, welcomeText, loginText, roleSwitchButton;
     private Button txtCreateAccount;
     private ApiService apiService;
     private LinearLayout formContainer;
@@ -91,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
         txtGuestLogin = findViewById(R.id.txtGuestLogin);
         txtCreateAccount = findViewById(R.id.txtCreateAccount);
-
+        roleSwitchButton = findViewById(R.id.roleSwitchButton);
         //TODO: mock for test
         edtUsername.setText("0123456789");
         edtPassword.setText("1");
@@ -126,6 +129,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterStep1.class);
             startActivity(intent);
         });
+        roleSwitchButton.setOnClickListener(v -> {
+            showRoleSwitchDialog();
+        });
     }
 
     private void login(String username, String password) {
@@ -157,4 +163,39 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void animateRoleSwitchAndNotify() {
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleBack = AnimationUtils.loadAnimation(this, R.anim.scale_back);
+
+        roleSwitchButton.startAnimation(scaleUp);
+
+        scaleUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                roleSwitchButton.startAnimation(scaleBack);
+
+                // Hiển thị thông báo
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+    }
+    private void showRoleSwitchDialog() {
+        animateRoleSwitchAndNotify();
+        new AlertDialog.Builder(this)
+                .setMessage("Bạn có muốn chuyển sang giao diện nhân viên không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    // Chạy hiệu ứng
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
 }

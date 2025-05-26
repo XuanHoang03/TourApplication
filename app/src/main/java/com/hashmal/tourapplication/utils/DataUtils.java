@@ -43,10 +43,10 @@ public class DataUtils {
         message.put(FirebaseConst.MessageFields.createdAt, createdAt);
         message.put(FirebaseConst.MessageFields.updatedAt, updatedAt);
         message.put(FirebaseConst.MessageFields.type, type);
-    return message;
+        return message;
     }
 
-    public static Map<String, Object> buildFireStoreUserConversation(Date lastSend, String id , Date updatedAt, String content, String type) {
+    public static Map<String, Object> buildFireStoreUserConversation(Date lastSend, String id, Date updatedAt, String content, String type) {
         Map<String, Object> update = new HashMap<>();
         update.put(FirebaseConst.UserConversationFields.lastSend, lastSend);
         update.put(FirebaseConst.UserConversationFields.id, id);
@@ -56,6 +56,7 @@ public class DataUtils {
 
         return update;
     }
+
     public static void applyGradientToText(TextView textView) {
         textView.post(() -> {
             int width = textView.getWidth();
@@ -77,7 +78,7 @@ public class DataUtils {
     }
 
     public static Bitmap getBitmapFromVectorDrawable(Context context, @DrawableRes int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable( context, drawableId);
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         if (drawable instanceof VectorDrawable) {
             Bitmap bitmap = Bitmap.createBitmap(
                     drawable.getIntrinsicWidth(),
@@ -90,12 +91,13 @@ public class DataUtils {
         }
         return null;
     }
+
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
         return formatter.format(amount) + " VND";
     }
 
-    public static Date convertStringToDateV1 (String localDateTime) {
+    public static Date convertStringToDateV1(String localDateTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         try {
@@ -112,9 +114,10 @@ public class DataUtils {
         return outputFormat.format(date);
     }
 
-    public static String formatDateTimeString(String dateString) {
+    public static String formatDateTimeString(String dateString, boolean haveTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat outputFormat2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
         try {
             // Cắt bớt phần dư nếu có
@@ -122,10 +125,24 @@ public class DataUtils {
                 dateString = dateString.substring(0, 23); // "2025-05-22T16:17:19.035"
             }
             Date date = inputFormat.parse(dateString);
-            return outputFormat.format(date);
+            if (haveTime) {
+                return outputFormat.format(date);
+            } else return outputFormat2.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
             return dateString;  // fallback
+        }
+    }
+
+    public static String parseDateOfBirth(String dateString) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(dateString);
+            return outputFormat2.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dateString;
         }
     }
 
@@ -156,18 +173,18 @@ public class DataUtils {
             for (YourTourDTO.TourLocation tourLocation : yourTour.getTourLocationList()) {
                 YourTourDTO.Location location = tourLocation.getLocation();
                 LocationDTO locationDTO = new LocationDTO(
-                    location.getId(),
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    location.getCountry(),
-                    location.getProvince(),
-                    location.getCity(),
-                    location.getFullAddress(),
-                    location.getOpeningHour(),
-                    location.getClosingHour(),
-                    location.getDescription(),
-                    location.getName(),
-                    location.getThumbnailUrl()
+                        location.getId(),
+                        location.getLatitude(),
+                        location.getLongitude(),
+                        location.getCountry(),
+                        location.getProvince(),
+                        location.getCity(),
+                        location.getFullAddress(),
+                        location.getOpeningHour(),
+                        location.getClosingHour(),
+                        location.getDescription(),
+                        location.getName(),
+                        location.getThumbnailUrl()
                 );
                 locations.add(locationDTO);
             }
@@ -177,28 +194,28 @@ public class DataUtils {
         List<TourPackageDTO> packages = new ArrayList<>();
         if (tourPackage != null) {
             TourPackageDTO packageDTO = new TourPackageDTO(
-                tourPackage.getId(),
-                tourPackage.getPackageName(),
-                tourPackage.getDescription(),
-                tourPackage.getPrice(),
-                tourPackage.isMain()
+                    tourPackage.getId(),
+                    tourPackage.getPackageName(),
+                    tourPackage.getDescription(),
+                    tourPackage.getPrice(),
+                    tourPackage.isMain()
             );
             packages.add(packageDTO);
         }
 
         return new TourResponseDTO(
-            tour.getTourId(),
-            tour.getTourName(),
-            tour.getTourType(),
-            tour.getTourDescription(),
-            (long) tour.getNumberOfPeople(),
-            tour.isHaveTourGuide(),
-            tour.getDuration(),
-            tour.getThumbnailUrl(),
-            schedule != null ? schedule.getStartTime() : null,
-            schedule != null ? schedule.getEndTime() : null,
-            locations,
-            packages
+                tour.getTourId(),
+                tour.getTourName(),
+                tour.getTourType(),
+                tour.getTourDescription(),
+                (long) tour.getNumberOfPeople(),
+                tour.isHaveTourGuide(),
+                tour.getDuration(),
+                tour.getThumbnailUrl(),
+                schedule != null ? schedule.getStartTime() : null,
+                schedule != null ? schedule.getEndTime() : null,
+                locations,
+                packages
         );
     }
 
