@@ -28,6 +28,9 @@ public interface ApiService {
     @POST("user/login")
     Call<BaseResponse> login(@Body Map<String, String> body);
 
+    @POST("user/sys-user-login")
+    Call<BaseResponse> sysLogin(@Body Map<String, String> body);
+
     @POST("user/forgot-password")
     Call<BaseResponse> forgotPassword(@Body Map<String, String> body);
 

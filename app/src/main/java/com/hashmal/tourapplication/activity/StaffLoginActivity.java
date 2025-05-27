@@ -2,16 +2,21 @@ package com.hashmal.tourapplication.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -23,19 +28,6 @@ import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.utils.DataUtils;
 
-
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +35,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class StaffLoginActivity extends AppCompatActivity {
 
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
-    private TextView txtForgotPassword, txtGuestLogin, welcomeText, loginText, roleSwitchButton;
-    private Button txtCreateAccount;
-    private ApiService apiService;
+    private TextView txtForgotPassword, roleSwitchButton;
     private LinearLayout formContainer;
+    private ApiService apiService;
     private LocalDataService localDataService;
 
     @Override
@@ -62,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         window.setStatusBarColor(Color.TRANSPARENT);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_staff_login);
 
         TextView tvWelcome = findViewById(R.id.welcomeText);
         TextView tvSubtext = findViewById(R.id.loginText);
@@ -72,17 +63,16 @@ public class LoginActivity extends AppCompatActivity {
         View rootView = findViewById(R.id.rootContainer);
         formContainer = findViewById(R.id.formContainer);
         if (rootView == null || formContainer == null) {
-            // Log error or throw exception
             return;
         }
-        // Listen for window insets (e.g. when keyboard shows)
+
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
             int imeHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
             int systemBar = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
 
             int offset = Math.max(imeHeight, systemBar);
 
-            formContainer.setTranslationY(-offset * 0.5f); // Push layout up
+            formContainer.setTranslationY(-offset * 0.5f);
 
             return insets;
         });
@@ -92,12 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
-        txtGuestLogin = findViewById(R.id.txtGuestLogin);
-        txtCreateAccount = findViewById(R.id.txtCreateAccount);
         roleSwitchButton = findViewById(R.id.roleSwitchButton);
-        //TODO: mock for test
-        edtUsername.setText("0123456789");
-        edtPassword.setText("1");
 
         // Khởi tạo service
         apiService = ApiClient.getApiService();
@@ -108,58 +93,47 @@ public class LoginActivity extends AppCompatActivity {
             String username = edtUsername.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
             if (!username.isEmpty() && !password.isEmpty()) {
-                login(username, password);
-
+                sysLogin(username, password);
             } else {
                 Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Các hành động khác (tuỳ chỉnh theo app của bạn)
         txtForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            Intent intent = new Intent(StaffLoginActivity.this, ForgotPasswordActivity.class);
             startActivity(intent);
         });
 
-        txtGuestLogin.setOnClickListener(v -> {
-            Toast.makeText(this, "Guest login clicked", Toast.LENGTH_SHORT).show();
-        });
-
-        txtCreateAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterStep1.class);
-            startActivity(intent);
-        });
         roleSwitchButton.setOnClickListener(v -> {
             showRoleSwitchDialog();
         });
     }
 
-    private void login(String username, String password) {
+    private void sysLogin(String username, String password) {
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
 
-        apiService.login(data).enqueue(new Callback<BaseResponse>() {
+        apiService.sysLogin(data).enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     BaseResponse res = response.body();
-                    Toast.makeText(LoginActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
-                    // TODO: Chuyển màn hình / lưu token nếu có
+                    Toast.makeText(StaffLoginActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     if (res.getCode().equals(Code.SUCCESS.getCode())) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(StaffLoginActivity.this, AdminMainActivity.class);
                         localDataService.saveUserInfo(res.getData());
                         startActivity(intent);
                         finish();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StaffLoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffLoginActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -177,22 +151,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 roleSwitchButton.startAnimation(scaleBack);
-
-                // Hiển thị thông báo
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {}
         });
     }
+
     private void showRoleSwitchDialog() {
         animateRoleSwitchAndNotify();
         new AlertDialog.Builder(this)
-                .setMessage("Bạn có muốn chuyển sang giao diện nhân viên không?")
+                .setMessage("Bạn có muốn chuyển sang giao diện người dùng không?")
                 .setPositiveButton("Có", (dialog, which) -> {
-                    // Chạy hiệu ứng
-                    Intent staffLoginIntent = new Intent(LoginActivity.this, StaffLoginActivity.class);
-                    startActivity(staffLoginIntent);
+                    Intent intent = new Intent(StaffLoginActivity.this, LoginActivity.class);
+                    startActivity(intent);
                     finish();
                 })
                 .setNegativeButton("Không", (dialog, which) -> {
@@ -200,5 +172,4 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
-}
+} 

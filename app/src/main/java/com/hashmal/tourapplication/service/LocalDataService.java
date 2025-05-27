@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 
 public class LocalDataService {
@@ -51,6 +52,19 @@ public class LocalDataService {
             return null;
         }
 //        return gson.fromJson(userJson, UserDTO.class);
+    }
+
+    public SysUserDTO getSysUser() {
+        String userJson = sharedPreferences.getString(KEY_USER_JSON, null);
+        if (userJson == null) {
+            return  null;
+        }
+        try {
+            return gson.fromJson(userJson, SysUserDTO.class);
+        } catch (Exception e) {
+            Log.e("GSON_ERROR", "Parse lỗi", e);
+            return null;
+        }
     }
 
     public void clearUserData() {
