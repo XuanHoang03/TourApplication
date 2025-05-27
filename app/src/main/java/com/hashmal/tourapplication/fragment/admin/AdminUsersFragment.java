@@ -64,20 +64,20 @@ public class AdminUsersFragment extends Fragment {
 
     private void loadUsers() {
         // TODO: Implement API call to get users
-        apiService.getUsers().enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // TODO: Parse and display users
-                } else {
-                    Toast.makeText(requireContext(), "Failed to load users", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+//        apiService.getUsers().enqueue(new Callback<BaseResponse>() {
+//            @Override
+//            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    // TODO: Parse and display users
+//                } else {
+//                    Toast.makeText(requireContext(), "Failed to load users", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BaseResponse> call, Throwable t) {
+//                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 } 
