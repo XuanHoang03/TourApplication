@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.enums.MessageType;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.enums.StatusEnum;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
@@ -226,4 +227,5 @@ public class DataUtils {
     public static Date buildDateFromCalendarDay(CalendarDay calendarDay) {
         return calendarDay.getDate();
     }
+
 }

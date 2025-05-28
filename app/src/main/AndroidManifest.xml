@@ -24,6 +24,7 @@
             android:windowSoftInputMode="adjustResize"
             />
         <activity android:name=".activity.StaffLoginActivity" />
+        <activity android:name=".activity.admin.AdminMainActivity" />
         <activity
             android:name=".activity.YourTourActivity"
             android:exported="true" />

@@ -11,9 +11,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.fragment.staff.StaffDashboardFragment;
-import com.hashmal.tourapplication.fragment.staff.StaffToursFragment;
-import com.hashmal.tourapplication.fragment.staff.StaffBookingsFragment;
-import com.hashmal.tourapplication.fragment.staff.StaffProfileFragment;
 
 public class StaffMainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 

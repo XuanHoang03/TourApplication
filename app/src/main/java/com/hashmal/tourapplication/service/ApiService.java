@@ -4,9 +4,12 @@ import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
+import com.hashmal.tourapplication.service.dto.StatisticDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
+import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
+import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 
 import java.util.List;
@@ -85,4 +88,14 @@ public interface ApiService {
             @Part MultipartBody.Part file,
             @Part("profileId") RequestBody profileId
     );
+
+    @GET("system/admin/get-statistics")
+    Call<StatisticDTO> getStatistics();
+
+    @GET("system/admin/user-management")
+    Call<UserManagementDTO> getUserManagement();
+
+    @PUT("system/admin/user-management/update")
+    Call<BaseResponse> updateUserByAdmin(@Body UpdateUserByAdminRequest request) ;
+
 }

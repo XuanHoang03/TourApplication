@@ -1,10 +1,11 @@
-package com.hashmal.tourapplication.activity;
+package com.hashmal.tourapplication.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,10 +17,13 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.LoginActivity;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.admin.AdminDashboardFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminUsersFragment;
 import com.hashmal.tourapplication.model.UserRole;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.utils.PermissionManager;
 
 public class AdminMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +34,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
     private LocalDataService localDataService;
     private PermissionManager permissionManager;
 
+    private SysUserDTO currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +44,16 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         // Initialize services
         localDataService = LocalDataService.getInstance(this);
         permissionManager = PermissionManager.getInstance();
-        
+
+        currentUser = localDataService.getSysUser();
+
         // Set user role based on login data
-        // TODO: Get actual role from login response
-        permissionManager.setCurrentUserRole(UserRole.ADMIN);
+
+        permissionManager.setCurrentUserRole(RoleEnum.valueOf(currentUser.getAccount().getRoleName()));
 
         // Setup toolbar
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         // Setup drawer
@@ -82,6 +91,7 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
     private void loadDefaultFragment() {
         Fragment fragment = null;
         if (permissionManager.canViewDashboard()) {
+            toolbar.setTitle("Dashboard");
             fragment = new AdminDashboardFragment();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         } else if (permissionManager.canManageTours()) {
@@ -100,8 +110,10 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
     private void updateNavigationHeader() {
         View headerView = navigationView.getHeaderView(0);
         TextView tvAdminEmail = headerView.findViewById(R.id.tvAdminEmail);
-        // TODO: Set admin email from user data
-        tvAdminEmail.setText("admin@example.com");
+        TextView tvName = headerView.findViewById(R.id.tvName);
+
+        tvAdminEmail.setText(currentUser.getProfile().getEmail());
+        tvName.setText(currentUser.getProfile().getFullName());
     }
 
     private void loadFragment(Fragment fragment) {
@@ -119,8 +131,10 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         Fragment fragment = null;
 
         if (itemId == R.id.nav_dashboard && permissionManager.canViewDashboard()) {
+            toolbar.setTitle("Dashboard");
             fragment = new AdminDashboardFragment();
         } else if (itemId == R.id.nav_users && permissionManager.canManageUsers()) {
+            toolbar.setTitle("User Management");
             fragment = new AdminUsersFragment();
         } else if (itemId == R.id.nav_staff && permissionManager.canManageStaff()) {
             // TODO: Load staff fragment

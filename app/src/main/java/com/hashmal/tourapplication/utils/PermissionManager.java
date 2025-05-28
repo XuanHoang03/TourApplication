@@ -1,5 +1,6 @@
 package com.hashmal.tourapplication.utils;
 
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.model.UserRole;
 
 import java.util.HashMap;
@@ -9,8 +10,8 @@ import java.util.Set;
 
 public class PermissionManager {
     private static PermissionManager instance;
-    private final Map<UserRole, Set<String>> rolePermissions;
-    private UserRole currentUserRole;
+    private final Map<RoleEnum, Set<String>> rolePermissions;
+    private RoleEnum currentUserRole;
 
     private PermissionManager() {
         rolePermissions = new HashMap<>();
@@ -34,7 +35,7 @@ public class PermissionManager {
         adminPermissions.add("manage_bookings");
         adminPermissions.add("view_profile");
         adminPermissions.add("edit_profile");
-        rolePermissions.put(UserRole.ADMIN, adminPermissions);
+        rolePermissions.put(RoleEnum.SYSTEM_ADMIN, adminPermissions);
 
         // Staff permissions
         Set<String> staffPermissions = new HashSet<>();
@@ -43,7 +44,7 @@ public class PermissionManager {
         staffPermissions.add("manage_bookings");
         staffPermissions.add("view_profile");
         staffPermissions.add("edit_profile");
-        rolePermissions.put(UserRole.STAFF, staffPermissions);
+        rolePermissions.put(RoleEnum.TOUR_GUIDE, staffPermissions);
 
         // User permissions
         Set<String> userPermissions = new HashSet<>();
@@ -52,10 +53,9 @@ public class PermissionManager {
         userPermissions.add("view_bookings");
         userPermissions.add("view_profile");
         userPermissions.add("edit_profile");
-        rolePermissions.put(UserRole.USER, userPermissions);
     }
 
-    public void setCurrentUserRole(UserRole role) {
+    public void setCurrentUserRole(RoleEnum role) {
         this.currentUserRole = role;
     }
 

@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hashmal.tourapplication.R;
-import com.hashmal.tourapplication.adapter.admin.AdminRecentActivityAdapter;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
+import com.hashmal.tourapplication.service.dto.StatisticDTO;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,11 +56,30 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     private void loadDashboardData() {
-        // TODO: Implement API calls to get dashboard data
-        // For now, using dummy data
-        tvTotalUsers.setText("150");
-        tvTotalStaff.setText("25");
-        tvTotalTours.setText("50");
-        tvTotalBookings.setText("200");
+        apiService.getStatistics().enqueue(new Callback<StatisticDTO>() {
+            @Override
+            public void onResponse(Call<StatisticDTO> call, Response<StatisticDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    StatisticDTO stats = response.body();
+                    tvTotalUsers.setText(String.valueOf(stats.getTotalUsers()));
+                    tvTotalStaff.setText(String.valueOf(stats.getTotalStaffs()));
+                    tvTotalTours.setText(String.valueOf(stats.getTotalTourPrograms()));
+                    tvTotalBookings.setText(String.valueOf(stats.getTotalBookings()));
+                } else {
+                    tvTotalUsers.setText("-");
+                    tvTotalStaff.setText("-");
+                    tvTotalTours.setText("-");
+                    tvTotalBookings.setText("-");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StatisticDTO> call, Throwable t) {
+                tvTotalUsers.setText("-");
+                tvTotalStaff.setText("-");
+                tvTotalTours.setText("-");
+                tvTotalBookings.setText("-");
+            }
+        });
     }
 } 

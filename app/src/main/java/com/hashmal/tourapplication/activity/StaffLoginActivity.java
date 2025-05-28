@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -14,14 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.admin.AdminMainActivity;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -121,8 +121,15 @@ public class StaffLoginActivity extends AppCompatActivity {
                     BaseResponse res = response.body();
                     Toast.makeText(StaffLoginActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     if (res.getCode().equals(Code.SUCCESS.getCode())) {
-                        Intent intent = new Intent(StaffLoginActivity.this, AdminMainActivity.class);
+                        Map<String, String> params = res.getParams();
+                        String roleName = params.get(RoleEnum.ROLE.name());
                         localDataService.saveUserInfo(res.getData());
+
+                        Intent intent = null;
+                        if (roleName.equals(RoleEnum.SYSTEM_ADMIN.name())) {
+                            intent = new Intent(StaffLoginActivity.this, AdminMainActivity.class);
+                        }
+
                         startActivity(intent);
                         finish();
                     }
