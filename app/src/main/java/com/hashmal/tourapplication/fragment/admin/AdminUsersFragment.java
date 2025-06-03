@@ -119,6 +119,23 @@ public class AdminUsersFragment extends Fragment {
                             UpdateUserByAdminRequest req = new UpdateUserByAdminRequest();
                             req.setAccountId(user.getAccount().getAccountId());
                             req.setStatus(user.getAccount().getStatus() == 1 ? -1 : 1 );
+                            apiService.updateUserByAdmin(req).enqueue(new Callback<BaseResponse>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                    if (response.isSuccessful() && response.body() != null && Code.SUCCESS.getCode().equals(response.body().getCode())) {
+                                        Toast.makeText(requireContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                        loadUsers();
+                                    } else {
+                                        Toast.makeText(requireContext(), "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                    Toast.makeText(requireContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         })
                         .setNegativeButton("Không", dialog -> {
                             dialog.dismiss();
