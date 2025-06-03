@@ -6,14 +6,26 @@ public class UserManagementDTO {
     private String totalUser;
     private String activeUser;
     private List<UserDTO> users;
+    private List<SysUserDTO> sysUsers;
 
     public UserManagementDTO() {
     }
 
-    public UserManagementDTO(String totalUser, String activeUser, List<UserDTO> users) {
+    public UserManagementDTO(String totalUser, String activeUser, List<UserDTO> users, List<SysUserDTO> sysUsers) {
         this.totalUser = totalUser;
         this.activeUser = activeUser;
+        this.sysUsers = sysUsers;
         this.users = users;
+    }
+
+
+
+    public List<SysUserDTO> getSysUser() {
+        return sysUsers;
+    }
+
+    public void setSysUser(List<SysUserDTO> sysUser) {
+        this.sysUsers = sysUser;
     }
 
     public String getTotalUser() {

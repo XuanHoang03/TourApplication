@@ -7,7 +7,8 @@ public enum RoleEnum {
     ROLE(-1, "Role"),
     CUSTOMER(0,"Customer"),
     SYSTEM_ADMIN(11, "System Admin"),
-    TOUR_GUIDE(1, "Tour Guide");
+    TOUR_GUIDE(1, "Tour Guide"),
+    TOUR_OPERATOR(2, "Tour Operator");
 
     RoleEnum(Integer roleId, String roleName) {
         this.roleId = roleId;
@@ -36,6 +37,6 @@ public enum RoleEnum {
     }
 
     public List<RoleEnum> getListRole() {
-        return List.of(SYSTEM_ADMIN, TOUR_GUIDE, CUSTOMER);
+        return List.of(TOUR_GUIDE, TOUR_OPERATOR);
     }
 }

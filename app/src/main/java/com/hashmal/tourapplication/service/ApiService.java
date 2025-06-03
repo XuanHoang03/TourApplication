@@ -2,6 +2,7 @@ package com.hashmal.tourapplication.service;
 
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
+import com.hashmal.tourapplication.service.dto.CreateSystemUserRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.StatisticDTO;
@@ -97,5 +98,15 @@ public interface ApiService {
 
     @PUT("system/admin/user-management/update")
     Call<BaseResponse> updateUserByAdmin(@Body UpdateUserByAdminRequest request) ;
+
+    @GET("system/admin/staff-management")
+    Call<UserManagementDTO> getStaffManagement();
+
+    @PUT("system/admin/staff-management/update")
+    Call<BaseResponse> updateStaffByAdmin(@Body UpdateUserByAdminRequest request) ;
+
+    @POST("system/admin/create-sys-user")
+    Call<BaseResponse> createNewSysUser(@Body CreateSystemUserRequest request) ;
+
 
 }

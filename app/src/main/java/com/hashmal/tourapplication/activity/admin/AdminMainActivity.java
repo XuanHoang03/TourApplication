@@ -20,6 +20,7 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.admin.AdminDashboardFragment;
+import com.hashmal.tourapplication.fragment.admin.AdminStaffFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminUsersFragment;
 import com.hashmal.tourapplication.model.UserRole;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -137,7 +138,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
             toolbar.setTitle("User Management");
             fragment = new AdminUsersFragment();
         } else if (itemId == R.id.nav_staff && permissionManager.canManageStaff()) {
-            // TODO: Load staff fragment
+            toolbar.setTitle("Staff Management");
+            fragment = new AdminStaffFragment();
         } else if (itemId == R.id.nav_tours && permissionManager.canManageTours()) {
             // TODO: Load tours fragment
         } else if (itemId == R.id.nav_bookings && permissionManager.canManageBookings()) {
