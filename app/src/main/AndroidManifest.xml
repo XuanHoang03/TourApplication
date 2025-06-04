@@ -84,6 +84,7 @@
         <activity
             android:name=".activity.ProfileActivity"
             android:exported="true" />
+        <activity android:name=".activity.AddTourActivity" />
     </application>
 
 </manifest>

@@ -21,6 +21,7 @@ import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.admin.AdminDashboardFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminStaffFragment;
+import com.hashmal.tourapplication.fragment.admin.AdminToursFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminUsersFragment;
 import com.hashmal.tourapplication.model.UserRole;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -96,7 +97,7 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
             fragment = new AdminDashboardFragment();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         } else if (permissionManager.canManageTours()) {
-            // TODO: Load tours fragment
+            fragment = new AdminToursFragment();
             navigationView.setCheckedItem(R.id.nav_tours);
         } else if (permissionManager.canViewProfile()) {
             // TODO: Load profile fragment
@@ -141,7 +142,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
             toolbar.setTitle("Staff Management");
             fragment = new AdminStaffFragment();
         } else if (itemId == R.id.nav_tours && permissionManager.canManageTours()) {
-            // TODO: Load tours fragment
+            toolbar.setTitle("Tour Program Management");
+            fragment = new AdminToursFragment();
         } else if (itemId == R.id.nav_bookings && permissionManager.canManageBookings()) {
             // TODO: Load bookings fragment
         } else if (itemId == R.id.nav_profile && permissionManager.canViewProfile()) {

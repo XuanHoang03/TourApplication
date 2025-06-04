@@ -228,4 +228,8 @@ public class DataUtils {
         return calendarDay.getDate();
     }
 
+    public static String buildFullFilePath(String fileName) {
+        return "http://14.225.198.227:8188/upload/images/" + fileName;
+    }
+
 }

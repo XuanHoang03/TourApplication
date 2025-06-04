@@ -3,6 +3,7 @@ package com.hashmal.tourapplication.service;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
 import com.hashmal.tourapplication.service.dto.CreateSystemUserRequest;
+import com.hashmal.tourapplication.service.dto.CreateTourRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.StatisticDTO;
@@ -108,5 +109,14 @@ public interface ApiService {
     @POST("system/admin/create-sys-user")
     Call<BaseResponse> createNewSysUser(@Body CreateSystemUserRequest request) ;
 
+    @POST("/api/v1/tours")
+    Call<BaseResponse> createTour(@Body CreateTourRequest request);
+
+    @GET("/api/v1/tours/locations")
+    Call<List<YourTourDTO.Location>> getAllLocations();
+
+    @Multipart
+    @POST("/upload/image")
+    Call<BaseResponse> uploadImage(@Part MultipartBody.Part file);
 
 }
