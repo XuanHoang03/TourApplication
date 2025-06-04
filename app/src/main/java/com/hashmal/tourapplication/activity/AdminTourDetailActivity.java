@@ -26,6 +26,7 @@ import com.hashmal.tourapplication.utils.DataUtils;
 import java.util.List;
 
 public class AdminTourDetailActivity extends AppCompatActivity {
+    private TourResponseDTO tour;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,75 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             intent.putExtra("tour", tourJson);
             startActivity(intent);
         });
-        TourResponseDTO tour = new Gson().fromJson(tourJson, TourResponseDTO.class);
+        tour = new Gson().fromJson(tourJson, TourResponseDTO.class);
+        updateTourDetailUI(tour);
+        Button btnAddPackage = findViewById(R.id.btnAddPackage);
+        btnAddPackage.setOnClickListener(v -> {
+            android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
+            android.view.LayoutInflater inflater = getLayoutInflater();
+            android.view.View dialogView = inflater.inflate(R.layout.dialog_add_package, null);
+            dialog.setView(dialogView);
+            dialog.setCancelable(false);
+            android.widget.ImageButton btnBackDialog = dialogView.findViewById(R.id.btnBackDialog);
+            btnBackDialog.setOnClickListener(v1 -> dialog.dismiss());
+            android.widget.EditText edtName = dialogView.findViewById(R.id.edtPackageName);
+            android.widget.EditText edtDesc = dialogView.findViewById(R.id.edtPackageDescription);
+            android.widget.EditText edtPrice = dialogView.findViewById(R.id.edtPackagePrice);
+            android.widget.CheckBox cbIsMain = dialogView.findViewById(R.id.cbIsMain);
+            Button btnSave = dialogView.findViewById(R.id.btnSavePackage);
+            btnSave.setOnClickListener(v2 -> {
+                String name = edtName.getText().toString().trim();
+                String desc = edtDesc.getText().toString().trim();
+                String priceStr = edtPrice.getText().toString().trim();
+                boolean isMain = cbIsMain.isChecked();
+                if (name.isEmpty() || priceStr.isEmpty()) {
+                    edtName.setError(name.isEmpty() ? "Bắt buộc" : null);
+                    edtPrice.setError(priceStr.isEmpty() ? "Bắt buộc" : null);
+                    return;
+                }
+                Long price;
+                try { price = Long.parseLong(priceStr); } catch (Exception e) { edtPrice.setError("Giá không hợp lệ"); return; }
+                com.hashmal.tourapplication.service.dto.CreatePackageRequest req = new com.hashmal.tourapplication.service.dto.CreatePackageRequest(tour.getTourId(), name, desc, price, isMain);
+                btnSave.setEnabled(false);
+                com.hashmal.tourapplication.network.ApiClient.getApiService().addPackage(req).enqueue(new retrofit2.Callback<com.hashmal.tourapplication.service.dto.BaseResponse>() {
+                    @Override public void onResponse(retrofit2.Call<com.hashmal.tourapplication.service.dto.BaseResponse> call, retrofit2.Response<com.hashmal.tourapplication.service.dto.BaseResponse> response) {
+                        btnSave.setEnabled(true);
+                        if (response.isSuccessful() && response.body() != null && Code.SUCCESS.getCode().equals(response.body().getCode())) {
+                            android.widget.Toast.makeText(AdminTourDetailActivity.this, "Thêm gói thành công", android.widget.Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            reloadTourDetail(tour.getTourId());
+                        } else {
+                            android.widget.Toast.makeText(AdminTourDetailActivity.this, "Thêm gói thất bại", android.widget.Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override public void onFailure(retrofit2.Call<com.hashmal.tourapplication.service.dto.BaseResponse> call, Throwable t) {
+                        btnSave.setEnabled(true);
+                        android.widget.Toast.makeText(AdminTourDetailActivity.this, "Lỗi kết nối", android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+            dialog.show();
+        });
+    }
+
+    private void reloadTourDetail(String tourId) {
+        com.hashmal.tourapplication.network.ApiClient.getApiService().getAllTours().enqueue(new retrofit2.Callback<java.util.List<com.hashmal.tourapplication.service.dto.TourResponseDTO>>() {
+            @Override public void onResponse(retrofit2.Call<java.util.List<com.hashmal.tourapplication.service.dto.TourResponseDTO>> call, retrofit2.Response<java.util.List<com.hashmal.tourapplication.service.dto.TourResponseDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (com.hashmal.tourapplication.service.dto.TourResponseDTO t : response.body()) {
+                        if (t.getTourId().equals(tourId)) {
+                            tour = t;
+                            updateTourDetailUI(t);
+                            break;
+                        }
+                    }
+                }
+            }
+            @Override public void onFailure(retrofit2.Call<java.util.List<com.hashmal.tourapplication.service.dto.TourResponseDTO>> call, Throwable t) { }
+        });
+    }
+
+    private void updateTourDetailUI(com.hashmal.tourapplication.service.dto.TourResponseDTO tour) {
         ImageView img = findViewById(R.id.imgThumbnail);
         TextView tvName = findViewById(R.id.tvTourName);
         TextView tvType = findViewById(R.id.tvTourType);
@@ -50,17 +119,16 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         TextView tvEnd = findViewById(R.id.tvEndTime);
         LinearLayout layoutLocations = findViewById(R.id.layoutSelectedLocations);
         RecyclerView rvPackages = findViewById(R.id.rvPackages);
-        Button btnAddPackage = findViewById(R.id.btnAddPackage);
         Glide.with(this).load(tour.getThumbnailUrl()).placeholder(R.drawable.ic_tour).into(img);
         tvName.setText(tour.getTourName());
         tvType.setText(tour.getTourType());
         tvDesc.setText(tour.getTourDescription());
         tvNum.setText("Số người: " + tour.getNumberOfPeople());
         tvDuration.setText("Thời lượng: " + tour.getDuration());
-        tvStart.setText("Khởi hành: " + DataUtils.getStartOrEndTime(tour.getCurrentStartTime()));
-        tvEnd.setText("Kết thúc: " + DataUtils.getStartOrEndTime(tour.getCurrentEndTime()));
+        tvStart.setText("Khởi hành: " + com.hashmal.tourapplication.utils.DataUtils.getStartOrEndTime(tour.getCurrentStartTime()));
+        tvEnd.setText("Kết thúc: " + com.hashmal.tourapplication.utils.DataUtils.getStartOrEndTime(tour.getCurrentEndTime()));
         // Địa điểm
-        List<LocationDTO> locations = tour.getLocations();
+        List<com.hashmal.tourapplication.service.dto.LocationDTO> locations = tour.getLocations();
         layoutLocations.removeAllViews();
         if (locations != null && !locations.isEmpty()) {
             for (int i = 0; i < locations.size(); i++) {
@@ -70,12 +138,10 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             }
         }
         // Gói dịch vụ
-        List<TourPackageDTO> packages = tour.getPackages();
-        rvPackages.setLayoutManager(new LinearLayoutManager(this));
-        rvPackages.setAdapter(new PackageAdapter(packages));
-        btnAddPackage.setOnClickListener(v -> {
-            // TODO: Hiển thị dialog thêm gói dịch vụ
-        });
+        List<com.hashmal.tourapplication.service.dto.TourPackageDTO> packages = tour.getPackages();
+        RecyclerView rv = findViewById(R.id.rvPackages);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(new PackageAdapter(packages));
     }
 
     private class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageViewHolder> {

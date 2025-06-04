@@ -232,4 +232,8 @@ public class DataUtils {
         return "http://14.225.198.227:8188/upload/images/" + fileName;
     }
 
+    public static String getStartOrEndTime(String value) {
+        return value.replace("_",":");
+    }
+
 }

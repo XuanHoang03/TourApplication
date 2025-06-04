@@ -6,6 +6,9 @@ public class LocationDTO {
     public LocationDTO(long id, double latitude, double longitude, String country, String province, String city, String fullAddress, int openingHour, int closingHour, String description, String name, String thumbnailUrl) {
     }
 
+    public LocationDTO() {
+    }
+
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }

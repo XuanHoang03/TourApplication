@@ -57,6 +57,7 @@ public class AdminToursFragment extends Fragment {
     private List<YourTourDTO.Location> allLocations = new ArrayList<>();
     private List<CreateTourRequest.VisitOrderDTO> selectedLocations = new ArrayList<>();
     private static final int ADD_TOUR_REQUEST = 1001;
+    private static final int DETAIL_TOUR_REQUEST = 1002;
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -84,6 +85,11 @@ public class AdminToursFragment extends Fragment {
         rvTours.setLayoutManager(new LinearLayoutManager(requireContext()));
         toursAdapter = new AdminToursAdapter(requireContext());
         rvTours.setAdapter(toursAdapter);
+        toursAdapter.setOnTourActionListener(tour -> {
+            Intent intent = new Intent(requireContext(), com.hashmal.tourapplication.activity.AdminTourDetailActivity.class);
+            intent.putExtra("tour", new com.google.gson.Gson().toJson(tour));
+            startActivityForResult(intent, DETAIL_TOUR_REQUEST);
+        });
         apiService = ApiClient.getApiService();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -108,6 +114,9 @@ public class AdminToursFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TOUR_REQUEST && resultCode == Activity.RESULT_OK) {
             loadTours(); // Reload danh sách tours
+        }
+        if (requestCode == DETAIL_TOUR_REQUEST && resultCode == Activity.RESULT_OK) {
+            loadTours(); // Reload khi quay về từ chi tiết tour
         }
     }
     private void loadTours() {

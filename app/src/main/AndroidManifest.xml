@@ -85,6 +85,8 @@
             android:name=".activity.ProfileActivity"
             android:exported="true" />
         <activity android:name=".activity.AddTourActivity" />
+        <activity android:name=".activity.AdminTourDetailActivity" />
+        <activity android:name=".activity.AdminEditTourActivity" />
     </application>
 
 </manifest>

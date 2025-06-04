@@ -13,6 +13,7 @@ import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
 import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
 import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
+import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -118,5 +119,8 @@ public interface ApiService {
     @Multipart
     @POST("/upload/image")
     Call<BaseResponse> uploadImage(@Part MultipartBody.Part file);
+
+    @POST("/api/v1/tours/add-package")
+    Call<BaseResponse> addPackage(@Body CreatePackageRequest request);
 
 }
