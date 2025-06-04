@@ -183,7 +183,14 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             tvPrice.setGravity(Gravity.END);
             layout.addView(tvPrice);
             card.addView(layout, new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.MATCH_PARENT));
-            return new PackageViewHolder(card, tvName, tvPrice);
+            PackageViewHolder holder = new PackageViewHolder(card, tvName, tvPrice);
+            card.setOnClickListener(v -> {
+                TourPackageDTO pkg = packages.get(holder.getAdapterPosition());
+                Intent intent = new Intent(AdminTourDetailActivity.this, AdminPackageDetailActivity.class);
+                intent.putExtra("package", new Gson().toJson(pkg));
+                startActivity(intent);
+            });
+            return holder;
         }
         @Override
         public void onBindViewHolder(PackageViewHolder holder, int position) {

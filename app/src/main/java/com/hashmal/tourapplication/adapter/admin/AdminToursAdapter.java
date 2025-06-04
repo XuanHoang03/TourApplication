@@ -62,6 +62,9 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
         if (tour.getPackages().isEmpty()) {
             holder.layout.setBackgroundResource(R.drawable.border_red);
             holder.tvAdditionalInfo.setText("Chương trình này chưa có dịch vụ!");
+        } else {
+            holder.layout.setBackgroundResource(R.drawable.border_green);
+            holder.tvAdditionalInfo.setText("");
         }
         holder.btnArrow.setOnClickListener(v -> {
             if (actionListener != null) actionListener.onViewTour(tour);
