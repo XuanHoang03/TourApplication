@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.R;
@@ -56,11 +58,16 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
         } else {
             holder.imgThumbnail.setImageResource(R.drawable.ic_tour);
         }
-        holder.btnEdit.setOnClickListener(v -> {
-            if (actionListener != null) actionListener.onEditTour(tour);
+
+        if (tour.getPackages().isEmpty()) {
+            holder.layout.setBackgroundResource(R.drawable.border_red);
+            holder.tvAdditionalInfo.setText("Chương trình này chưa có dịch vụ!");
+        }
+        holder.btnArrow.setOnClickListener(v -> {
+            if (actionListener != null) actionListener.onViewTour(tour);
         });
-        holder.btnDelete.setOnClickListener(v -> {
-            if (actionListener != null) actionListener.onDeleteTour(tour);
+        holder.layout.setOnClickListener(v -> {
+            if (actionListener != null) actionListener.onViewTour(tour);
         });
     }
 
@@ -70,22 +77,23 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
     }
 
     public interface OnTourActionListener {
-        void onEditTour(TourResponseDTO tour);
-        void onDeleteTour(TourResponseDTO tour);
+        void onViewTour(TourResponseDTO tour);
     }
 
     static class TourViewHolder extends RecyclerView.ViewHolder {
         ImageView imgThumbnail;
-        TextView tvTourName, tvTourType, tvTourInfo;
-        ImageButton btnEdit, btnDelete;
+        TextView tvTourName, tvTourType, tvTourInfo, tvAdditionalInfo;
+        ImageButton btnArrow;
+        LinearLayout layout;
         public TourViewHolder(@NonNull View itemView) {
             super(itemView);
             imgThumbnail = itemView.findViewById(R.id.imgThumbnail);
             tvTourName = itemView.findViewById(R.id.tvTourName);
             tvTourType = itemView.findViewById(R.id.tvTourType);
             tvTourInfo = itemView.findViewById(R.id.tvTourInfo);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnArrow = itemView.findViewById(R.id.btnArrow);
+            layout = itemView.findViewById(R.id.itemLayout);
+            tvAdditionalInfo = itemView.findViewById(R.id.tvAdditionalInfo);
         }
     }
 } 
