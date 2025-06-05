@@ -10,6 +10,7 @@ import com.hashmal.tourapplication.service.dto.StatisticDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
+import com.hashmal.tourapplication.service.dto.UpdateTourPackageRequest;
 import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
 import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
@@ -123,4 +124,6 @@ public interface ApiService {
     @POST("/api/v1/tours/add-package")
     Call<BaseResponse> addPackage(@Body CreatePackageRequest request);
 
+    @PUT("/api/v1/tours/update-package")
+    Call<BaseResponse> updateTourPackage(@Body UpdateTourPackageRequest request);
 }

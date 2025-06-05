@@ -12,6 +12,10 @@ public class TourPackageDTO {
         this.isMain = isMain;
     }
 
+    public TourPackageDTO() {
+
+    }
+
     public String getDescription() {
         return description;
     }
