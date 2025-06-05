@@ -11,6 +11,7 @@ import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
 import com.hashmal.tourapplication.service.dto.UpdateTourPackageRequest;
+import com.hashmal.tourapplication.service.dto.UpdateTourRequest;
 import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
 import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
@@ -113,6 +114,11 @@ public interface ApiService {
 
     @POST("/api/v1/tours")
     Call<BaseResponse> createTour(@Body CreateTourRequest request);
+
+    @PUT("/api/v1/tours/{tourId}")
+    Call<BaseResponse> updateTour(
+            @Path("tourId") String tourId,
+            @Body UpdateTourRequest request);
 
     @GET("/api/v1/tours/locations")
     Call<List<YourTourDTO.Location>> getAllLocations();

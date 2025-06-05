@@ -8,21 +8,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 import android.content.Intent;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.cardview.widget.CardView;
+
 import android.view.Gravity;
 import android.graphics.Color;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.service.dto.BaseResponse;
+import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -31,7 +37,9 @@ import retrofit2.Callback;
 public class AdminTourDetailActivity extends AppCompatActivity {
     private TourResponseDTO tour;
     private PackageAdapter packageAdapter; // Thêm field để quản lý adapter
-    private static final int REQUEST_CODE_EDIT = 1001;
+    private static final int REQUEST_PACKAGE_EDIT = 1001;
+    private static final int REQUEST_TOUR_EDIT = 1011;
+    private String tourJson;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +50,11 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         ImageButton btnEdit = findViewById(R.id.btnEdit);
         btnBack.setOnClickListener(v -> finish());
 
-        String tourJson = getIntent().getStringExtra("tour");
+        tourJson = getIntent().getStringExtra("tour");
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminEditTourActivity.class);
             intent.putExtra("tour", tourJson);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_TOUR_EDIT);
         });
 
         tour = new Gson().fromJson(tourJson, TourResponseDTO.class);
@@ -92,16 +100,16 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                 return;
             }
 
-            com.hashmal.tourapplication.service.dto.CreatePackageRequest req =
-                    new com.hashmal.tourapplication.service.dto.CreatePackageRequest(tour.getTourId(), name, desc, price, isMain);
+            CreatePackageRequest req =
+                    new CreatePackageRequest(tour.getTourId(), name, desc, price, isMain);
 
             btnSave.setEnabled(false);
 
             com.hashmal.tourapplication.network.ApiClient.getApiService().addPackage(req)
-                    .enqueue(new retrofit2.Callback<com.hashmal.tourapplication.service.dto.BaseResponse>() {
+                    .enqueue(new Callback<BaseResponse>() {
                         @Override
-                        public void onResponse(retrofit2.Call<com.hashmal.tourapplication.service.dto.BaseResponse> call,
-                                               retrofit2.Response<com.hashmal.tourapplication.service.dto.BaseResponse> response) {
+                        public void onResponse(retrofit2.Call<BaseResponse> call,
+                                               retrofit2.Response<BaseResponse> response) {
                             btnSave.setEnabled(true);
                             if (response.isSuccessful() && response.body() != null &&
                                     Code.SUCCESS.getCode().equals(response.body().getCode())) {
@@ -139,7 +147,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(retrofit2.Call<com.hashmal.tourapplication.service.dto.BaseResponse> call, Throwable t) {
+                        public void onFailure(retrofit2.Call<BaseResponse> call, Throwable t) {
                             btnSave.setEnabled(true);
                             android.widget.Toast.makeText(AdminTourDetailActivity.this, "Lỗi kết nối",
                                     android.widget.Toast.LENGTH_SHORT).show();
@@ -313,7 +321,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                     Intent intent = new Intent(AdminTourDetailActivity.this, AdminPackageDetailActivity.class);
                     intent.putExtra("package", new Gson().toJson(pkg));
                     intent.putExtra("package_position", position); // Truyền thêm position
-                    startActivityForResult(intent, REQUEST_CODE_EDIT);
+                    startActivityForResult(intent, REQUEST_PACKAGE_EDIT);
                 }
             });
 
@@ -342,7 +350,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_EDIT && resultCode == RESULT_OK && data != null) {
+        if (requestCode == REQUEST_PACKAGE_EDIT && resultCode == RESULT_OK && data != null) {
             String pkgStr = data.getStringExtra("package");
             int position = data.getIntExtra("package_position", -1);
 
@@ -367,6 +375,12 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+        if (requestCode == REQUEST_TOUR_EDIT && resultCode == RESULT_OK && data != null) {
+            String tourStr = data.getStringExtra("tour");
+            tourJson = tourStr;
+            TourResponseDTO tour = new Gson().fromJson(tourStr, TourResponseDTO.class);
+            updateTourDetailUI(tour);
         }
     }
 

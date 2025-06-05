@@ -12,7 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
@@ -20,6 +22,8 @@ import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 import com.hashmal.tourapplication.service.dto.CreateTourRequest;
+import com.hashmal.tourapplication.service.dto.UpdateTourRequest;
+import com.hashmal.tourapplication.enums.Code;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -72,8 +76,76 @@ public class AdminEditTourActivity extends AppCompatActivity {
         btnPickLocations.setOnClickListener(v -> showPickLocationsDialog());
 
         btnSave.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã lưu (demo)", Toast.LENGTH_SHORT).show();
-            finish();
+            String name = edtName.getText().toString().trim();
+            String type = edtType.getText().toString().trim();
+            String desc = edtDesc.getText().toString().trim();
+            String numStr = edtNum.getText().toString().trim();
+            String duration = edtDuration.getText().toString().trim();
+            String start = edtStart.getText().toString().trim();
+            String end = edtEnd.getText().toString().trim();
+            if (name.isEmpty() || type.isEmpty() || numStr.isEmpty() || duration.isEmpty() || start.isEmpty() || end.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Integer numPeople;
+            try { numPeople = Integer.parseInt(numStr); } catch (Exception e) { edtNum.setError("Sai định dạng"); return; }
+            // Tạo request
+            UpdateTourRequest req = new UpdateTourRequest(
+                name,
+                type,
+                desc,
+                numPeople,
+                duration,
+                tour.getThumbnailUrl(), // Giữ nguyên ảnh cũ, nếu muốn đổi ảnh thì xử lý thêm
+                start,
+                end,
+                new ArrayList<>(selectedLocations)
+            );
+            btnSave.setEnabled(false);
+            apiService.updateTour(tour.getTourId(), req).enqueue(new retrofit2.Callback<BaseResponse>() {
+                @Override
+                public void onResponse(retrofit2.Call<BaseResponse> call, retrofit2.Response<BaseResponse> response) {
+                    btnSave.setEnabled(true);
+                    if (response.isSuccessful() && response.body() != null && Code.SUCCESS.getCode().equals(response.body().getCode())) {
+                        Toast.makeText(AdminEditTourActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                        // Cập nhật lại biến tour với dữ liệu mới
+                        tour.setTourName(name);
+                        tour.setTourType(type);
+                        tour.setTourDescription(desc);
+                        tour.setNumberOfPeople(Long.valueOf(numPeople));
+                        tour.setDuration(duration);
+                        tour.setCurrentStartTime(start);
+                        tour.setCurrentEndTime(end);
+                        // Cập nhật lại danh sách địa điểm
+                        List<LocationDTO> newLocs = new ArrayList<>();
+                        for (CreateTourRequest.VisitOrderDTO dto : selectedLocations) {
+                            LocationDTO loc = new LocationDTO();
+                            loc.setId(dto.getLocationId());
+                            loc.setVisitOrder(dto.getOrderNumber());
+                            // Gán tên nếu có trong allLocations
+                            for (YourTourDTO.Location l : allLocations) {
+                                if (l.getId() == (dto.getLocationId())) {
+                                    loc.setName(l.getName());
+                                    break;
+                                }
+                            }
+                            newLocs.add(loc);
+                        }
+                        tour.setLocations(newLocs);
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("tour" ,new Gson().toJson(tour));
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
+                    } else {
+                        Toast.makeText(AdminEditTourActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(retrofit2.Call<BaseResponse> call, Throwable t) {
+                    btnSave.setEnabled(true);
+                    Toast.makeText(AdminEditTourActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
         apiService = ApiClient.getApiService();
         loadAllLocations().thenAccept(success -> {
