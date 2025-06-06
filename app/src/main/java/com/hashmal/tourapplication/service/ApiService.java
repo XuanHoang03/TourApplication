@@ -132,4 +132,15 @@ public interface ApiService {
 
     @PUT("/api/v1/tours/update-package")
     Call<BaseResponse> updateTourPackage(@Body UpdateTourPackageRequest request);
+
+    @PUT("/api/v1/tours/modify-status")
+    Call<BaseResponse> modifyTourStatus(
+            @Query("tourId") String tourId,
+            @Query("status") Integer status
+    );
+    @PUT("/api/v1/tours/package/modify-status")
+    Call<BaseResponse> modifyPackageStatus(
+                    @Query("packageId") Long packageId,
+                    @Query("status") Integer status
+            );
 }

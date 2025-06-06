@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.cardview.widget.CardView;
@@ -19,9 +21,13 @@ import android.view.Gravity;
 import android.graphics.Color;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.IntentResult;
+import com.hashmal.tourapplication.network.ApiClient;
+import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
@@ -31,21 +37,25 @@ import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
+import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminTourDetailActivity extends AppCompatActivity {
     private TourResponseDTO tour;
     private PackageAdapter packageAdapter; // Thêm field để quản lý adapter
-    private static final int REQUEST_PACKAGE_EDIT = 1001;
-    private static final int REQUEST_TOUR_EDIT = 1011;
+
     private String tourJson;
+    private ApiService apiService;
+    private BaseResponse localResponse;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_tour_detail);
-
+        apiService = ApiClient.getApiService();
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnEdit = findViewById(R.id.btnEdit);
         btnBack.setOnClickListener(v -> finish());
@@ -54,7 +64,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminEditTourActivity.class);
             intent.putExtra("tour", tourJson);
-            startActivityForResult(intent, REQUEST_TOUR_EDIT);
+            startActivityForResult(intent,IntentResult.REQUEST_TOUR_EDIT.getValue());
         });
 
         tour = new Gson().fromJson(tourJson, TourResponseDTO.class);
@@ -62,6 +72,66 @@ public class AdminTourDetailActivity extends AppCompatActivity {
 
         Button btnAddPackage = findViewById(R.id.btnAddPackage);
         btnAddPackage.setOnClickListener(v -> showAddPackageDialog());
+
+        Button btnDeletePackage = findViewById(R.id.btnDeletePackage);
+
+        if (tour.getStatus().equals(-1)) {
+            btnDeletePackage.setText("* Kích hoạt chương trình");
+            btnDeletePackage.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+            btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(1));
+        } else btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(-1));
+    }
+
+    private void showConfirmDeleteDialog(Integer status) {
+        String message = "";
+        if (status == -1) {
+            message = "Bạn có chắc chắn muốn dừng chương trình này không?";
+        } else message = "Kích hoạt dịch vụ ?";
+
+
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("Có", (dialog, which) -> {
+                    asyncModifyTourStatus(status).thenAccept(success -> {
+                        if (localResponse.getCode().equals(Code.SUCCESS.getCode())) {
+                            new MaterialAlertDialogBuilder(this)
+                                    .setTitle("Thành công")
+                                    .setMessage(localResponse.getMessage())
+                                    .setIcon(android.R.drawable.ic_dialog_info)
+                                    .setPositiveButton("OK", (dialog2, which2) -> {
+                                        dialog2.dismiss();
+                                        setResult(RESULT_OK);
+                                        finish();
+                                    })
+                                    .show();
+                        }
+                    });
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    private CompletableFuture<Boolean> asyncModifyTourStatus(Integer status) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        apiService.modifyTourStatus(tour.getTourId(), status).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    localResponse = response.body();
+                    future.complete(true);
+                } else {
+                    future.complete(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                future.complete(false);
+            }
+        });
+        return future;
     }
 
     private void showAddPackageDialog() {
@@ -105,7 +175,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
 
             btnSave.setEnabled(false);
 
-            com.hashmal.tourapplication.network.ApiClient.getApiService().addPackage(req)
+            apiService.addPackage(req)
                     .enqueue(new Callback<BaseResponse>() {
                         @Override
                         public void onResponse(retrofit2.Call<BaseResponse> call,
@@ -124,18 +194,16 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                                 newPackage.setDescription(desc);
                                 newPackage.setPrice(price);
                                 newPackage.setMain(isMain);
-                                // Tạo ID tạm thời hoặc reload từ server để có ID chính xác
 
-                                // Thêm vào tour object
                                 if (tour.getPackages() == null) {
                                     tour.setPackages(new ArrayList<>());
                                 }
                                 tour.getPackages().add(newPackage);
 
                                 // Cập nhật adapter
-                                if (packageAdapter != null) {
-                                    packageAdapter.addPackage(newPackage);
-                                }
+//                                if (packageAdapter != null) {
+//                                    packageAdapter.addPackage(newPackage);
+//                                }
 
                                 // Hoặc reload từ server để có dữ liệu chính xác
                                 // reloadTourDetail(tour.getTourId());
@@ -321,7 +389,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                     Intent intent = new Intent(AdminTourDetailActivity.this, AdminPackageDetailActivity.class);
                     intent.putExtra("package", new Gson().toJson(pkg));
                     intent.putExtra("package_position", position); // Truyền thêm position
-                    startActivityForResult(intent, REQUEST_PACKAGE_EDIT);
+                    startActivityForResult(intent, IntentResult.REQUEST_PACKAGE_EDIT.getValue());
                 }
             });
 
@@ -350,33 +418,39 @@ public class AdminTourDetailActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_PACKAGE_EDIT && resultCode == RESULT_OK && data != null) {
-            String pkgStr = data.getStringExtra("package");
-            int position = data.getIntExtra("package_position", -1);
+        if (requestCode == IntentResult.REQUEST_PACKAGE_EDIT.getValue()) {
+            if (resultCode == RESULT_OK && data != null) {
 
-            if (pkgStr != null) {
-                TourPackageDTO updatedPackage = new Gson().fromJson(pkgStr, TourPackageDTO.class);
+                String pkgStr = data.getStringExtra("package");
+                int position = data.getIntExtra("package_position", -1);
 
-                if (position != -1) {
-                    // Cập nhật theo position
-                    if (position < tour.getPackages().size()) {
-                        tour.getPackages().set(position, updatedPackage);
-                        packageAdapter.updatePackage(position, updatedPackage);
-                    }
-                } else {
-                    // Tìm theo ID nếu không có position
-                    List<TourPackageDTO> currentPackages = tour.getPackages();
-                    for (int i = 0; i < currentPackages.size(); i++) {
-                        if (currentPackages.get(i).getId().equals(updatedPackage.getId())) {
-                            currentPackages.set(i, updatedPackage);
-                            packageAdapter.updatePackage(i, updatedPackage);
-                            break;
+                if (pkgStr != null) {
+                    TourPackageDTO updatedPackage = new Gson().fromJson(pkgStr, TourPackageDTO.class);
+
+                    if (position != -1) {
+                        // Cập nhật theo position
+                        if (position < tour.getPackages().size()) {
+                            tour.getPackages().set(position, updatedPackage);
+                            packageAdapter.updatePackage(position, updatedPackage);
+                        }
+                    } else {
+                        // Tìm theo ID nếu không có position
+                        List<TourPackageDTO> currentPackages = tour.getPackages();
+                        for (int i = 0; i < currentPackages.size(); i++) {
+                            if (currentPackages.get(i).getId().equals(updatedPackage.getId())) {
+                                currentPackages.set(i, updatedPackage);
+                                packageAdapter.updatePackage(i, updatedPackage);
+                                break;
+                            }
                         }
                     }
                 }
+            } else if (resultCode == IntentResult.DELETE_PACKAGE.getValue() && data != null) {
+                int position = data.getIntExtra("position", -1);
+                packageAdapter.removePackage(position);
             }
         }
-        if (requestCode == REQUEST_TOUR_EDIT && resultCode == RESULT_OK && data != null) {
+        if (requestCode == IntentResult.REQUEST_PACKAGE_EDIT.getValue() && resultCode == RESULT_OK && data != null) {
             String tourStr = data.getStringExtra("tour");
             tourJson = tourStr;
             TourResponseDTO tour = new Gson().fromJson(tourStr, TourResponseDTO.class);
@@ -388,7 +462,8 @@ public class AdminTourDetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updated_tour", new Gson().toJson(tour));
+
         setResult(RESULT_OK, resultIntent);
-        super.onBackPressed();
+       finish();
     }
 }

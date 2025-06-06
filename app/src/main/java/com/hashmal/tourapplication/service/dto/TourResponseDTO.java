@@ -12,7 +12,9 @@ public class TourResponseDTO {
     private String duration;
     private String thumbnailUrl;
 
-    public TourResponseDTO(String tourId, String tourName, String tourType, String tourDescription, Long numberOfPeople, Boolean haveTourGuide, String duration, String thumbnailUrl, String currentStartTime, String currentEndTime, List<LocationDTO> locations, List<TourPackageDTO> packages) {
+    private Integer status;
+
+    public TourResponseDTO(String tourId, String tourName, String tourType, String tourDescription, Long numberOfPeople, Boolean haveTourGuide, String duration, String thumbnailUrl, String currentStartTime, String currentEndTime, List<LocationDTO> locations, List<TourPackageDTO> packages, Integer status) {
         this.tourId = tourId;
         this.tourName = tourName;
         this.tourType = tourType;
@@ -25,6 +27,15 @@ public class TourResponseDTO {
         this.currentEndTime = currentEndTime;
         this.locations = locations;
         this.packages = packages;
+        this.status = status;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getTourId() {

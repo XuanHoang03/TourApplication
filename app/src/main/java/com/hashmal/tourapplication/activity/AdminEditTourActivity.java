@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
@@ -61,6 +62,8 @@ public class AdminEditTourActivity extends AppCompatActivity {
         tvSelectedLocations = findViewById(R.id.tvSelectedLocations);
         Button btnSave = findViewById(R.id.btnSaveTour);
         btnPickLocations = findViewById(R.id.btnPickLocations);
+
+
         Glide.with(this).load(tour.getThumbnailUrl()).placeholder(R.drawable.ic_tour).into(img);
         edtName.setText(tour.getTourName());
         edtType.setText(tour.getTourType());
@@ -156,6 +159,9 @@ public class AdminEditTourActivity extends AppCompatActivity {
                 });
         });
     }
+
+
+
 
     private void showTimePicker(TextInputEditText target) {
         java.util.Calendar calendar = java.util.Calendar.getInstance();

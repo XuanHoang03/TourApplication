@@ -8,12 +8,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +54,10 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
         holder.tvTourInfo.setText(info);
         if (tour.getThumbnailUrl() != null && !tour.getThumbnailUrl().isEmpty()) {
             Glide.with(context)
-                .load(tour.getThumbnailUrl())
-                .centerCrop()
-                .placeholder(R.drawable.ic_tour)
-                .into(holder.imgThumbnail);
+                    .load(tour.getThumbnailUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_tour)
+                    .into(holder.imgThumbnail);
         } else {
             holder.imgThumbnail.setImageResource(R.drawable.ic_tour);
         }
@@ -62,6 +65,9 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
         if (tour.getPackages().isEmpty()) {
             holder.layout.setBackgroundResource(R.drawable.border_red);
             holder.tvAdditionalInfo.setText("Chương trình này chưa có dịch vụ!");
+        } else if (tour.getStatus().equals(-1)) {
+            holder.layout.setBackgroundResource(R.drawable.border_red);
+            holder.tvAdditionalInfo.setText("Chương trình này không còn hoạt động!");
         } else {
             holder.layout.setBackgroundResource(R.drawable.border_green);
             holder.tvAdditionalInfo.setText("");
@@ -88,6 +94,7 @@ public class AdminToursAdapter extends RecyclerView.Adapter<AdminToursAdapter.To
         TextView tvTourName, tvTourType, tvTourInfo, tvAdditionalInfo;
         ImageButton btnArrow;
         LinearLayout layout;
+
         public TourViewHolder(@NonNull View itemView) {
             super(itemView);
             imgThumbnail = itemView.findViewById(R.id.imgThumbnail);

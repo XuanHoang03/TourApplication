@@ -7,22 +7,33 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.IntentResult;
+import com.hashmal.tourapplication.enums.StatusEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.UpdateTourPackageRequest;
+import com.hashmal.tourapplication.service.dto.YourTourDTO;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AdminPackageDetailActivity extends AppCompatActivity {
     private TourPackageDTO pkg;
     private ApiService apiService;
+    private BaseResponse localResponse;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +49,7 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
         TextView tvPrice = findViewById(R.id.tvPackagePrice);
         TextView tvIsMain = findViewById(R.id.tvIsMain);
         ImageButton btnBack = findViewById(R.id.btnBack);
-        
+
         btnBack.setOnClickListener(v -> handleBackPressed());
         tvName.setText(pkg.getPackageName());
         tvDesc.setText(pkg.getDescription());
@@ -101,7 +112,56 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
             });
             dialog.show();
         });
-        btnDelete.setOnClickListener(v -> Toast.makeText(this, "Chức năng Xóa (chưa làm)", Toast.LENGTH_SHORT).show());
+        btnDelete.setOnClickListener(v -> showConfirmDeleteDialog());
+    }
+
+    private void showConfirmDeleteDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage("Bạn có chắc chắn muốn dừng dịch vụ này không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    asyncModifyPackageStatus().thenAccept(success -> {
+                         if (localResponse.getCode().equals(Code.SUCCESS.getCode())) {
+                             new MaterialAlertDialogBuilder(this)
+                                     .setTitle("Thành công")
+                                     .setMessage(localResponse.getMessage())
+                                     .setIcon(android.R.drawable.ic_dialog_info)
+                                     .setPositiveButton("OK", (dialog2, which2) -> {
+
+                                         dialog2.dismiss();
+                                         Intent resultIntent = new Intent();
+                                         resultIntent.putExtra("position", getIntent().getIntExtra("package_position", -1));
+                                         setResult(IntentResult.DELETE_PACKAGE.getValue() , resultIntent);
+                                         finish();
+                                     })
+                                     .show();
+                         }
+                    });
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+
+    private CompletableFuture<Boolean> asyncModifyPackageStatus() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        apiService.modifyPackageStatus(pkg.getId(), -1 ).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    localResponse = response.body();
+                    future.complete(true);
+                } else {
+                    future.complete(false);
+                }
+            }
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                future.complete(false);
+            }
+        });
+        return future;
     }
 
     private void handleBackPressed() {
