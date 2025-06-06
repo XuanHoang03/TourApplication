@@ -32,7 +32,6 @@ public class PermissionManager {
         adminPermissions.add("manage_users");
         adminPermissions.add("manage_staff");
         adminPermissions.add("manage_tours");
-        adminPermissions.add("manage_bookings");
         adminPermissions.add("view_profile");
         adminPermissions.add("edit_profile");
         rolePermissions.put(RoleEnum.SYSTEM_ADMIN, adminPermissions);

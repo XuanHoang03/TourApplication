@@ -1,5 +1,6 @@
 package com.hashmal.tourapplication.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -58,7 +59,12 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         apiService = ApiClient.getApiService();
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnEdit = findViewById(R.id.btnEdit);
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("updated_tour", new Gson().toJson(tour));
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         tourJson = getIntent().getStringExtra("tour");
         btnEdit.setOnClickListener(v -> {
@@ -458,12 +464,12 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updated_tour", new Gson().toJson(tour));
-
         setResult(RESULT_OK, resultIntent);
-       finish();
+        finish();
     }
 }
