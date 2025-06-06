@@ -16,11 +16,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.admin.AdminMainActivity;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
+import com.hashmal.tourapplication.service.dto.UserDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
 
@@ -38,6 +41,7 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,7 +60,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        localDataService = LocalDataService.getInstance(this);
+        if (Objects.nonNull(localDataService.getCurrentUser())) {
+            UserDTO user = localDataService.getCurrentUser();
+            if (!user.getAccount().getRoleName().equals(RoleEnum.SYSTEM_ADMIN.name())) {
+                Intent homeIntent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(homeIntent);
+                finish();
+            }
+            else {
+                Intent homeIntent = new Intent(LoginActivity.this, AdminMainActivity.class);
+                startActivity(homeIntent);
+                finish();
+            }
+        }
         Window window = getWindow();
         window.getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -101,7 +118,6 @@ public class LoginActivity extends AppCompatActivity {
 
         // Khởi tạo service
         apiService = ApiClient.getApiService();
-        localDataService = LocalDataService.getInstance(this);
 
         // Sự kiện bấm nút login
         btnLogin.setOnClickListener(v -> {
