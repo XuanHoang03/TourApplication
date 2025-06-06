@@ -23,6 +23,7 @@ import com.hashmal.tourapplication.fragment.admin.AdminDashboardFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminStaffFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminToursFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminUsersFragment;
+import com.hashmal.tourapplication.fragment.admin.SysUserProfileFragment;
 import com.hashmal.tourapplication.model.UserRole;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
@@ -148,6 +149,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
             // TODO: Load bookings fragment
         } else if (itemId == R.id.nav_profile && permissionManager.canViewProfile()) {
             // TODO: Load profile fragment
+            toolbar.setTitle("Profile");
+            fragment = new SysUserProfileFragment();
         } else if (itemId == R.id.nav_logout) {
             handleLogout();
             return true;

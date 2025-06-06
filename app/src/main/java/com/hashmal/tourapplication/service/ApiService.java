@@ -85,6 +85,11 @@ public interface ApiService {
     @PUT("user/update")
     Call<BaseResponse> updateProfile(
             @Body UpdateProfileRequest request
+    );
+
+    @PUT("user/sys-user-update")
+    Call<BaseResponse> updateSysProfile(
+                    @Body UpdateProfileRequest request
             );
 
     @Multipart
