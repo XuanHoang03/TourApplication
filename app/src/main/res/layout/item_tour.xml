@@ -24,8 +24,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Tên Tour"
-            android:textSize="18sp"
+            android:textSize="13dp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tourImage" />
@@ -37,9 +38,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="4dp"
             android:text="Địa điểm"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="11dp"
+            android:drawableStart="@drawable/ic_location"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tourName" />
 
@@ -49,11 +51,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Giá tiền"
-            android:textColor="@color/design_default_color_primary"
+            android:textColor="@color/red"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tourLocation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

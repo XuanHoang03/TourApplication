@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
 
         // Setup RecyclerView
         tourAdapter = new TourAdapter(requireContext(), filteredTourList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         recyclerView.setAdapter(tourAdapter);
 
         // Setup SearchView
@@ -144,7 +145,7 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
     }
 
     private void loadTours() {
-        apiService.getAllTours().enqueue(new Callback<List<TourResponseDTO>>() {
+        apiService.getAllToursForUser(localDataService.getCurrentUser().getAccount().getAccountId()).enqueue(new Callback<List<TourResponseDTO>>() {
             @Override
             public void onResponse(Call<List<TourResponseDTO>> call, Response<List<TourResponseDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {

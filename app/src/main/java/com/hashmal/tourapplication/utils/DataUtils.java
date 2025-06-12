@@ -27,6 +27,8 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -95,7 +97,7 @@ public class DataUtils {
 
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(amount) + " VND";
+        return "VND " +  formatter.format(amount) ;
     }
 
     public static Date convertStringToDateV1(String localDateTime) {
@@ -237,4 +239,22 @@ public class DataUtils {
         return value.replace("_",":");
     }
 
+    public static String getDayOfWeek(LocalDateTime dateTime) {
+        Map<DayOfWeek, String> dayMap = new HashMap<>();
+        dayMap.put(DayOfWeek.MONDAY,"Th 2");
+        dayMap.put(DayOfWeek.TUESDAY,"Th 3");
+        dayMap.put(DayOfWeek.WEDNESDAY,"Th 4");
+        dayMap.put(DayOfWeek.THURSDAY,"Th 5");
+        dayMap.put(DayOfWeek.FRIDAY,"Th 6");
+        dayMap.put(DayOfWeek.SATURDAY,"Th 7");
+        dayMap.put(DayOfWeek.SUNDAY,"CN ");
+
+        return dayMap.get(dateTime.getDayOfWeek());
+    }
+
+    public static String getVietNamFormatDateTime(LocalDateTime dateTime) {
+        String dayOfWeek = getDayOfWeek(dateTime);
+        String dayMonth = dateTime.getDayOfMonth() + " thg " + dateTime.getMonthValue();
+        return dayOfWeek + "\n" + dayMonth;
+    }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -87,9 +88,8 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
 
             // Set price (from main package)
             if (tour.getPackages() != null && !tour.getPackages().isEmpty()) {
-                double price = tour.getPackages().get(0).getPrice();
-                NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-                tourPrice.setText(formatter.format(price));
+                long price = tour.getPackages().get(0).getPrice();
+                tourPrice.setText(DataUtils.formatCurrency(price));
             }
 
             // Load image using Glide

@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
+            android:visibility="gone"
             tools:text="Includes luxury accommodation and private guide" />
 
         <LinearLayout
@@ -42,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/design_default_color_primary"
+                android:textColor="@color/red"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="$299" />
@@ -51,7 +52,7 @@
                 android:id="@+id/selectPackageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select"
+                android:text="Chọn"
                 android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>

@@ -60,6 +60,9 @@ public interface ApiService {
     @GET("/api/v1/tours")
     Call<List<TourResponseDTO>> getAllTours();
 
+    @GET("/api/v1/tours/for-user")
+    Call<List<TourResponseDTO>> getAllToursForUser(@Query("userId") String userId);
+
     @POST("/api/v1/tours/bookings")
     Call<BaseResponse> createBooking(@Body CreateBookingRequest request);
 
@@ -70,6 +73,9 @@ public interface ApiService {
 
     @GET("/api/v1/tours/{tourId}/schedules")
     Call<List<TourScheduleResponseDTO>> getTourSchedulesByTourId(@Path("tourId") String tourId);
+
+    @GET("/api/v1/tours/get-tour-info")
+    Call<TourResponseDTO> getTourInfo(@Query("tourId") String tourId);
 
     @POST("api/payment/create-payment")
     Call<PaymentResponse> createPayment(@Body PaymentRequest paymentRequest);

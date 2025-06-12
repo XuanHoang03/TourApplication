@@ -55,6 +55,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fullNameInput"
                 android:layout_width="match_parent"
+                android:enabled="false"
                 android:layout_height="wrap_content"
                 android:hint="Họ và tên"
                 android:inputType="textPersonName"/>
@@ -70,6 +71,7 @@
                 android:id="@+id/emailInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="Email"
                 android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -100,6 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ngày sinh"
+                android:enabled="false"
                 android:inputType="date"
                 android:focusable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -114,6 +117,7 @@
                 android:id="@+id/addressInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="Địa chỉ"
                 android:inputType="textPostalAddress" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -122,8 +126,15 @@
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:text="Lưu thay đổi"
+            android:padding="12dp"/>
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật"
             android:padding="12dp"/>
 
     </LinearLayout>

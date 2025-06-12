@@ -68,7 +68,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
 
     private ApiService apiService;
     private LocalDataService localDataService;
-
+    TourResponseDTO currentTourInfo;
     private Long bookingId;
 
     private final ActivityResultLauncher<Intent> paymentLauncher = registerForActivityResult(
@@ -97,12 +97,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
         apiService = ApiClient.getApiService();
         localDataService = LocalDataService.getInstance(this);
 
-        if (tour != null) {
-            displayTourDetails(tour);
-            packages = tour.getPackages();
-            // Setup packages RecyclerView
-            setupPackagesRecyclerView(packages);
-        }
+        loadTourInfo(tour.getTourId());
+
 
         // Setup booking button
         bookingButton.setOnClickListener(v -> {
@@ -115,6 +111,27 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                 return;
             }
             showBookingBottomSheet();
+        });
+    }
+
+    public void loadTourInfo(String tourId) {
+        apiService.getTourInfo(tourId).enqueue(new Callback<TourResponseDTO>() {
+            @Override
+            public void onResponse(Call<TourResponseDTO> call, Response<TourResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    currentTourInfo = response.body();
+                    displayTourDetails(currentTourInfo);
+                    packages = currentTourInfo.getPackages();
+                    setupPackagesRecyclerView(packages);
+                } else {
+                    currentTourInfo = null;
+                }
+            }
+            @Override
+            public void onFailure(Call<TourResponseDTO> call, Throwable t) {
+                Toast.makeText(TourDetailActivity.this, "Error when calling api get tour info", Toast.LENGTH_SHORT).show();
+                currentTourInfo = null;
+            }
         });
     }
 
@@ -369,9 +386,9 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                         if (response.isSuccessful() && response.body() != null) {
                             BaseResponse res = response.body();
                             if (res.getCode().equals(Code.SUCCESS.getCode())) {
-                                Toast.makeText(TourDetailActivity.this,
-                                        "Cập nhật trạng thái giao dịch thành công.",
-                                        Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(TourDetailActivity.this,
+//                                        "Cập nhật trạng thái giao dịch thành công.",
+//                                        Toast.LENGTH_SHORT).show();
 
                                 new CustomDialog.Builder(TourDetailActivity.this)
                                         .setTitle("Notification")
@@ -397,7 +414,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                             // Xử lý khi click nút xác nhận
 //                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
 //                                            startActivity(backToHome);
-                                            finish();
+//                                            finish();
                                         })
                                         .setSingleButtonMode(true)
                                         .show();

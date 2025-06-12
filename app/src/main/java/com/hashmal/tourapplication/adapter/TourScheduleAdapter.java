@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -107,10 +108,10 @@ public class TourScheduleAdapter extends RecyclerView.Adapter<TourScheduleAdapte
             if (schedule != null) {
                 LocalDateTime fromDateValue = LocalDateTime.parse(schedule.getStartTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 LocalDateTime toDateValue = LocalDateTime.parse(schedule.getEndTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                String fromDate = dateFormat.format(fromDateValue);
-                String toDate = dateFormat.format(toDateValue);
+                String fromDate = DataUtils.getVietNamFormatDateTime(fromDateValue);
+                String toDate = DataUtils.getVietNamFormatDateTime(toDateValue);
 
-                scheduleTime.setText(fromDate + " - " + toDate);
+                scheduleTime.setText(fromDate);
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -46,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ImageView profileImage;
     private TextInputEditText fullNameInput, emailInput, phoneInput, addressInput, dateOfBirthInput;
-    private Button changePhotoButton, saveButton;
+    private Button changePhotoButton, saveButton, editButton;
 
     private LocalDataService localDataService;
     private Calendar calendar;
@@ -96,6 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
         dateOfBirthInput = findViewById(R.id.dateOfBirthInput);
         changePhotoButton = findViewById(R.id.changePhotoButton);
         saveButton = findViewById(R.id.saveButton);
+        editButton = findViewById(R.id.updateButton);
 
         calendar = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -135,6 +139,17 @@ public class ProfileActivity extends AppCompatActivity {
             if (validateInputs()) {
                 saveUserProfile();
             }
+        });
+
+        editButton.setOnClickListener(v-> {
+            editButton.setVisibility(GONE);
+            saveButton.setVisibility(VISIBLE);
+            saveButton.setEnabled(true);
+
+            fullNameInput.setEnabled(true);
+            emailInput.setEnabled(true);
+            dateOfBirthInput.setEnabled(true);
+            addressInput.setEnabled(true);
         });
     }
 
@@ -186,6 +201,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (user == null) {
             Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
             saveButton.setEnabled(true);
+            editButton.setEnabled(true);
             return;
         }
 
@@ -213,11 +229,18 @@ public class ProfileActivity extends AppCompatActivity {
                 saveButton.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null &&
                         Code.SUCCESS.getCode().equals(response.body().getCode())) {
+                    fullNameInput.setEnabled(false);
+                    emailInput.setEnabled(false);
+                    dateOfBirthInput.setEnabled(false);
+                    addressInput.setEnabled(false);
                     Toast.makeText(ProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                     localDataService.saveUserInfo(response.body().getData());
+                    saveButton.setVisibility(GONE);
+                    editButton.setVisibility(VISIBLE);
                     finish();
                 } else {
                     Toast.makeText(ProfileActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                    saveButton.setEnabled(true);
                 }
             }
 
