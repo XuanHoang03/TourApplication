@@ -24,6 +24,7 @@ import com.hashmal.tourapplication.fragment.admin.AdminStaffFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminToursFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminUsersFragment;
 import com.hashmal.tourapplication.fragment.admin.SysUserProfileFragment;
+import com.hashmal.tourapplication.fragment.staff.TourGuideViewActivity;
 import com.hashmal.tourapplication.model.UserRole;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
@@ -89,6 +90,7 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.nav_tours).setVisible(permissionManager.canManageTours());
         navigationView.getMenu().findItem(R.id.nav_bookings).setVisible(permissionManager.canManageBookings());
         navigationView.getMenu().findItem(R.id.nav_profile).setVisible(permissionManager.canViewProfile());
+        navigationView.getMenu().findItem(R.id.nav_tour_guide).setVisible(permissionManager.canViewTourGuide());
     }
 
     private void loadDefaultFragment() {
@@ -148,9 +150,11 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         } else if (itemId == R.id.nav_bookings && permissionManager.canManageBookings()) {
             // TODO: Load bookings fragment
         } else if (itemId == R.id.nav_profile && permissionManager.canViewProfile()) {
-            // TODO: Load profile fragment
             toolbar.setTitle("Profile");
             fragment = new SysUserProfileFragment();
+        } else if (itemId == R.id.nav_tour_guide && permissionManager.canViewTourGuide()) {
+            toolbar.setTitle("View tour guide");
+            fragment = new TourGuideViewActivity();
         } else if (itemId == R.id.nav_logout) {
             handleLogout();
             return true;
@@ -168,7 +172,7 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
     private void handleLogout() {
         // Clear user data
         localDataService.clearUserData();
-        
+
         // Navigate to login screen
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

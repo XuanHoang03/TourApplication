@@ -23,6 +23,7 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
     private List<SysUserDTO> sysUsers;
     private OnSysUserActionListener listener;
     private OnSysUserClickListener userClickListener;
+    private boolean showEditDeleteButtons = true;
 
     public interface OnSysUserActionListener {
         void onEditSysUser(SysUserDTO user);
@@ -52,6 +53,11 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
         notifyDataSetChanged();
     }
 
+    public void setShowEditDeleteButtons(boolean show) {
+        this.showEditDeleteButtons = show;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public SysUserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -65,6 +71,7 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
         holder.bind(user);
     }
 
+
     @Override
     public int getItemCount() {
         return sysUsers.size();
@@ -74,6 +81,7 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
         private TextView tvName, tvRole, tvStatus;
         private ImageButton btnEdit, btnDelete;
         private ImageView imgAvatar;
+
 
         SysUserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,24 +112,31 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
                     userClickListener.onSysUserClick(sysUsers.get(position));
                 }
             });
+
+            btnEdit.setVisibility(showEditDeleteButtons ? View.VISIBLE : View.GONE);
+            btnDelete.setVisibility(showEditDeleteButtons ? View.VISIBLE : View.GONE);
         }
+
+
 
         void bind(SysUserDTO user) {
             tvName.setText(user.getProfile().getFullName());
             String role = user.getAccount().getRoleName();
-            tvRole.setText(role);
             if (role != null) {
                 switch (role) {
                     case "Staff":
                     case "TOUR_GUIDE":
                         tvRole.setTextColor(itemView.getResources().getColor(R.color.teal_700));
+                        tvRole.setText("Hướng dẫn viên");
                         break;
                     case "Admin":
                     case "SYSTEM_ADMIN":
+                        tvRole.setText("Quản trị viên");
                         tvRole.setTextColor(itemView.getResources().getColor(android.R.color.holo_red_dark));
                         break;
                     case "Manager":
                     case "TOUR_OPERATOR":
+                        tvRole.setText("Điều hành viên");
                         tvRole.setTextColor(itemView.getResources().getColor(android.R.color.holo_blue_dark));
                         break;
                     default:
@@ -135,15 +150,15 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
             if (status != null) {
                 switch (status) {
                     case 1:
-                        tvStatus.setText("Active");
+                        tvStatus.setText("Đang hoạt động");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_green_dark));
                         break;
                     case -1:
-                        tvStatus.setText("Inactive");
+                        tvStatus.setText("Đã vô hiệu hóa");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_red_dark));
                         break;
                     case 0:
-                        tvStatus.setText("Registered");
+                        tvStatus.setText("Chưa kích hoạt");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.darker_gray));
                         break;
                     default:

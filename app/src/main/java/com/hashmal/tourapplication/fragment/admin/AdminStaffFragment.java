@@ -279,7 +279,7 @@ public class AdminStaffFragment extends Fragment {
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     btnSave.setEnabled(true);
-                    if (response.isSuccessful() && response.body() != null && com.hashmal.tourapplication.enums.Code.SUCCESS.getCode().equals(response.body().getCode())) {
+                    if (response.isSuccessful() && response.body() != null && Code.SUCCESS.getCode().equals(response.body().getCode())) {
                         Toast.makeText(requireContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         loadStaffs();

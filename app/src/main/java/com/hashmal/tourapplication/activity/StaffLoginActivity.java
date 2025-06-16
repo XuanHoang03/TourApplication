@@ -126,10 +126,7 @@ public class StaffLoginActivity extends AppCompatActivity {
                         localDataService.saveUserInfo(res.getData());
 
                         Intent intent = null;
-                        if (roleName.equals(RoleEnum.SYSTEM_ADMIN.name())) {
                             intent = new Intent(StaffLoginActivity.this, AdminMainActivity.class);
-                        }
-
                         startActivity(intent);
                         finish();
                     }

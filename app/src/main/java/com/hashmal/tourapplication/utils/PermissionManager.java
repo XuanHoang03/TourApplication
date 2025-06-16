@@ -39,19 +39,11 @@ public class PermissionManager {
         // Staff permissions
         Set<String> staffPermissions = new HashSet<>();
         staffPermissions.add("view_dashboard");
-        staffPermissions.add("manage_tours");
         staffPermissions.add("manage_bookings");
         staffPermissions.add("view_profile");
         staffPermissions.add("edit_profile");
-        rolePermissions.put(RoleEnum.TOUR_GUIDE, staffPermissions);
-
-        // User permissions
-        Set<String> userPermissions = new HashSet<>();
-        userPermissions.add("view_tours");
-        userPermissions.add("book_tours");
-        userPermissions.add("view_bookings");
-        userPermissions.add("view_profile");
-        userPermissions.add("edit_profile");
+        staffPermissions.add("view_tour_guide");
+        rolePermissions.put(RoleEnum.TOUR_OPERATOR, staffPermissions);
     }
 
     public void setCurrentUserRole(RoleEnum role) {
@@ -86,6 +78,10 @@ public class PermissionManager {
 
     public boolean canViewProfile() {
         return hasPermission("view_profile");
+    }
+
+    public boolean canViewTourGuide() {
+        return hasPermission("view_tour_guide");
     }
 
     public boolean canEditProfile() {

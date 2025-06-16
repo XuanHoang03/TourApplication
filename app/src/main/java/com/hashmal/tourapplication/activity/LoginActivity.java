@@ -63,12 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         localDataService = LocalDataService.getInstance(this);
         if (Objects.nonNull(localDataService.getCurrentUser())) {
             UserDTO user = localDataService.getCurrentUser();
-            if (!user.getAccount().getRoleName().equals(RoleEnum.SYSTEM_ADMIN.name())) {
+            if (user.getAccount().getRoleName().equals(RoleEnum.CUSTOMER.getRoleName())) {
                 Intent homeIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(homeIntent);
                 finish();
-            }
-            else {
+            } else {
                 Intent homeIntent = new Intent(LoginActivity.this, AdminMainActivity.class);
                 startActivity(homeIntent);
                 finish();
@@ -188,7 +187,8 @@ public class LoginActivity extends AppCompatActivity {
 
         scaleUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -198,9 +198,11 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
     }
+
     private void showRoleSwitchDialog() {
         animateRoleSwitchAndNotify();
         new AlertDialog.Builder(this)

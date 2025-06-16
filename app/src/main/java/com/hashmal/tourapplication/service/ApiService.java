@@ -7,6 +7,7 @@ import com.hashmal.tourapplication.service.dto.CreateTourRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.StatisticDTO;
+import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
@@ -154,4 +155,9 @@ public interface ApiService {
                     @Query("packageId") Long packageId,
                     @Query("status") Integer status
             );
+    @GET("user/get-list-tour-guide")
+    Call<List<SysUserDTO>> getTourGuide(@Query("status") Integer status);
+
+    @GET("/api/v1/tours/get-staff-info")
+    Call<SysUserDTO> getStaffInfo(@Query("staffId") String staffId);
 }
