@@ -19,10 +19,12 @@
         android:theme="@style/Theme.TourApplication"
         tools:targetApi="31">
         <activity
-            android:name=".activity.TourGuideDetailActivity"
+            android:name=".activity.CalendarActivity"
             android:exported="false" />
         <activity
-            android:name=".fragment.staff.TourGuideViewActivity"
+            android:name=".activity.TourGuideDetailActivity"
+            android:fitsSystemWindows="true"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".activity.TourRouteActivity"

@@ -4,4 +4,5 @@ public enum StatusEnum {
     Completed,
     Pending,
     Cancelled,
+    Progress,
 }
