@@ -1,5 +1,7 @@
 package com.hashmal.tourapplication.fragment.admin;
 
+import static android.view.View.GONE;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,8 +21,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.admin.AdminToursAdapter;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
+import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.CreateTourRequest;
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ public class AdminToursFragment extends Fragment {
     private ApiService apiService;
     private List<TourResponseDTO> allTours = new ArrayList<>();
     private Uri selectedImageUri = null;
+    private LocalDataService localDataService;
     private String uploadedImageUrl = null;
     private ImageView imagePreviewRef;
 
@@ -91,6 +96,7 @@ public class AdminToursFragment extends Fragment {
             startActivityForResult(intent, DETAIL_TOUR_REQUEST);
         });
         apiService = ApiClient.getApiService();
+        localDataService = LocalDataService.getInstance(requireContext());
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -103,6 +109,9 @@ public class AdminToursFragment extends Fragment {
                 return true;
             }
         });
+        if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
+            fabAddTour.setVisibility(GONE);
+        }
         fabAddTour.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), com.hashmal.tourapplication.activity.AddTourActivity.class);
             startActivityForResult(intent, ADD_TOUR_REQUEST);

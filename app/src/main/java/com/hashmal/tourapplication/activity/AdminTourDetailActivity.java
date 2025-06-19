@@ -1,5 +1,8 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -27,8 +30,10 @@ import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.enums.IntentResult;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
+import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
@@ -47,7 +52,7 @@ import retrofit2.Response;
 public class AdminTourDetailActivity extends AppCompatActivity {
     private TourResponseDTO tour;
     private PackageAdapter packageAdapter; // Thêm field để quản lý adapter
-
+    private LocalDataService localDataService;
     private String tourJson;
     private ApiService apiService;
     private BaseResponse localResponse;
@@ -80,12 +85,28 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         btnAddPackage.setOnClickListener(v -> showAddPackageDialog());
 
         Button btnDeletePackage = findViewById(R.id.btnDeletePackage);
+        Button btnViewBooking = findViewById(R.id.btnViewBooking);
+        btnViewBooking.setOnClickListener(v -> viewBookingClick());
 
         if (tour.getStatus().equals(-1)) {
             btnDeletePackage.setText("* Kích hoạt chương trình");
             btnDeletePackage.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
             btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(1));
         } else btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(-1));
+
+        localDataService = LocalDataService.getInstance(this);
+        if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
+            btnEdit.setVisibility(GONE);
+            btnDeletePackage.setVisibility(GONE);
+            btnAddPackage.setVisibility(GONE);
+            btnViewBooking.setVisibility(VISIBLE);
+        }
+    }
+
+    private void viewBookingClick() {
+        Intent bookingIntent = new Intent(AdminTourDetailActivity.this, CustomerTicketsActivity.class);
+        bookingIntent.putExtra("tourId", tour.getTourId());
+        startActivity(bookingIntent);
     }
 
     private void showConfirmDeleteDialog(Integer status) {

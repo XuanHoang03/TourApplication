@@ -9,17 +9,27 @@ public class TourScheduleResponseDTO {
     private String endTime;
     private Integer numberOfTicket;
     private String tourGuideId;
+    private String status;
 
-    public TourScheduleResponseDTO(String tourScheduleId, String tourId, String startTime, String endTime, Integer numberOfTicket, String tourGuideId) {
+    public TourScheduleResponseDTO(String tourScheduleId, String tourId, String startTime, String endTime, Integer numberOfTicket, String tourGuideId, String status) {
         this.tourScheduleId = tourScheduleId;
         this.tourId = tourId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.numberOfTicket = numberOfTicket;
         this.tourGuideId = tourGuideId;
+        this.status = status;
     }
 
     public TourScheduleResponseDTO() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getTourScheduleId() {

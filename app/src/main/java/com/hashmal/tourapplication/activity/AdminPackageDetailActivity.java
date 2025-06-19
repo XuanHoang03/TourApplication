@@ -1,11 +1,14 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +18,11 @@ import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.enums.IntentResult;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.enums.StatusEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
+import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.UpdateTourPackageRequest;
@@ -34,12 +39,14 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
     private TourPackageDTO pkg;
     private ApiService apiService;
     private BaseResponse localResponse;
+    private LocalDataService localDataService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_package_detail);
         apiService = ApiClient.getApiService();
+        localDataService = LocalDataService.getInstance(this);
         String pkgJson = getIntent().getStringExtra("package");
         pkg = new Gson().fromJson(pkgJson, TourPackageDTO.class);
 
@@ -57,6 +64,12 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
         tvIsMain.setText(pkg.isMain() ? "Gói chính" : "Gói phụ");
         Button btnEdit = findViewById(R.id.btnEditPackage);
         Button btnDelete = findViewById(R.id.btnDeletePackage);
+        if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
+            btnEdit.setVisibility(GONE);
+            btnDelete.setVisibility(GONE);
+        }
+
+
         btnEdit.setOnClickListener(v -> {
             android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
             android.view.LayoutInflater inflater = getLayoutInflater();
@@ -85,11 +98,17 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
                     return;
                 }
                 Long price;
-                try { price = Long.parseLong(priceStr); } catch (Exception e) { edtPrice.setError("Giá không hợp lệ"); return; }
+                try {
+                    price = Long.parseLong(priceStr);
+                } catch (Exception e) {
+                    edtPrice.setError("Giá không hợp lệ");
+                    return;
+                }
                 UpdateTourPackageRequest req = new UpdateTourPackageRequest(pkg.getId(), name, desc, price, null);
                 btnSave.setEnabled(false);
                 apiService.updateTourPackage(req).enqueue(new retrofit2.Callback<BaseResponse>() {
-                    @Override public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                         btnSave.setEnabled(true);
                         if (response.isSuccessful() && response.body() != null && Code.SUCCESS.getCode().equals(response.body().getCode())) {
                             android.widget.Toast.makeText(AdminPackageDetailActivity.this, "Cập nhật thành công", android.widget.Toast.LENGTH_SHORT).show();
@@ -104,7 +123,9 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
                             android.widget.Toast.makeText(AdminPackageDetailActivity.this, "Cập nhật thất bại", android.widget.Toast.LENGTH_SHORT).show();
                         }
                     }
-                    @Override public void onFailure(Call<BaseResponse> call, Throwable t) {
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
                         btnSave.setEnabled(true);
                         android.widget.Toast.makeText(AdminPackageDetailActivity.this, "Lỗi kết nối", android.widget.Toast.LENGTH_SHORT).show();
                     }
@@ -120,21 +141,21 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
                 .setMessage("Bạn có chắc chắn muốn dừng dịch vụ này không?")
                 .setPositiveButton("Có", (dialog, which) -> {
                     asyncModifyPackageStatus().thenAccept(success -> {
-                         if (localResponse.getCode().equals(Code.SUCCESS.getCode())) {
-                             new MaterialAlertDialogBuilder(this)
-                                     .setTitle("Thành công")
-                                     .setMessage(localResponse.getMessage())
-                                     .setIcon(android.R.drawable.ic_dialog_info)
-                                     .setPositiveButton("OK", (dialog2, which2) -> {
+                        if (localResponse.getCode().equals(Code.SUCCESS.getCode())) {
+                            new MaterialAlertDialogBuilder(this)
+                                    .setTitle("Thành công")
+                                    .setMessage(localResponse.getMessage())
+                                    .setIcon(android.R.drawable.ic_dialog_info)
+                                    .setPositiveButton("OK", (dialog2, which2) -> {
 
-                                         dialog2.dismiss();
-                                         Intent resultIntent = new Intent();
-                                         resultIntent.putExtra("position", getIntent().getIntExtra("package_position", -1));
-                                         setResult(IntentResult.DELETE_PACKAGE.getValue() , resultIntent);
-                                         finish();
-                                     })
-                                     .show();
-                         }
+                                        dialog2.dismiss();
+                                        Intent resultIntent = new Intent();
+                                        resultIntent.putExtra("position", getIntent().getIntExtra("package_position", -1));
+                                        setResult(IntentResult.DELETE_PACKAGE.getValue(), resultIntent);
+                                        finish();
+                                    })
+                                    .show();
+                        }
                     });
                 })
                 .setNegativeButton("Không", (dialog, which) -> {
@@ -146,7 +167,7 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
 
     private CompletableFuture<Boolean> asyncModifyPackageStatus() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        apiService.modifyPackageStatus(pkg.getId(), -1 ).enqueue(new Callback<BaseResponse>() {
+        apiService.modifyPackageStatus(pkg.getId(), -1).enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -156,6 +177,7 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
                     future.complete(false);
                 }
             }
+
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
                 future.complete(false);

@@ -95,6 +95,8 @@
         <activity android:name=".activity.AdminTourDetailActivity" />
         <activity android:name=".activity.AdminEditTourActivity" />
         <activity android:name=".activity.AdminPackageDetailActivity" />
+        <activity android:name=".activity.CustomerTicketsActivity" />
+        <activity android:name=".activity.ScheduleDetailActivity" />
     </application>
 
 </manifest>

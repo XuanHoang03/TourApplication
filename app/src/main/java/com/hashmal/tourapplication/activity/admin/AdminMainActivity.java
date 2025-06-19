@@ -149,6 +149,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
             fragment = new AdminToursFragment();
         } else if (itemId == R.id.nav_bookings && permissionManager.canManageBookings()) {
             // TODO: Load bookings fragment
+            fragment = new AdminToursFragment();
+            toolbar.setTitle("Booking Management");
         } else if (itemId == R.id.nav_profile && permissionManager.canViewProfile()) {
             toolbar.setTitle("Profile");
             fragment = new SysUserProfileFragment();
