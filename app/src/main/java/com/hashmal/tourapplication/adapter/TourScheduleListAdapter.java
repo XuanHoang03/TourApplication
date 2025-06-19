@@ -49,7 +49,7 @@ public class TourScheduleListAdapter extends RecyclerView.Adapter<TourScheduleLi
             if (listener != null) listener.onScheduleClick(schedule);
             // Mở màn chi tiết
             Intent intent = new Intent(holder.itemView.getContext(), ScheduleDetailActivity.class);
-            intent.putExtra("schedule", new Gson().toJson(schedule));
+            intent.putExtra("tourScheduleId", schedule.getTourScheduleId());
             holder.itemView.getContext().startActivity(intent);
         });
     }

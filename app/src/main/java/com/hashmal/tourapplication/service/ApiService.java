@@ -97,8 +97,8 @@ public interface ApiService {
 
     @PUT("user/sys-user-update")
     Call<BaseResponse> updateSysProfile(
-                    @Body UpdateProfileRequest request
-            );
+            @Body UpdateProfileRequest request
+    );
 
     @Multipart
     @POST("user/upload-avatar")
@@ -114,16 +114,16 @@ public interface ApiService {
     Call<UserManagementDTO> getUserManagement();
 
     @PUT("system/admin/user-management/update")
-    Call<BaseResponse> updateUserByAdmin(@Body UpdateUserByAdminRequest request) ;
+    Call<BaseResponse> updateUserByAdmin(@Body UpdateUserByAdminRequest request);
 
     @GET("system/admin/staff-management")
     Call<UserManagementDTO> getStaffManagement();
 
     @PUT("system/admin/staff-management/update")
-    Call<BaseResponse> updateStaffByAdmin(@Body UpdateUserByAdminRequest request) ;
+    Call<BaseResponse> updateStaffByAdmin(@Body UpdateUserByAdminRequest request);
 
     @POST("system/admin/create-sys-user")
-    Call<BaseResponse> createNewSysUser(@Body CreateSystemUserRequest request) ;
+    Call<BaseResponse> createNewSysUser(@Body CreateSystemUserRequest request);
 
     @POST("/api/v1/tours")
     Call<BaseResponse> createTour(@Body CreateTourRequest request);
@@ -151,11 +151,13 @@ public interface ApiService {
             @Query("tourId") String tourId,
             @Query("status") Integer status
     );
+
     @PUT("/api/v1/tours/package/modify-status")
     Call<BaseResponse> modifyPackageStatus(
-                    @Query("packageId") Long packageId,
-                    @Query("status") Integer status
-            );
+            @Query("packageId") Long packageId,
+            @Query("status") Integer status
+    );
+
     @GET("user/get-list-tour-guide")
     Call<List<SysUserDTO>> getTourGuide(@Query("status") Integer status);
 
@@ -164,4 +166,13 @@ public interface ApiService {
 
     @GET("/api/v1/tours/get-tour-guide-schedule")
     Call<List<TourGuideScheduleDTO>> getTourGuideSchedules(@Query("tourGuideId") String tourGuideId);
+
+    @GET("/api/v1/tours/get-schedule")
+    Call<TourScheduleResponseDTO> getTourSchedule(@Query("tourScheduleId") String tourScheduleId);
+
+    @PUT("/api/v1/tours/add-tour-guide")
+    Call<BaseResponse> modifyTourGuideForTour(@Query("tourScheduleId") String tourScheduleId, @Query("tourGuideId") String tourGuideId);
+
+    @GET("/api/v1/tours/get-available-tour-guide")
+    Call<List<SysUserDTO>> getAvailableTourGuide(@Query("startTime") String startTime, @Query("endTime") String endTime);
 }

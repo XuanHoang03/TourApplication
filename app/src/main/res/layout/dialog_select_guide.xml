@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn hướng dẫn viên"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/etSearchGuide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tìm kiếm theo tên hoặc số điện thoại"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:background="@drawable/bg_edittext_rounded"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGuides"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Không có hướng dẫn viên khả dụng"
+        android:gravity="center"
+        android:textColor="@color/status_cancelled"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"/>
+
+    <Button
+        android:id="@+id/btnCloseDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đóng"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/status_default"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"/>
+
+</LinearLayout> 
