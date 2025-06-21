@@ -36,9 +36,17 @@ import android.text.Editable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.hashmal.tourapplication.adapter.GuideSelectAdapter;
+import com.hashmal.tourapplication.adapter.UserBookingAdapter;
+import com.hashmal.tourapplication.service.dto.UserBookingDTO;
+import com.hashmal.tourapplication.adapter.TourScheduleListAdapter;
+import com.hashmal.tourapplication.service.dto.UserDTO;
 
-public class ScheduleDetailActivity extends AppCompatActivity {
+public class ScheduleDetailActivity extends AppCompatActivity implements UserBookingAdapter.OnBuyerActionListener {
     private TourScheduleResponseDTO currentSchedule; // Lưu lại lịch trình hiện tại
+    private ApiService apiService;
+    private String tourScheduleId, tourId;
+    private UserBookingAdapter buyerAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +70,11 @@ public class ScheduleDetailActivity extends AppCompatActivity {
         LinearLayout guideActionButtons = findViewById(R.id.guideActionButtons);
         Button btnRemoveGuide = findViewById(R.id.btnRemoveGuide);
         Button btnChangeGuide = findViewById(R.id.btnChangeGuide);
+        RecyclerView rvBuyers = findViewById(R.id.rvBuyers);
 
-        ApiService apiService = ApiClient.getApiService();
-        String tourScheduleId = getIntent().getStringExtra("tourScheduleId");
+        apiService = ApiClient.getApiService();
+        tourScheduleId = getIntent().getStringExtra("tourScheduleId");
+        tourId = getIntent().getStringExtra("tourId");
         if (tourScheduleId == null || tourScheduleId.isEmpty()) {
             finish();
             return;
@@ -166,6 +176,23 @@ public class ScheduleDetailActivity extends AppCompatActivity {
                             public void onFailure(Call<SysUserDTO> call, Throwable t) { }
                         });
                     }
+
+                    // Sau khi bind dữ liệu lịch trình, gọi API lấy danh sách người mua vé
+                    apiService.getUserBookingsByTourSchedule(tourScheduleId).enqueue(new Callback<List<UserBookingDTO>>() {
+                        @Override
+                        public void onResponse(Call<List<UserBookingDTO>> call, Response<List<UserBookingDTO>> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                buyerAdapter = new UserBookingAdapter(response.body(), ScheduleDetailActivity.this);
+                                buyerAdapter.setOnItemClickListener(booking -> showUserProfileDialog(booking.getUser()));
+                                rvBuyers.setLayoutManager(new LinearLayoutManager(ScheduleDetailActivity.this));
+                                rvBuyers.setAdapter(buyerAdapter);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<List<UserBookingDTO>> call, Throwable t) {
+                            // Có thể show lỗi nếu muốn
+                        }
+                    });
                 } else {
                     finish();
                 }
@@ -273,5 +300,161 @@ public class ScheduleDetailActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    @Override
+    public void onModifyBooking(UserBookingDTO booking) {
+        showLoading();
+        apiService.getTourSchedulesByTourId(tourId).enqueue(new Callback<List<TourScheduleResponseDTO>>() {
+            @Override
+            public void onResponse(Call<List<TourScheduleResponseDTO>> call, Response<List<TourScheduleResponseDTO>> response) {
+                hideLoading();
+                if (response.isSuccessful() && response.body() != null) {
+                    List<TourScheduleResponseDTO> schedules = response.body();
+                    // Loại bỏ lịch trình hiện tại
+                    String currentScheduleId = booking.getBooking().getTourScheduleId();
+                    List<TourScheduleResponseDTO> filtered = new java.util.ArrayList<>();
+                    for (TourScheduleResponseDTO s : schedules) {
+                        if (!s.getTourScheduleId().equals(currentScheduleId)) filtered.add(s);
+                    }
+                    if (filtered.isEmpty()) {
+                        Toast.makeText(ScheduleDetailActivity.this, "Không có lịch trình khác để chuyển", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // Hiển thị dialog chọn lịch trình
+                    View dialogView = LayoutInflater.from(ScheduleDetailActivity.this).inflate(R.layout.dialog_select_schedule, null, false);
+                    RecyclerView rvSchedules = dialogView.findViewById(R.id.rvSchedules);
+                    Button btnClose = dialogView.findViewById(R.id.btnCloseDialog);
+                    AlertDialog dialog = new AlertDialog.Builder(ScheduleDetailActivity.this)
+                        .setView(dialogView)
+                        .create();
+                    TourScheduleListAdapter adapter = new TourScheduleListAdapter(filtered, schedule -> {
+                        dialog.dismiss();
+                        showLoading();
+                        apiService.modifyBooking(booking.getBooking().getBookingId(), schedule.getTourScheduleId(), null)
+                            .enqueue(new Callback<BaseResponse>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                    hideLoading();
+                                    if (response.isSuccessful() && response.body() != null ) {
+                                        BaseResponse res = response.body();
+                                        if (res.getCode().equals(Code.SUCCESS.getCode())) {
+                                            reloadBuyers();
+                                        } else {
+                                            Toast.makeText(ScheduleDetailActivity.this, "Chuyển lịch trình thất bại", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(ScheduleDetailActivity.this, "Chuyển lịch trình thất bại", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                    hideLoading();
+                                    Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    });
+                    rvSchedules.setLayoutManager(new LinearLayoutManager(ScheduleDetailActivity.this));
+                    rvSchedules.setAdapter(adapter);
+                    btnClose.setOnClickListener(v -> dialog.dismiss());
+                    dialog.show();
+                } else {
+                    Toast.makeText(ScheduleDetailActivity.this, "Không lấy được danh sách lịch trình", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<TourScheduleResponseDTO>> call, Throwable t) {
+                hideLoading();
+                Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onCancelBooking(UserBookingDTO booking) {
+        new AlertDialog.Builder(this)
+            .setTitle("Xác nhận hủy vé")
+            .setMessage("Bạn có chắc chắn muốn hủy vé của " + (booking.getUser().getProfile() != null ? booking.getUser().getProfile().getFullName() : "người dùng") + "?")
+            .setPositiveButton("Xác nhận", (dialog, which) -> {
+                showLoading();
+                apiService.modifyBooking(booking.getBooking().getBookingId(), null, "cancel")
+                    .enqueue(new retrofit2.Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<BaseResponse> call, retrofit2.Response<BaseResponse> response) {
+                            hideLoading();
+                            if (response.isSuccessful() && response.body() != null) {
+                                Toast.makeText(ScheduleDetailActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                reloadBuyers();
+                            } else {
+                                Toast.makeText(ScheduleDetailActivity.this, "Thao tác thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(retrofit2.Call<BaseResponse> call, Throwable t) {
+                            hideLoading();
+                            Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            })
+            .setNegativeButton("Hủy", null)
+            .show();
+    }
+
+    private void reloadBuyers() {
+        apiService.getUserBookingsByTourSchedule(tourScheduleId).enqueue(new retrofit2.Callback<List<UserBookingDTO>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<UserBookingDTO>> call, retrofit2.Response<List<UserBookingDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    buyerAdapter.updateData(response.body());
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<List<UserBookingDTO>> call, Throwable t) {
+                // Không reload được
+            }
+        });
+    }
+
+    private void showLoading() {
+        // Hiện loading, ví dụ: progressBar.setVisibility(View.VISIBLE);
+    }
+    private void hideLoading() {
+        // Ẩn loading, ví dụ: progressBar.setVisibility(View.GONE);
+    }
+
+    private void showUserProfileDialog(UserDTO user) {
+        if (user == null || user.getProfile() == null) {
+            Toast.makeText(this, "Không có thông tin người dùng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_user_profile, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        ImageView imgAvatar = dialogView.findViewById(R.id.imgAvatar);
+        TextView tvName = dialogView.findViewById(R.id.tvName);
+        TextView tvEmail = dialogView.findViewById(R.id.tvEmail);
+        TextView tvPhone = dialogView.findViewById(R.id.tvPhone);
+        TextView tvAddress = dialogView.findViewById(R.id.tvAddress);
+        Button btnClose = dialogView.findViewById(R.id.btnClose);
+
+        // Load avatar
+        Glide.with(this)
+                .load(user.getProfile().getAvatarUrl())
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .circleCrop()
+                .into(imgAvatar);
+
+        // Set info
+        tvName.setText(user.getProfile().getFullName());
+        tvEmail.setText(user.getProfile().getEmail());
+        tvPhone.setText(user.getProfile().getPhoneNumber());
+        tvAddress.setText(user.getProfile().getAddress());
+
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 }

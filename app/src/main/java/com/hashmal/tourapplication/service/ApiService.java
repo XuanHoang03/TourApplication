@@ -18,6 +18,8 @@ import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
 import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
+import com.hashmal.tourapplication.service.dto.UserBookingDTO;
+import com.hashmal.tourapplication.service.dto.UserDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -175,4 +177,13 @@ public interface ApiService {
 
     @GET("/api/v1/tours/get-available-tour-guide")
     Call<List<SysUserDTO>> getAvailableTourGuide(@Query("startTime") String startTime, @Query("endTime") String endTime);
+
+    @GET("/api/v1/tours/get-schedule-bookings")
+    Call<List<UserBookingDTO>> getUserBookingsByTourSchedule(@Query("tourScheduleId") String tourScheduleId);
+
+    @PUT("/api/v1/tours/schedule/modify-booking")
+    Call<BaseResponse> modifyBooking(@Query("bookingId") Long bookingId, @Query("scheduleId") String scheduleId, @Query("action") String action);
+
+    @GET("/data/user")
+    Call<UserDTO> getFullUserInformation(@Query("phoneNumber") String phoneNumber);
 }
