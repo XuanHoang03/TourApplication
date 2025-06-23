@@ -11,6 +11,8 @@ public class DisplayBookingDTO {
     private Long totalPrice;
     private Integer paymentStatus;
     private String bookingTime;
+    private String startTime;
+    private String endTime;
 
     public DisplayBookingDTO() {
     }
