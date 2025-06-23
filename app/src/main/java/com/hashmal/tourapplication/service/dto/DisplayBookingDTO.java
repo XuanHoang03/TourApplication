@@ -17,7 +17,7 @@ public class DisplayBookingDTO {
     public DisplayBookingDTO() {
     }
 
-    public DisplayBookingDTO(Long bookingId, String tourScheduleId, Long tourPackageId, String bookingName, Integer quantity, Long totalPrice, Integer paymentStatus, String bookingDate) {
+    public DisplayBookingDTO(Long bookingId, String tourScheduleId, Long tourPackageId, String bookingName, Integer quantity, Long totalPrice, Integer paymentStatus, String bookingDate, String startTime, String endTime) {
         this.bookingId = bookingId;
         this.tourScheduleId = tourScheduleId;
         this.tourPackageId = tourPackageId;
