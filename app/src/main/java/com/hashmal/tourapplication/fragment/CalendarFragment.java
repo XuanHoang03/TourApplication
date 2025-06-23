@@ -125,9 +125,9 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
                         List<CalendarDay> calendarDays = new ArrayList<>();
                         
                         for (DisplayBookingDTO booking : bookingHistory) {
-                            if (booking.getBookingDate() != null) {
+                            if (booking.getStartTime() != null) {
                                 try {
-                                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
+                                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getStartTime());
                                     if (bookingDate != null) {
                                         datesWithTours.add(bookingDate);
                                         calendarDays.add(CalendarDay.from(bookingDate));
@@ -181,9 +181,9 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
 
         // Filter bookings that start on the selected date
         for (DisplayBookingDTO booking : allBookings) {
-            if (booking.getBookingDate() != null) {
+            if (booking.getStartTime() != null) {
                 try {
-                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getBookingDate());
+                    Date bookingDate = DataUtils.convertStringToDateV1(booking.getStartTime());
                     if (bookingDate != null && bookingDate.after(startOfDay) && bookingDate.before(endOfDay)) {
                         filteredBookings.add(booking);
                     }

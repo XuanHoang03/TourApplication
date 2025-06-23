@@ -186,4 +186,15 @@ public interface ApiService {
 
     @GET("/data/user")
     Call<UserDTO> getFullUserInformation(@Query("phoneNumber") String phoneNumber);
+
+    @GET("/api/v1/tours/get-scheduled-tour")
+    Call<List<TourScheduleResponseDTO>> getScheduledTours(
+            @Query("tourScheduleId") String tourScheduleId,
+            @Query("tourId") String tourId,
+            @Query("status") String status,
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
+            @Query("tourGuideId") String tourGuideId,
+            @Query("isAvailable") Boolean isAvailable
+    );
 }

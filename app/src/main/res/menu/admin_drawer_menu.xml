@@ -29,6 +29,10 @@
             android:id="@+id/nav_bookings"
             android:icon="@drawable/ic_booking"
             android:title="Booking Management" />
+        <item
+            android:id="@+id/nav_work_calendar"
+            android:icon="@drawable/ic_booking"
+            android:title="Work Management" />
 
     </group>
 

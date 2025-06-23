@@ -1,5 +1,7 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -9,6 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.RoleEnum;
+import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +51,8 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
     private String tourScheduleId, tourId;
     private UserBookingAdapter buyerAdapter;
 
+    private LocalDataService localDataService;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,11 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
         if (tourScheduleId == null || tourScheduleId.isEmpty()) {
             finish();
             return;
+        }
+
+        if (localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.TOUR_GUIDE.name())) {
+            btnRemoveGuide.setVisibility(GONE);
+            btnChangeGuide.setVisibility(GONE);
         }
         apiService.getTourSchedule(tourScheduleId).enqueue(new Callback<TourScheduleResponseDTO>() {
             @Override
@@ -123,9 +134,9 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                     if (tourGuideId == null || tourGuideId.isEmpty()) {
                         fabAddGuide.setVisibility(View.VISIBLE);
                         fabAddGuide.setOnClickListener( v -> addTourGuide());
-                        guideActionButtons.setVisibility(View.GONE);
+                        guideActionButtons.setVisibility(GONE);
                     } else {
-                        fabAddGuide.setVisibility(View.GONE);
+                        fabAddGuide.setVisibility(GONE);
                         guideActionButtons.setVisibility(View.VISIBLE);
                         btnChangeGuide.setOnClickListener(v -> addTourGuide());
                         apiService.getStaffInfo(tourGuideId).enqueue(new Callback<SysUserDTO>() {
@@ -167,8 +178,8 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                         tvStatus.setText("Chưa cập nhật");
                                     }
                                     // Ẩn nút edit/delete
-                                    staffCard.findViewById(R.id.btnEdit).setVisibility(View.GONE);
-                                    staffCard.findViewById(R.id.btnDelete).setVisibility(View.GONE);
+                                    staffCard.findViewById(R.id.btnEdit).setVisibility(GONE);
+                                    staffCard.findViewById(R.id.btnDelete).setVisibility(GONE);
                                     staffCardContainer.addView(staffCard);
                                 }
                             }
@@ -253,12 +264,12 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                         }
                                     }
                                     adapter.updateData(filtered);
-                                    tvEmpty.setVisibility(filtered.isEmpty() ? View.VISIBLE : View.GONE);
+                                    tvEmpty.setVisibility(filtered.isEmpty() ? View.VISIBLE : GONE);
                                 }
                                 @Override
                                 public void afterTextChanged(Editable s) {}
                             });
-                            tvEmpty.setVisibility(guides.isEmpty() ? View.VISIBLE : View.GONE);
+                            tvEmpty.setVisibility(guides.isEmpty() ? View.VISIBLE : GONE);
                             dialog[0] = new AlertDialog.Builder(ScheduleDetailActivity.this)
                                 .setView(dialogView)
                                 .create();

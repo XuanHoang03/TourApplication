@@ -102,12 +102,15 @@ public class DataUtils {
 
     public static Date convertStringToDateV1(String localDateTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         try {
-            Date date = inputFormat.parse(localDateTime);
-            return date;
-        } catch (Exception e) {
-            return new Date();
+            return inputFormat.parse(localDateTime);
+        } catch (ParseException ex) {
+            try {
+                return inputFormat1.parse(localDateTime);
+            } catch (ParseException exception) {
+                return new Date();
+            }
         }
 
     }
