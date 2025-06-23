@@ -99,6 +99,8 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             btnEdit.setVisibility(GONE);
             btnDeletePackage.setVisibility(GONE);
             btnAddPackage.setVisibility(GONE);
+        }
+        if (localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.TOUR_OPERATOR.name())) {
             btnViewBooking.setVisibility(VISIBLE);
         }
     }

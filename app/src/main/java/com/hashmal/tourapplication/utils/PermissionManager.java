@@ -44,6 +44,14 @@ public class PermissionManager {
         staffPermissions.add("edit_profile");
         staffPermissions.add("view_tour_guide");
         rolePermissions.put(RoleEnum.TOUR_OPERATOR, staffPermissions);
+
+
+        Set<String> tourGuidePermission = new HashSet<>();
+
+        tourGuidePermission.add("edit_profile");
+        tourGuidePermission.add("view_profile");
+        tourGuidePermission.add("manage_tours");
+        rolePermissions.put(RoleEnum.TOUR_GUIDE, tourGuidePermission);
     }
 
     public void setCurrentUserRole(RoleEnum role) {

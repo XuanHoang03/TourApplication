@@ -24,6 +24,28 @@ public class DisplayBookingDTO {
         this.totalPrice = totalPrice;
         this.paymentStatus = paymentStatus;
         this.bookingTime = bookingDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public void setBookingTime(String bookingTime) {
+        this.bookingTime = bookingTime;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getBookingDate() {
