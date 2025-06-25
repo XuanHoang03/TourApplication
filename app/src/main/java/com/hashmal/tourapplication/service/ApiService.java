@@ -197,4 +197,13 @@ public interface ApiService {
             @Query("tourGuideId") String tourGuideId,
             @Query("isAvailable") Boolean isAvailable
     );
+
+    @GET("/api/v1/tours/get-current-or-next-tour")
+    Call<BaseResponse> getCurrentOrNextTour(@Query("userId") String userId);
+
+    @PUT("/api/v1/tours/schedule/modify-status")
+    Call<BaseResponse> modifyStatusSchedule(
+        @Query("scheduleId") String scheduleId,
+        @Query("status") Integer status
+    );
 }

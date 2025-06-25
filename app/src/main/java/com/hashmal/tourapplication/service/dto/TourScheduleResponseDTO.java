@@ -9,9 +9,9 @@ public class TourScheduleResponseDTO {
     private String endTime;
     private Integer numberOfTicket;
     private String tourGuideId;
-    private String status;
+    private Integer status;
 
-    public TourScheduleResponseDTO(String tourScheduleId, String tourId, String startTime, String endTime, Integer numberOfTicket, String tourGuideId, String status) {
+    public TourScheduleResponseDTO(String tourScheduleId, String tourId, String startTime, String endTime, Integer numberOfTicket, String tourGuideId, Integer status) {
         this.tourScheduleId = tourScheduleId;
         this.tourId = tourId;
         this.startTime = startTime;
@@ -24,11 +24,11 @@ public class TourScheduleResponseDTO {
     public TourScheduleResponseDTO() {
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

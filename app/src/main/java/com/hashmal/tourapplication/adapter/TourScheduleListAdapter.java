@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.ScheduleDetailActivity;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -136,7 +137,7 @@ public class TourScheduleListAdapter extends RecyclerView.Adapter<TourScheduleLi
 //                    bgColor = ContextCompat.getColor(context, R.color.status_default);
 //                    break;
 //            }
-            tvStatus.setText(schedule.getStatus());
+            tvStatus.setText(DataUtils.getStringValueFromStatusValue(schedule.getStatus()));
 //            tvStatus.setBackgroundTintList(ContextCompat.getColorStateList(context, bgColor));
         }
     }

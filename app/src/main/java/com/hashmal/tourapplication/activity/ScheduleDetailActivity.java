@@ -1,49 +1,65 @@
 package com.hashmal.tourapplication.activity;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.network.ApiClient;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import android.widget.LinearLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import android.widget.Button;
 import android.app.AlertDialog;
 import android.text.InputType;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.hashmal.tourapplication.service.dto.BaseResponse;
+
 import java.util.List;
+
 import android.text.TextWatcher;
 import android.text.Editable;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.hashmal.tourapplication.adapter.GuideSelectAdapter;
 import com.hashmal.tourapplication.adapter.UserBookingAdapter;
 import com.hashmal.tourapplication.service.dto.UserBookingDTO;
 import com.hashmal.tourapplication.adapter.TourScheduleListAdapter;
 import com.hashmal.tourapplication.service.dto.UserDTO;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 public class ScheduleDetailActivity extends AppCompatActivity implements UserBookingAdapter.OnBuyerActionListener {
     private TourScheduleResponseDTO currentSchedule; // Lưu lại lịch trình hiện tại
@@ -76,9 +92,11 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
         LinearLayout guideActionButtons = findViewById(R.id.guideActionButtons);
         Button btnRemoveGuide = findViewById(R.id.btnRemoveGuide);
         Button btnChangeGuide = findViewById(R.id.btnChangeGuide);
+        Button btnChangeStatus = findViewById(R.id.btnChangeStatus);
         RecyclerView rvBuyers = findViewById(R.id.rvBuyers);
 
         apiService = ApiClient.getApiService();
+        localDataService = LocalDataService.getInstance(this);
         tourScheduleId = getIntent().getStringExtra("tourScheduleId");
         tourId = getIntent().getStringExtra("tourId");
         if (tourScheduleId == null || tourScheduleId.isEmpty()) {
@@ -86,10 +104,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
             return;
         }
 
-        if (localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.TOUR_GUIDE.name())) {
-            btnRemoveGuide.setVisibility(GONE);
-            btnChangeGuide.setVisibility(GONE);
-        }
+
         apiService.getTourSchedule(tourScheduleId).enqueue(new Callback<TourScheduleResponseDTO>() {
             @Override
             public void onResponse(Call<TourScheduleResponseDTO> call, Response<TourScheduleResponseDTO> response) {
@@ -126,18 +141,33 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                         tvDateRange.setText("");
                     }
                     tvTicketCount.setText("Còn " + (schedule.getNumberOfTicket() != null ? schedule.getNumberOfTicket() : "?") + " vé");
-                    tvStatus.setText(schedule.getStatus() != null ? schedule.getStatus().toString() : "Không xác định");
+                    tvStatus.setText(schedule.getStatus() != null ? DataUtils.getStringValueFromStatusValue(schedule.getStatus()) : "Không xác định");
 
                     // Staff logic
                     staffCardContainer.removeAllViews();
+                    if (schedule.getStatus() == -1) {
+                        btnChangeStatus.setBackgroundTintList(getColorStateList(R.color.status_cancelled));
+                    } else if (schedule.getStatus() == 0) {
+                        btnChangeStatus.setBackgroundTintList(getColorStateList(R.color.status_pending));
+                    } else if (schedule.getStatus() == 1) {
+                        btnChangeStatus.setBackgroundTintList(getColorStateList(R.color.status_completed));
+                    } else {
+                        btnChangeStatus.setBackgroundTintList(getColorStateList(R.color.status_confirmed));
+                    }
                     String tourGuideId = schedule.getTourGuideId();
                     if (tourGuideId == null || tourGuideId.isEmpty()) {
-                        fabAddGuide.setVisibility(View.VISIBLE);
-                        fabAddGuide.setOnClickListener( v -> addTourGuide());
+                        fabAddGuide.setVisibility(VISIBLE);
+                        fabAddGuide.setOnClickListener(v -> addTourGuide());
                         guideActionButtons.setVisibility(GONE);
                     } else {
                         fabAddGuide.setVisibility(GONE);
-                        guideActionButtons.setVisibility(View.VISIBLE);
+                        guideActionButtons.setVisibility(VISIBLE);
+                        if (localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.TOUR_GUIDE.name())) {
+                            guideActionButtons.setVisibility(GONE);
+                            btnChangeStatus.setVisibility(VISIBLE);
+                            btnChangeStatus.setText(DataUtils.convertStatusFromInt(schedule.getStatus()));
+                            btnChangeStatus.setOnClickListener(v -> changeStatusClick());
+                        }
                         btnChangeGuide.setOnClickListener(v -> addTourGuide());
                         apiService.getStaffInfo(tourGuideId).enqueue(new Callback<SysUserDTO>() {
                             @Override
@@ -183,8 +213,10 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                     staffCardContainer.addView(staffCard);
                                 }
                             }
+
                             @Override
-                            public void onFailure(Call<SysUserDTO> call, Throwable t) { }
+                            public void onFailure(Call<SysUserDTO> call, Throwable t) {
+                            }
                         });
                     }
 
@@ -199,6 +231,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                 rvBuyers.setAdapter(buyerAdapter);
                             }
                         }
+
                         @Override
                         public void onFailure(Call<List<UserBookingDTO>> call, Throwable t) {
                             // Có thể show lỗi nếu muốn
@@ -239,6 +272,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                                 Toast.makeText(ScheduleDetailActivity.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
                                             }
                                         }
+
                                         @Override
                                         public void onFailure(Call<BaseResponse> call, Throwable t) {
                                             Toast.makeText(ScheduleDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -251,7 +285,9 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                             // Filter
                             etSearch.addTextChangedListener(new TextWatcher() {
                                 @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                }
+
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                                     String query = s.toString().toLowerCase();
@@ -264,15 +300,17 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                         }
                                     }
                                     adapter.updateData(filtered);
-                                    tvEmpty.setVisibility(filtered.isEmpty() ? View.VISIBLE : GONE);
+                                    tvEmpty.setVisibility(filtered.isEmpty() ? VISIBLE : GONE);
                                 }
+
                                 @Override
-                                public void afterTextChanged(Editable s) {}
+                                public void afterTextChanged(Editable s) {
+                                }
                             });
-                            tvEmpty.setVisibility(guides.isEmpty() ? View.VISIBLE : GONE);
+                            tvEmpty.setVisibility(guides.isEmpty() ? VISIBLE : GONE);
                             dialog[0] = new AlertDialog.Builder(ScheduleDetailActivity.this)
-                                .setView(dialogView)
-                                .create();
+                                    .setView(dialogView)
+                                    .create();
                             btnClose.setOnClickListener(v -> {
                                 if (dialog[0] != null) dialog[0].dismiss();
                             });
@@ -281,6 +319,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                             Toast.makeText(ScheduleDetailActivity.this, "Không có hướng dẫn viên khả dụng", Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<List<SysUserDTO>> call, Throwable t) {
                         Toast.makeText(ScheduleDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -305,12 +344,17 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                         Toast.makeText(ScheduleDetailActivity.this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
                     Toast.makeText(ScheduleDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
+    }
+
+    private void changeStatusClick() {
+
     }
 
     @Override
@@ -337,33 +381,34 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                     RecyclerView rvSchedules = dialogView.findViewById(R.id.rvSchedules);
                     Button btnClose = dialogView.findViewById(R.id.btnCloseDialog);
                     AlertDialog dialog = new AlertDialog.Builder(ScheduleDetailActivity.this)
-                        .setView(dialogView)
-                        .create();
+                            .setView(dialogView)
+                            .create();
                     TourScheduleListAdapter adapter = new TourScheduleListAdapter(filtered, schedule -> {
                         dialog.dismiss();
                         showLoading();
                         apiService.modifyBooking(booking.getBooking().getBookingId(), schedule.getTourScheduleId(), null)
-                            .enqueue(new Callback<BaseResponse>() {
-                                @Override
-                                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                                    hideLoading();
-                                    if (response.isSuccessful() && response.body() != null ) {
-                                        BaseResponse res = response.body();
-                                        if (res.getCode().equals(Code.SUCCESS.getCode())) {
-                                            reloadBuyers();
+                                .enqueue(new Callback<BaseResponse>() {
+                                    @Override
+                                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                        hideLoading();
+                                        if (response.isSuccessful() && response.body() != null) {
+                                            BaseResponse res = response.body();
+                                            if (res.getCode().equals(Code.SUCCESS.getCode())) {
+                                                reloadBuyers();
+                                            } else {
+                                                Toast.makeText(ScheduleDetailActivity.this, "Chuyển lịch trình thất bại", Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
                                             Toast.makeText(ScheduleDetailActivity.this, "Chuyển lịch trình thất bại", Toast.LENGTH_SHORT).show();
                                         }
-                                    } else {
-                                        Toast.makeText(ScheduleDetailActivity.this, "Chuyển lịch trình thất bại", Toast.LENGTH_SHORT).show();
                                     }
-                                }
-                                @Override
-                                public void onFailure(Call<BaseResponse> call, Throwable t) {
-                                    hideLoading();
-                                    Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+
+                                    @Override
+                                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                        hideLoading();
+                                        Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     });
                     rvSchedules.setLayoutManager(new LinearLayoutManager(ScheduleDetailActivity.this));
                     rvSchedules.setAdapter(adapter);
@@ -373,6 +418,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                     Toast.makeText(ScheduleDetailActivity.this, "Không lấy được danh sách lịch trình", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<List<TourScheduleResponseDTO>> call, Throwable t) {
                 hideLoading();
@@ -384,31 +430,32 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
     @Override
     public void onCancelBooking(UserBookingDTO booking) {
         new AlertDialog.Builder(this)
-            .setTitle("Xác nhận hủy vé")
-            .setMessage("Bạn có chắc chắn muốn hủy vé của " + (booking.getUser().getProfile() != null ? booking.getUser().getProfile().getFullName() : "người dùng") + "?")
-            .setPositiveButton("Xác nhận", (dialog, which) -> {
-                showLoading();
-                apiService.modifyBooking(booking.getBooking().getBookingId(), null, "cancel")
-                    .enqueue(new retrofit2.Callback<BaseResponse>() {
-                        @Override
-                        public void onResponse(retrofit2.Call<BaseResponse> call, retrofit2.Response<BaseResponse> response) {
-                            hideLoading();
-                            if (response.isSuccessful() && response.body() != null) {
-                                Toast.makeText(ScheduleDetailActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                reloadBuyers();
-                            } else {
-                                Toast.makeText(ScheduleDetailActivity.this, "Thao tác thất bại", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        @Override
-                        public void onFailure(retrofit2.Call<BaseResponse> call, Throwable t) {
-                            hideLoading();
-                            Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            })
-            .setNegativeButton("Hủy", null)
-            .show();
+                .setTitle("Xác nhận hủy vé")
+                .setMessage("Bạn có chắc chắn muốn hủy vé của " + (booking.getUser().getProfile() != null ? booking.getUser().getProfile().getFullName() : "người dùng") + "?")
+                .setPositiveButton("Xác nhận", (dialog, which) -> {
+                    showLoading();
+                    apiService.modifyBooking(booking.getBooking().getBookingId(), null, "cancel")
+                            .enqueue(new retrofit2.Callback<BaseResponse>() {
+                                @Override
+                                public void onResponse(retrofit2.Call<BaseResponse> call, retrofit2.Response<BaseResponse> response) {
+                                    hideLoading();
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        Toast.makeText(ScheduleDetailActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                        reloadBuyers();
+                                    } else {
+                                        Toast.makeText(ScheduleDetailActivity.this, "Thao tác thất bại", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(retrofit2.Call<BaseResponse> call, Throwable t) {
+                                    hideLoading();
+                                    Toast.makeText(ScheduleDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void reloadBuyers() {
@@ -419,6 +466,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                     buyerAdapter.updateData(response.body());
                 }
             }
+
             @Override
             public void onFailure(retrofit2.Call<List<UserBookingDTO>> call, Throwable t) {
                 // Không reload được
@@ -429,6 +477,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
     private void showLoading() {
         // Hiện loading, ví dụ: progressBar.setVisibility(View.VISIBLE);
     }
+
     private void hideLoading() {
         // Ẩn loading, ví dụ: progressBar.setVisibility(View.GONE);
     }

@@ -57,16 +57,16 @@ public class TourGuideScheduleAdapter extends RecyclerView.Adapter<TourGuideSche
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             tvStartTime.setText("Bắt đầu: " + (schedule.getStartTime() != null ? DataUtils.formatDateTimeString(schedule.getStartTime(), true) : ""));
             tvEndTime.setText("Kết thúc: " + (schedule.getEndTime() != null ? DataUtils.formatDateTimeString(schedule.getEndTime(), true) : ""));
-            tvStatus.setText("Trạng thái: " + (schedule.getStatus() != null ? schedule.getStatus() : ""));
+            tvStatus.setText("Trạng thái: " + (schedule.getStatus() != null ? DataUtils.getStringValueFromStatusValue( schedule.getStatus() ): ""));
             tvTicketCount.setText("Số vé: " + (schedule.getNumber_of_ticket() != null ? schedule.getNumber_of_ticket() : ""));
 
-            if (schedule.getStatus().equals(StatusEnum.Pending.name()) || schedule.getStatus().equals("0")) {
+            if (schedule.getStatus().equals(0)) {
                 tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_orange_dark));
-            } else if (schedule.getStatus().equals(StatusEnum.Completed.name()) || schedule.getStatus().equals("1")) {
+            } else if (schedule.getStatus().equals(1)) {
                 tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_green_dark));
-            } else if (schedule.getStatus().equals(StatusEnum.Cancelled.name()) || schedule.getStatus().equals("-1")) {
+            } else if (schedule.getStatus().equals(-1)) {
                 tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_red_dark));
-            } else if (schedule.getStatus().equals(StatusEnum.Progress.name()) || schedule.getStatus().equals("11")) {
+            } else if (schedule.getStatus().equals(11)) {
                 tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_blue_dark));
             }
 

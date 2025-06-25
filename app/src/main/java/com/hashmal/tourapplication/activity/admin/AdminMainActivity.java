@@ -20,6 +20,7 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.CustomerTicketsFragment;
+import com.hashmal.tourapplication.fragment.GuideCurrentTourFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminDashboardFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminStaffFragment;
 import com.hashmal.tourapplication.fragment.admin.AdminToursFragment;
@@ -158,6 +159,9 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         } else if (itemId == R.id.nav_work_calendar && permissionManager.canManageWorkCalendar()) {
             toolbar.setTitle("Work");
             fragment = new CustomerTicketsFragment();
+        } else if (itemId == R.id.nav_current_work && permissionManager.canManageWorkCalendar()) {
+            toolbar.setTitle("Current Tour");
+            fragment = new GuideCurrentTourFragment();
         } else if (itemId == R.id.nav_tour_guide && permissionManager.canViewTourGuide()) {
             toolbar.setTitle("View tour guide");
             fragment = new TourGuideViewActivity();

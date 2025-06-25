@@ -160,6 +160,8 @@ public class DataUtils {
                 return StatusEnum.Pending.name();
             case -1:
                 return StatusEnum.Cancelled.name();
+            case 11:
+                return StatusEnum.Progress.name();
         }
         return "";
     }
@@ -259,5 +261,18 @@ public class DataUtils {
         String dayOfWeek = getDayOfWeek(dateTime);
         String dayMonth = dateTime.getDayOfMonth() + " thg " + dateTime.getMonthValue();
         return dayOfWeek + "\n" + dayMonth;
+    }
+
+    public static String getStringValueFromStatusValue(Integer status) {
+        switch (status) {
+            case 1:
+                return "Đã kết thúc";
+            case 0:
+                return "Chưa khởi hành";
+            case -1:
+                return "Đã bị hủy";
+            default:
+                return "Đã khởi hành";
+        }
     }
 }

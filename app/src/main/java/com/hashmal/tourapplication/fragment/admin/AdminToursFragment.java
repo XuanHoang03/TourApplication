@@ -93,6 +93,7 @@ public class AdminToursFragment extends Fragment {
         toursAdapter.setOnTourActionListener(tour -> {
             Intent intent = new Intent(requireContext(), com.hashmal.tourapplication.activity.AdminTourDetailActivity.class);
             intent.putExtra("tour", new com.google.gson.Gson().toJson(tour));
+            intent.putExtra("tourId", tour.getTourId());
             startActivityForResult(intent, DETAIL_TOUR_REQUEST);
         });
         apiService = ApiClient.getApiService();

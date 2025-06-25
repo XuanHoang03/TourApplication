@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,11 +24,13 @@ import androidx.cardview.widget.CardView;
 
 import android.view.Gravity;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.adapter.TourPackageAdapter;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.enums.IntentResult;
 import com.hashmal.tourapplication.enums.RoleEnum;
@@ -39,6 +42,7 @@ import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
+import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.util.List;
@@ -51,11 +55,20 @@ import retrofit2.Response;
 
 public class AdminTourDetailActivity extends AppCompatActivity {
     private TourResponseDTO tour;
-    private PackageAdapter packageAdapter; // Thêm field để quản lý adapter
+    private PackageAdapter packageAdapter;
+    private TourPackageDTO selectedPackage;
+    TourResponseDTO currentTourInfo;
+    private TourScheduleResponseDTO selectedSchedule;
+    private List<TourPackageDTO> packages = new ArrayList<>();
+    private List<TourScheduleResponseDTO> schedules = new ArrayList<>();
     private LocalDataService localDataService;
     private String tourJson;
     private ApiService apiService;
     private BaseResponse localResponse;
+
+    private RecyclerView rv;
+    private String tourId;
+    Button btnDeletePackage, btnViewBooking;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,28 +84,24 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             finish();
         });
 
-        tourJson = getIntent().getStringExtra("tour");
+        tourId = getIntent().getStringExtra("tourId");
+        loadTourInfo(tourId);
+
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminEditTourActivity.class);
+            tourJson = new Gson().toJson(tour);
             intent.putExtra("tour", tourJson);
-            startActivityForResult(intent,IntentResult.REQUEST_TOUR_EDIT.getValue());
+            startActivityForResult(intent, IntentResult.REQUEST_TOUR_EDIT.getValue());
         });
-
-        tour = new Gson().fromJson(tourJson, TourResponseDTO.class);
-        updateTourDetailUI(tour);
+//        updateTourDetailUI(tour);
 
         Button btnAddPackage = findViewById(R.id.btnAddPackage);
         btnAddPackage.setOnClickListener(v -> showAddPackageDialog());
 
-        Button btnDeletePackage = findViewById(R.id.btnDeletePackage);
-        Button btnViewBooking = findViewById(R.id.btnViewBooking);
+        btnDeletePackage = findViewById(R.id.btnDeletePackage);
+        btnViewBooking = findViewById(R.id.btnViewBooking);
         btnViewBooking.setOnClickListener(v -> viewBookingClick());
 
-        if (tour.getStatus().equals(-1)) {
-            btnDeletePackage.setText("* Kích hoạt chương trình");
-            btnDeletePackage.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
-            btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(1));
-        } else btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(-1));
 
         localDataService = LocalDataService.getInstance(this);
         if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
@@ -142,6 +151,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                 .show();
     }
 
+
     private CompletableFuture<Boolean> asyncModifyTourStatus(Integer status) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         apiService.modifyTourStatus(tour.getTourId(), status).enqueue(new Callback<BaseResponse>() {
@@ -162,6 +172,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         });
         return future;
     }
+
 
     private void showAddPackageDialog() {
         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
@@ -228,15 +239,6 @@ public class AdminTourDetailActivity extends AppCompatActivity {
                                     tour.setPackages(new ArrayList<>());
                                 }
                                 tour.getPackages().add(newPackage);
-
-                                // Cập nhật adapter
-//                                if (packageAdapter != null) {
-//                                    packageAdapter.addPackage(newPackage);
-//                                }
-
-                                // Hoặc reload từ server để có dữ liệu chính xác
-                                // reloadTourDetail(tour.getTourId());
-
                             } else {
                                 android.widget.Toast.makeText(AdminTourDetailActivity.this, "Thêm gói thất bại",
                                         android.widget.Toast.LENGTH_SHORT).show();
@@ -255,29 +257,55 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void reloadTourDetail(String tourId) {
-        com.hashmal.tourapplication.network.ApiClient.getApiService().getAllTours()
-                .enqueue(new Callback<List<TourResponseDTO>>() {
-                    @Override
-                    public void onResponse(retrofit2.Call<List<TourResponseDTO>> call,
-                                           retrofit2.Response<List<TourResponseDTO>> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            for (TourResponseDTO t : response.body()) {
-                                if (t.getTourId().equals(tourId)) {
-                                    tour = t;
-                                    updateTourDetailUI(t);
-                                    break;
-                                }
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(retrofit2.Call<List<TourResponseDTO>> call, Throwable t) {
-                        android.widget.Toast.makeText(AdminTourDetailActivity.this, "Lỗi tải dữ liệu",
-                                android.widget.Toast.LENGTH_SHORT).show();
-                    }
-                });
+    public void loadTourInfo(String tourId) {
+        apiService.getTourInfo(tourId).enqueue(new Callback<TourResponseDTO>() {
+            @Override
+            public void onResponse(Call<TourResponseDTO> call, Response<TourResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    currentTourInfo = response.body();
+                    tour = currentTourInfo;
+                    updateTourDetailUI(currentTourInfo);
+                    packages = currentTourInfo.getPackages();
+                    setupPackagesRecyclerView(packages);
+                    if (tour.getStatus().equals(-1)) {
+                        btnDeletePackage.setText("* Kích hoạt chương trình");
+                        btnDeletePackage.setBackgroundTintList(ContextCompat.getColorStateList(AdminTourDetailActivity.this, R.color.blue));
+                        btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(1));
+                    } else btnDeletePackage.setOnClickListener(v -> showConfirmDeleteDialog(-1));
+                } else {
+                    currentTourInfo = null;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TourResponseDTO> call, Throwable t) {
+                Toast.makeText(AdminTourDetailActivity.this, "Error when calling api get tour info", Toast.LENGTH_SHORT).show();
+                currentTourInfo = null;
+            }
+        });
+    }
+
+    private void setupPackagesRecyclerView(List<TourPackageDTO> tourPackages) {
+        try {
+            if (tourPackages == null) {
+                tourPackages = new ArrayList<>();
+                Log.d("TourDetail", "Tour packages list is null, initializing empty list");
+            }
+
+            packageAdapter = new PackageAdapter(tourPackages);
+
+            if (rv != null) {
+                rv.setLayoutManager(new LinearLayoutManager(this));
+                rv.setAdapter(packageAdapter);
+                Log.d("TourDetail", "Successfully set up RecyclerView with " + tourPackages.size() + " packages");
+            } else {
+                Log.e("TourDetail", "RecyclerView is null");
+            }
+        } catch (Exception e) {
+            Log.e("TourDetail", "Error setting up packages RecyclerView: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void updateTourDetailUI(TourResponseDTO tour) {
@@ -313,7 +341,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
 
         // Hiển thị gói dịch vụ
         List<com.hashmal.tourapplication.service.dto.TourPackageDTO> packages = tour.getPackages();
-        RecyclerView rv = findViewById(R.id.rvPackages);
+        rv = findViewById(R.id.rvPackages);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
         if (packageAdapter == null) {
@@ -480,16 +508,13 @@ public class AdminTourDetailActivity extends AppCompatActivity {
             }
         }
         if (requestCode == IntentResult.REQUEST_PACKAGE_EDIT.getValue() && resultCode == RESULT_OK && data != null) {
-            String tourStr = data.getStringExtra("tour");
-            tourJson = tourStr;
-            TourResponseDTO tour = new Gson().fromJson(tourStr, TourResponseDTO.class);
-            updateTourDetailUI(tour);
+            loadTourInfo(tourId);
         }
     }
 
-    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Intent resultIntent = new Intent();
         resultIntent.putExtra("updated_tour", new Gson().toJson(tour));
         setResult(RESULT_OK, resultIntent);
