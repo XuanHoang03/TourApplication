@@ -12,11 +12,14 @@ import static androidx.appcompat.content.res.AppCompatResources.getColorStateLis
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.AdminTourDetailActivity;
+import com.hashmal.tourapplication.activity.LoginActivity;
+import com.hashmal.tourapplication.activity.StaffLoginActivity;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
@@ -30,12 +33,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GuideCurrentTourFragment extends Fragment {
-    private TextView tvScheduleId, tvTime, tvEmpty;
+    private TextView tvScheduleId, tvTime, tvEmpty, tvStatus;
     private CardView cardTour;
     private Button btnTourInfo, btnChangeStatus;
     private ApiService apiService;
     private LocalDataService localDataService;
     private String scheduleId;
+    private Integer statusValue;
 
     @Nullable
     @Override
@@ -45,6 +49,7 @@ public class GuideCurrentTourFragment extends Fragment {
         tvTime = view.findViewById(R.id.tvTime);
         tvEmpty = view.findViewById(R.id.tvEmpty);
         cardTour = view.findViewById(R.id.cardTour);
+        tvStatus = view.findViewById(R.id.tvStatus);
         btnTourInfo = view.findViewById(R.id.btnTourInfo);
         btnChangeStatus = view.findViewById(R.id.btnChangeStatus);
         apiService = ApiClient.getApiService();
@@ -65,25 +70,7 @@ public class GuideCurrentTourFragment extends Fragment {
                         scheduleId = res.getData().toString();
 
                         if (scheduleId != null) {
-                            // status=1: đang diễn ra, có thể điều chỉnh theo backend
-                            apiService.getTourSchedule(scheduleId)
-                                    .enqueue(new Callback<TourScheduleResponseDTO>() {
-                                        @Override
-                                        public void onResponse(Call<TourScheduleResponseDTO> call, Response<TourScheduleResponseDTO> response) {
-                                            if (response.isSuccessful() && response.body() != null) {
-                                                TourScheduleResponseDTO tour = response.body(); // Lấy tour đầu tiên (gần nhất)
-                                                bindTour(tour);
-                                            } else {
-                                                showEmpty();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<TourScheduleResponseDTO> call, Throwable t) {
-                                            Toast.makeText(getContext(), "Lỗi tải tour: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                            showEmpty();
-                                        }
-                                    });
+                            getScheduleData();
                         }
                     } else {
                         scheduleId = null;
@@ -105,6 +92,28 @@ public class GuideCurrentTourFragment extends Fragment {
 
     }
 
+    private void getScheduleData() {
+        // status=1: đang diễn ra, có thể điều chỉnh theo backend
+        apiService.getTourSchedule(scheduleId)
+                .enqueue(new Callback<TourScheduleResponseDTO>() {
+                    @Override
+                    public void onResponse(Call<TourScheduleResponseDTO> call, Response<TourScheduleResponseDTO> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            TourScheduleResponseDTO tour = response.body(); // Lấy tour đầu tiên (gần nhất)
+                            bindTour(tour);
+                        } else {
+                            showEmpty();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TourScheduleResponseDTO> call, Throwable t) {
+                        Toast.makeText(getContext(), "Lỗi tải tour: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        showEmpty();
+                    }
+                });
+    }
+
     private void bindTour(TourScheduleResponseDTO tour) {
         cardTour.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
@@ -121,29 +130,80 @@ public class GuideCurrentTourFragment extends Fragment {
             startActivity(intent);
         });
         setUpStatusBtn(tour.getStatus());
-        btnChangeStatus.setOnClickListener(v -> {
-            // TODO: Hiện dialog xác nhận và gọi API chuyển trạng thái tour
-            Toast.makeText(requireContext(), "Chức năng chuyển trạng thái tour!", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void setUpStatusBtn(Integer status) {
+        String text = "";
         switch (status) {
             case 1:
                 btnChangeStatus.setBackgroundTintList(getColorStateList( requireContext(),R.color.status_confirmed));
+                tvStatus.setBackgroundTintList(getColorStateList(requireContext(),R.color.status_confirmed));
+                tvStatus.setText("Đã hoàn thành");
+                btnChangeStatus.setText("Đã hoàn thành chuyến Tour");
+                btnChangeStatus.setEnabled(false);
                 break;
             case 0:
                 btnChangeStatus.setBackgroundTintList(getColorStateList(requireContext() , R.color.status_pending));
+                tvStatus.setBackgroundTintList(getColorStateList(requireContext(),R.color.status_pending));
+
+                tvStatus.setText("Chưa khởi hành");
+                btnChangeStatus.setText("Khởi hành");
+                text = "khởi hành chuyến Tour";
+                statusValue = 11;
                 break;
             case -1:
                 btnChangeStatus.setBackgroundTintList(getColorStateList(requireContext() ,R.color.status_cancelled));
+                tvStatus.setBackgroundTintList(getColorStateList(requireContext(),R.color.status_cancelled));
+                btnChangeStatus.setText("Đã hủy");
+                btnChangeStatus.setEnabled(false);
+                tvStatus.setText("Đã hủy");
+
                 break;
             default:
                 btnChangeStatus.setBackgroundTintList(getColorStateList(requireContext() , R.color.status_default));
+                tvStatus.setBackgroundTintList(getColorStateList(requireContext(),R.color.status_default));
+
+                btnChangeStatus.setText("Kết thúc chuyến Tour");
+                tvStatus.setText("Đã hủy");
+                text = "kết thúc chuyến Tour";
+                statusValue = 1;
                 break;
         }
-        String text = DataUtils.convertStatusFromInt(status);
-        btnChangeStatus.setText(text);
+        String finalText = text;
+        btnChangeStatus.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setMessage("Xác thực " + finalText)
+                    .setPositiveButton("Có", (dialog, which) -> {
+                        modifyScheduleStatus();
+                    })
+                    .setNegativeButton("Không", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        });
+    }
+
+    private void modifyScheduleStatus() {
+        apiService.modifyStatusSchedule(scheduleId, statusValue).enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful() &&  response.body() != null) {
+                    BaseResponse res = response.body();
+                    if (res.getCode().equals(Code.SUCCESS.getCode())) {
+                        Toast.makeText(requireContext(), "Chuyển trạng thái Tour thành công.", Toast.LENGTH_SHORT).show();
+                        getScheduleData();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Chuyển trạng thái Tour không thành công.", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable throwable) {
+                Toast.makeText(requireContext(), "Lỗi thành công", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showEmpty() {

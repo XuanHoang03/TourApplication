@@ -47,11 +47,25 @@
                 android:text="Thời gian: ..."
                 android:layout_marginTop="8dp"/>
 
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_status_badge"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="Đang mở"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvTime" />
+
             <Button
                 android:id="@+id/btnTourInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xem thông tin Tour"
+                android:text="Xem thông tin chương trình"
                 android:layout_marginTop="12dp"/>
 
             <Button
