@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,14 +50,14 @@ public class DataUtils {
         return message;
     }
 
-    public static Map<String, Object> buildFireStoreUserConversation(Date lastSend, String id, Date updatedAt, String content, String type) {
+    public static Map<String, Object> buildFireStoreUserConversation(Date lastSend, String id, Date updatedAt, String content, String type, String other) {
         Map<String, Object> update = new HashMap<>();
         update.put(FirebaseConst.UserConversationFields.lastSend, lastSend);
         update.put(FirebaseConst.UserConversationFields.id, id);
         update.put(FirebaseConst.UserConversationFields.updatedAt, updatedAt);
         update.put(FirebaseConst.UserConversationFields.lastMessageContent, content);
         update.put(FirebaseConst.UserConversationFields.type, type);
-
+        update.put(FirebaseConst.UserConversationFields.lastSendBy, other);
         return update;
     }
 
@@ -97,7 +98,7 @@ public class DataUtils {
 
     public static String formatCurrency(long amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return "VND " +  formatter.format(amount) ;
+        return "VND " + formatter.format(amount);
     }
 
     public static Date convertStringToDateV1(String localDateTime) {
@@ -241,18 +242,18 @@ public class DataUtils {
     }
 
     public static String getStartOrEndTime(String value) {
-        return value.replace("_",":");
+        return value.replace("_", ":");
     }
 
     public static String getDayOfWeek(LocalDateTime dateTime) {
         Map<DayOfWeek, String> dayMap = new HashMap<>();
-        dayMap.put(DayOfWeek.MONDAY,"Th 2");
-        dayMap.put(DayOfWeek.TUESDAY,"Th 3");
-        dayMap.put(DayOfWeek.WEDNESDAY,"Th 4");
-        dayMap.put(DayOfWeek.THURSDAY,"Th 5");
-        dayMap.put(DayOfWeek.FRIDAY,"Th 6");
-        dayMap.put(DayOfWeek.SATURDAY,"Th 7");
-        dayMap.put(DayOfWeek.SUNDAY,"CN ");
+        dayMap.put(DayOfWeek.MONDAY, "Th 2");
+        dayMap.put(DayOfWeek.TUESDAY, "Th 3");
+        dayMap.put(DayOfWeek.WEDNESDAY, "Th 4");
+        dayMap.put(DayOfWeek.THURSDAY, "Th 5");
+        dayMap.put(DayOfWeek.FRIDAY, "Th 6");
+        dayMap.put(DayOfWeek.SATURDAY, "Th 7");
+        dayMap.put(DayOfWeek.SUNDAY, "CN ");
 
         return dayMap.get(dateTime.getDayOfWeek());
     }
@@ -261,6 +262,11 @@ public class DataUtils {
         String dayOfWeek = getDayOfWeek(dateTime);
         String dayMonth = dateTime.getDayOfMonth() + " thg " + dateTime.getMonthValue();
         return dayOfWeek + "\n" + dayMonth;
+    }
+
+    public static String getVietNamFormatDateTime(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm'\n'dd/MM", Locale.getDefault());
+        return sdf.format(date);
     }
 
     public static String getStringValueFromStatusValue(Integer status) {
@@ -275,4 +281,27 @@ public class DataUtils {
                 return "Đã khởi hành";
         }
     }
+
+    public static String getTourDuration(String duration) {
+        String value;
+        switch (duration) {
+            case "1D": {
+                value = "1 Ngày";
+                break;
+            }
+            case "2D1N": {
+                value = "2 Ngày 1 Đêm";
+                break;
+            }
+            case "3D2N": {
+                value = "3 Ngày 2 Đêm";
+                break;
+            }
+            default:
+                value = "Chưa xác định";
+        }
+        return value;
+    }
+
+
 }

@@ -1,36 +1,93 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
+    <LinearLayout
+        android:id="@+id/headerUserContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Quay lại" />
+        <ImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_person"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true" />
 
+        <TextView
+            android:id="@+id/userNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên người dùng"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#222222"
+            android:fontFamily="@font/montserrat_regular" />
+    </LinearLayout>
     <!-- Danh sách tin nhắn -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingBottom="8dp"/>
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:scrollbars="none"
+        android:overScrollMode="always" />
 
-    <!-- Nhập tin nhắn và nút gửi -->
-    <LinearLayout
+    <!-- Nhập tin nhắn -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/blue_gradient_button"
+        >
 
-        <EditText
-            android:id="@+id/messageEditText"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter message"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            android:layout_marginStart="8dp"/>
-    </LinearLayout>
+            <EditText
+                android:id="@+id/messageEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:hint="Gửi tin nhắn..."
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="12dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <ImageButton
+                android:id="@+id/sendButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/blue_gradient_button"
+                android:src="@drawable/ic_send"
+                android:scaleType="centerInside"
+                android:contentDescription="Send"
+                app:tint="@color/white" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

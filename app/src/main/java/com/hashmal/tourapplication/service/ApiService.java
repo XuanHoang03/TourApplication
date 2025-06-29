@@ -187,11 +187,14 @@ public interface ApiService {
     @GET("/data/user")
     Call<UserDTO> getFullUserInformation(@Query("phoneNumber") String phoneNumber);
 
+    @GET("/data/user/{userId}")
+    Call<UserDTO> getFullUserInformationById(@Path("userId") String userId);
+
     @GET("/api/v1/tours/get-scheduled-tour")
     Call<List<TourScheduleResponseDTO>> getScheduledTours(
             @Query("tourScheduleId") String tourScheduleId,
             @Query("tourId") String tourId,
-            @Query("status") String status,
+            @Query("status") Integer status,
             @Query("startDate") String startDate,
             @Query("endDate") String endDate,
             @Query("tourGuideId") String tourGuideId,

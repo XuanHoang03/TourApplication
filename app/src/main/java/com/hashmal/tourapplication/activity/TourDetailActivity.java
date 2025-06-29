@@ -42,6 +42,7 @@ import com.hashmal.tourapplication.service.dto.PaymentResponse;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,6 +128,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                     currentTourInfo = null;
                 }
             }
+
             @Override
             public void onFailure(Call<TourResponseDTO> call, Throwable t) {
                 Toast.makeText(TourDetailActivity.this, "Error when calling api get tour info", Toast.LENGTH_SHORT).show();
@@ -154,15 +156,15 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
     private void displayTourDetails(TourResponseDTO tour) {
         // Load tour image
         Glide.with(this)
-            .load(tour.getThumbnailUrl())
-            .placeholder(R.drawable.placeholder_image)
-            .error(R.drawable.error_image)
-            .into(tourImage);
+                .load(tour.getThumbnailUrl())
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.error_image)
+                .into(tourImage);
 
         // Set tour information
         tourName.setText(tour.getTourName());
         tourDescription.setText(tour.getTourDescription());
-        tourDuration.setText(tour.getDuration());
+        tourDuration.setText(DataUtils.getTourDuration(tour.getDuration()));
 //        tourRating.setRating(tour.get());
 
         // Load location images
@@ -184,8 +186,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                 } else {
                     Log.e("TourDetail", "Failed to load tour schedules: " + response.code());
                     Toast.makeText(TourDetailActivity.this,
-                        "Failed to load tour schedules",
-                        Toast.LENGTH_SHORT).show();
+                            "Failed to load tour schedules",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -193,8 +195,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
             public void onFailure(Call<List<TourScheduleResponseDTO>> call, Throwable t) {
                 Log.e("TourDetail", "Error loading tour schedules", t);
                 Toast.makeText(TourDetailActivity.this,
-                    "Error: " + t.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+                        "Error: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -216,8 +218,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                 public void onPackageClick(TourPackageDTO tourPackage) {
                     selectedPackage = tourPackage;
                     Toast.makeText(TourDetailActivity.this,
-                        "Đã chọn gói: " + tourPackage.getPackageName(),
-                        Toast.LENGTH_SHORT).show();
+                            "Đã chọn gói: " + tourPackage.getPackageName(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -259,10 +261,10 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
 
         // Set the selected package and schedule information
         selectedPackageText.setText(selectedPackage.getPackageName() + "\n" +
-            "Price: " + selectedPackage.getPrice() + " VNĐ");
+                "Giá: " + DataUtils.formatCurrency(selectedPackage.getPrice()));
 
-        selectedScheduleText.setText(selectedSchedule.getStartTime() + " - " +
-            selectedSchedule.getEndTime());
+        selectedScheduleText.setText( selectedSchedule.getStartTime() + " - " +
+                selectedSchedule.getEndTime());
 
         availableTickets.setText(selectedSchedule.getNumberOfTicket().toString());
 
@@ -332,11 +334,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                         });
 
 
-
                         bottomSheetDialog.dismiss();
                         // TODO: Navigate to booking success screen or booking list
-
-
 
 
                     } else {
@@ -349,8 +348,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                             }
                         }
                         Toast.makeText(TourDetailActivity.this,
-                            errorMessage,
-                            Toast.LENGTH_LONG).show();
+                                errorMessage,
+                                Toast.LENGTH_LONG).show();
                     }
                     // Re-enable button
                     confirmButton.setEnabled(true);
@@ -360,8 +359,8 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
                     Toast.makeText(TourDetailActivity.this,
-                        "Lỗi kết nối: " + t.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                            "Lỗi kết nối: " + t.getMessage(),
+                            Toast.LENGTH_LONG).show();
                     // Re-enable button
                     confirmButton.setEnabled(true);
                     confirmButton.setText("Xác nhận đặt tour");
@@ -386,19 +385,16 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                         if (response.isSuccessful() && response.body() != null) {
                             BaseResponse res = response.body();
                             if (res.getCode().equals(Code.SUCCESS.getCode())) {
-//                                Toast.makeText(TourDetailActivity.this,
-//                                        "Cập nhật trạng thái giao dịch thành công.",
-//                                        Toast.LENGTH_SHORT).show();
-
+                                String message = (status == 1) ? "Bạn đã thanh toán vé thành công." : "Bạn đã hủy thanh toán vé.";
                                 new CustomDialog.Builder(TourDetailActivity.this)
-                                        .setTitle("Notification")
-                                        .setMessage("You have paid the booking fee successfully!")
+                                        .setTitle("Thông báo")
+                                        .setMessage(message)
                                         .setIcon(getDrawable(R.drawable.ic_info))
-                                        .setPositiveButton("Back to home", dialog -> {
+                                        .setPositiveButton("Đóng", dialog -> {
                                             // Xử lý khi click nút xác nhận
 //                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
 //                                            startActivity(backToHome);
-                                            finish();
+//                                            finish();
                                         })
                                         .setSingleButtonMode(true)
                                         .show();
@@ -407,14 +403,11 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                         res.getMessage(),
                                         Toast.LENGTH_LONG).show();
                                 new CustomDialog.Builder(TourDetailActivity.this)
-                                        .setTitle("Notification")
-                                        .setMessage("Failed to pay for the ticket!")
+                                        .setTitle("Thông báo")
+                                        .setMessage("Thanh toán vé thất bại!")
                                         .setIcon(getDrawable(R.drawable.ic_info))
-                                        .setPositiveButton("Back to home", dialog -> {
-                                            // Xử lý khi click nút xác nhận
-//                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
-//                                            startActivity(backToHome);
-//                                            finish();
+                                        .setPositiveButton("Đóng", dialog -> {
+
                                         })
                                         .setSingleButtonMode(true)
                                         .show();

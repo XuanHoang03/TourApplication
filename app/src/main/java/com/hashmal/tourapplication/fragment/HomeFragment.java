@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
-import com.hashmal.tourapplication.activity.HomeActivity;
 import com.hashmal.tourapplication.activity.TourDetailActivity;
+import com.hashmal.tourapplication.activity.UserConversationActivity;
 import com.hashmal.tourapplication.adapter.TourAdapter;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
@@ -107,6 +107,8 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
         notificationBell.setOnClickListener(v -> {
             // TODO: Handle notification click
             Toast.makeText(requireContext(), "Notifications clicked", Toast.LENGTH_SHORT).show();
+            Intent messageIntent = new Intent(requireContext(), UserConversationActivity.class);
+            startActivity(messageIntent);
         });
 
         return view;

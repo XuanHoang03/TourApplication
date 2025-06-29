@@ -44,7 +44,7 @@ public class FirebaseService {
                 .set(message)
                 .addOnSuccessListener(success -> {
                             Log.d(TAG, "Message sent with ID: " + messageId + message);
-                            Map<String, Object> update = DataUtils.buildFireStoreUserConversation(currentTime, messageId, currentTime, content, MessageType.Normal.name());
+                            Map<String, Object> update = DataUtils.buildFireStoreUserConversation(currentTime, messageId, currentTime, content, MessageType.Normal.name(), senderId);
 
                             database.collection(FirebaseConst.Conversation)
                                     .document(conversationId)
@@ -83,6 +83,24 @@ public class FirebaseService {
                 .addSnapshotListener(listener);
     }
 
+    public void getListUserInChat(String conversationId, OnUserIdsFetched callback) {
+        FirebaseFirestore.getInstance()
+                .collection("conversations")
+                .document(conversationId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    List<String> userIds = (List<String>) doc.get("listUserId");
+                    callback.onFetched(userIds);
+                })
+                .addOnFailureListener(e -> {
+                    callback.onFetched(Collections.emptyList());
+                });
+    }
+
+    public interface OnUserIdsFetched {
+        void onFetched(List<String> userIds);
+    }
+
     public void getOrCreateConversation(List<String> listUserId, OnConversationReadyListener listener) {
 
         List<String> sortedUserIds = new ArrayList<>(listUserId);
@@ -117,6 +135,7 @@ public class FirebaseService {
                                         userConv.put("lastMessageContent", null);
                                         userConv.put("lastSend", null);
                                         userConv.put("senderId", null);
+                                        userConv.put("lastSendBy", null);
                                         userConv.put("type", "NORMAL");
                                         for (String userId : listUserId) {
                                             database.collection("user_conversations")

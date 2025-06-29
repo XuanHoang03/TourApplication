@@ -78,7 +78,7 @@ public class CustomerTicketsFragment extends Fragment {
         return view;
     }
 
-    private void loadTourSchedules(String tourScheduleId, String tourId, String status, String startDate, String endDate, String tourGuideId, Boolean isAvailable) {
+    private void loadTourSchedules(String tourScheduleId, String tourId, Integer status, String startDate, String endDate, String tourGuideId, Boolean isAvailable) {
         apiService.getScheduledTours(tourScheduleId, tourId, status, startDate, endDate, tourGuideId, isAvailable).enqueue(new Callback<List<TourScheduleResponseDTO>>() {
             @Override
             public void onResponse(Call<List<TourScheduleResponseDTO>> call, Response<List<TourScheduleResponseDTO>> response) {

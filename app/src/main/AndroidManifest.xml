@@ -45,9 +45,6 @@
             android:name=".activity.AccountActivity"
             android:exported="true" />
         <activity
-            android:name=".activity.HomeActivity"
-            android:exported="true" />
-        <activity
             android:name=".activity.MapActivity"
             android:exported="true" />
         <activity

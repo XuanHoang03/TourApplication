@@ -49,15 +49,15 @@
     <!-- Search View -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
         android:layout_margin="8dp"
         android:background="@drawable/search_background"
-        android:elevation="4dp"
         app:iconifiedByDefault="false"
-        app:queryHint="Search tours..."
+        app:queryHint="Tours..."
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.9"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Tours List Section -->

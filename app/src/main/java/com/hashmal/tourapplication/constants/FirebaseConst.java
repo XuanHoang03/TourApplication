@@ -22,5 +22,7 @@ public class FirebaseConst {
         public static String lastSend = "lastSend";
         public static String updatedAt = "updatedAt";
         public static String type = "type";
+        public static String otherUserId = "otherUserId";
+        public static String lastSendBy = "lastSendBy";
     }
 }

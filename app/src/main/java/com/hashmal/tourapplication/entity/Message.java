@@ -8,6 +8,7 @@ public class Message {
     private Date updatedAt;
     private String type;
     private String content;
+    private String avatarUrl;
 
     public Message() {
         this.createdBy = "";
@@ -15,14 +16,24 @@ public class Message {
         this.updatedAt = new Date();
         this.type = "";
         this.content = "";
+        this.avatarUrl ="";
     }
 
-    public Message(String createdBy, Date createdAt, Date updatedAt, String type, String content) {
+    public Message(String createdBy, Date createdAt, Date updatedAt, String type, String content, String avatarUrl) {
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.type = type;
         this.content = content;
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getCreatedBy() {

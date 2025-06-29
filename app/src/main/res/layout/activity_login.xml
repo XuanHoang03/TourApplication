@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:text="Login to explore the world!"
-                android:textColor="#00A3FF"
+                android:textColor="@color/blue_text"
                 android:textSize="20sp"
                 android:fontFamily="@font/montserrat_regular"
                 android:textStyle="bold" />
@@ -87,7 +87,7 @@
                 android:fontFamily="@font/montserrat_regular"
                 android:layout_height="48dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Enter your username"
+                android:hint="Nhập tên đăng nhập"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#222222"
@@ -110,7 +110,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/rounded_edittext"
                 android:fontFamily="@font/montserrat_regular"
-                android:hint="Enter your password"
+                android:hint="Nhập mật khẩu"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="#222222"
@@ -126,38 +126,39 @@
                 android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="Forgot password"
+                android:text="Quên mật khẩu"
                 android:textColor="#0077CC"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
             <!-- Login button -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/blue_gradient_button"
-                android:text="Login"
+                android:text="Đăng nhập"
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <!-- Register button -->
-            <Button
+
+            <!-- Guest login -->
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/txtCreateAccount"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
-                android:fontFamily="@font/montserrat_regular"
                 android:background="@drawable/outlined_button"
-                android:text="Register"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Đăng ký"
                 android:textColor="#0077CC"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <!-- Guest login -->
             <TextView
                 android:id="@+id/txtGuestLogin"
                 android:layout_width="wrap_content"
@@ -166,7 +167,7 @@
                 android:layout_marginTop="24dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="Or Continue as guest"
+                android:text="Đăng nhập tài khoản khách"
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="#7A7A7A"
                 android:textSize="15sp"

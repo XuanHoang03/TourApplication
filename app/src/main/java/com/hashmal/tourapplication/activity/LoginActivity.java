@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.admin.AdminMainActivity;
 import com.hashmal.tourapplication.enums.Code;
@@ -123,10 +124,11 @@ public class LoginActivity extends AppCompatActivity {
             String username = edtUsername.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
             if (!username.isEmpty() && !password.isEmpty()) {
+                btnLogin.setEnabled(false);
                 login(username, password);
 
             } else {
-                Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -167,14 +169,21 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
+                    if (res.getCode().equals(Code.ER0004.getCode())) {
+                        Intent intent = new Intent(LoginActivity.this, VerifyAccountActivity.class);
+                        intent.putExtra("registerUserId", (String) res.getData() );
+                        startActivity(intent);
+                    }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
                 }
+                btnLogin.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                btnLogin.setEnabled(true);
             }
         });
     }

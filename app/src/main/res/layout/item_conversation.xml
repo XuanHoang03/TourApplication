@@ -1,20 +1,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
+    android:orientation="horizontal"
+    android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:elevation="2dp"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="8dp"
+    android:clipToPadding="false">
 
-    <TextView
-        android:id="@+id/lastMessageTextView"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <!-- Avatar -->
+    <ImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/circle_background"
+        android:contentDescription="Avatar"
+        android:layout_marginEnd="12dp" />
 
+    <!-- Nội dung bên phải ảnh -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <!-- Tên người nhắn tin -->
+        <TextView
+            android:id="@+id/usernameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên người dùng"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_regular" />
+
+        <!-- Nội dung tin nhắn -->
+        <TextView
+            android:id="@+id/lastMessageTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội dung tin nhắn gần nhất"
+            android:textColor="#222222"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/montserrat_regular" />
+    </LinearLayout>
+
+    <!-- Thời gian -->
     <TextView
         android:id="@+id/timestampTextView"
-        android:textSize="12sp"
-        android:textColor="#666"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:text="14:45\n28/06"
+        android:textSize="11sp"
+        android:textColor="#999999"
+        android:gravity="end|bottom"
+        android:fontFamily="@font/montserrat_regular"
+        android:layout_marginStart="8dp" />
 </LinearLayout>
