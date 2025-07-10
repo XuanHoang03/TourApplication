@@ -10,15 +10,30 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back"
+        android:contentDescription="Quay lại" />
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thông tin cá nhân"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:paddingTop="5dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat_regular"
+        android:layout_marginBottom="24dp"/>
+</LinearLayout>
 
-        <!-- Header -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thông tin cá nhân"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
 
         <!-- Profile Image Section -->
         <LinearLayout
@@ -123,17 +138,21 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Save Button -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_height="wrap_content"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@color/white"
             android:text="Lưu thay đổi"
             android:padding="12dp"/>
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/updateButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@color/white"
             android:text="Cập nhật"
             android:padding="12dp"/>
 

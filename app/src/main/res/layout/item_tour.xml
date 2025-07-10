@@ -45,7 +45,19 @@
             android:textSize="11dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tourName" />
-
+        <TextView
+            android:id="@+id/tourRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="1.5/5 (200)"
+            android:textColor="@color/blue_text"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tourLocation" />
         <TextView
             android:id="@+id/tourPrice"
             android:layout_width="wrap_content"
@@ -56,7 +68,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tourLocation" />
+            app:layout_constraintTop_toBottomOf="@id/tourRating" />
 
         <TextView
             android:id="@+id/btnShowTicketDetails"

@@ -93,6 +93,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.nav_bookings).setVisible(permissionManager.canManageBookings());
         navigationView.getMenu().findItem(R.id.nav_profile).setVisible(permissionManager.canViewProfile());
         navigationView.getMenu().findItem(R.id.nav_tour_guide).setVisible(permissionManager.canViewTourGuide());
+        navigationView.getMenu().findItem(R.id.nav_work_calendar).setVisible(permissionManager.canManageWorkCalendar());
+        navigationView.getMenu().findItem(R.id.nav_current_work).setVisible(permissionManager.canManageCurrentWork());
     }
 
     private void loadDefaultFragment() {

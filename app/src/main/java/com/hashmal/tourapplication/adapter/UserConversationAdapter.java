@@ -1,5 +1,6 @@
 package com.hashmal.tourapplication.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -18,13 +19,14 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.ChatActivity;
 import com.hashmal.tourapplication.entity.UserConversation;
 import com.hashmal.tourapplication.network.ApiClient;
-import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.FirebaseService;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.UserChatInfo;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,11 +34,13 @@ import retrofit2.Response;
 
 public class UserConversationAdapter extends RecyclerView.Adapter<UserConversationAdapter.ConversationViewHolder> {
     private List<UserConversation> conversations;
+    private Map<String, UserChatInfo> chatInfo;
     private Context context;
 
-    public UserConversationAdapter(Context context, List<UserConversation> conversations) {
+    public UserConversationAdapter(Context context, List<UserConversation> conversations, Map<String, UserChatInfo> chatInfo) {
         this.context = context;
         this.conversations = conversations;
+        this.chatInfo = chatInfo;
     }
 
     @NonNull
@@ -46,6 +50,7 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
         return new ConversationViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
         FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
@@ -64,63 +69,44 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
                 }
             }
 
-            if (otherUserId == null) {
-                holder.lastMessage.setText("Không tìm thấy người dùng");
-                return;
-            }
-
-            getUserInfoById(otherUserId, user -> {
-                if (user != null) {
-                    holder.usernameTextView.setText(user.getProfile().getFullName());
-                    if (user.getProfile().getAvatarUrl() != null) {
+            UserChatInfo info = chatInfo.get(otherUserId);
+                    if (info != null) {
+                    holder.usernameTextView.setText(info.getFullName());
                         Glide.with(context)
-                                .load(user.getProfile().getAvatarUrl())
+                                .load(info.getAvatarUrl())
                                 .circleCrop()
                                 .placeholder(R.drawable.ic_person)
                                 .into(holder.avatarImageView);
-                    }
+
                     if (!conversation.getLastSendBy().equals(currentUserId)) {
-                        holder.lastMessage.setText(user.getProfile().getFullName() + ": " + conversation.getLastMessageContent());
+                        holder.lastMessage.setText(info.getFullName() + ": " + conversation.getLastMessageContent());
                     } else {
                         holder.lastMessage.setText(conversation.getLastMessageContent());
                     }
                 } else {
-                    holder.lastMessage.setText("Không xác định: " + conversation.getLastMessageContent());
+                     info = new UserChatInfo("SYSTEM","Tin nhắn hệ thống", "" );
+                     chatInfo.put(info.getAccountId(), info);
+
+                    holder.usernameTextView.setText("Tin nhắn hệ thống");
+                        Glide.with(context)
+                                .load("")
+                                .circleCrop()
+                                .placeholder(R.drawable.ic_person)
+                                .into(holder.avatarImageView);
+                    holder.lastMessage.setText("Tin nhắn hệ thống: " + conversation.getLastMessageContent());
                 }
 
                 holder.timestamp.setText(DataUtils.getVietNamFormatDateTime(conversation.getLastSend()));
-                holder.itemView.setOnClickListener(v -> {
+            UserChatInfo finalInfo = info;
+            holder.itemView.setOnClickListener(v -> {
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("conversationId", conversation.getId());
-                    intent.putExtra("otherUserJson", new Gson().toJson( user));
+                    intent.putExtra("otherUserJson", new Gson().toJson(finalInfo));
                     context.startActivity(intent);
                 });
-            });
         });
     }
 
-    public void getUserInfoById(String userId, OnUserFetchedCallback callback) {
-        Call<UserDTO> call = ApiClient.getApiService().getFullUserInformationById(userId);
-        call.enqueue(new Callback<UserDTO>() {
-            @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    callback.onUserFetched(response.body());
-                } else {
-                    callback.onUserFetched(null); // hoặc callback.onError() nếu có
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-                callback.onUserFetched(null); // hoặc xử lý lỗi riêng nếu muốn
-            }
-        });
-    }
-
-    public interface OnUserFetchedCallback {
-        void onUserFetched(UserDTO user);
-    }
 
 
     @Override
@@ -141,9 +127,11 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
         }
     }
 
-    public void updateList(List<UserConversation> newList) {
+    public void updateList(List<UserConversation> newList, Map<String, UserChatInfo> map) {
         this.conversations.clear();
         this.conversations.addAll(newList);
+        this.chatInfo.clear();
+        this.chatInfo = map;
         notifyDataSetChanged();
     }
 

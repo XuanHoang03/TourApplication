@@ -3,11 +3,13 @@ package com.hashmal.tourapplication.service;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hashmal.tourapplication.callback.OnConversationReadyListener;
 import com.hashmal.tourapplication.constants.FirebaseConst;
@@ -83,6 +85,18 @@ public class FirebaseService {
                 .addSnapshotListener(listener);
     }
 
+    public Task<List<String>> getListUserId(String conversationId) {
+         return database.collection(FirebaseConst.Conversation).document(conversationId).get().continueWith(task -> {
+             if (task.isSuccessful()) {
+                 DocumentSnapshot doc = task.getResult();
+                 if (doc.exists()) {
+                     return (List<String>) doc.get("listUserId");
+                 } else {
+                     return new ArrayList<>();
+                 }
+             } else throw task.getException();
+         });
+    }
     public void getListUserInChat(String conversationId, OnUserIdsFetched callback) {
         FirebaseFirestore.getInstance()
                 .collection("conversations")

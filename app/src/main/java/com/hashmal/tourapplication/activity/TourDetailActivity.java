@@ -55,7 +55,7 @@ import retrofit2.Response;
 public class TourDetailActivity extends AppCompatActivity implements TourPackageAdapter.OnPackageClickListener, TourScheduleAdapter.OnScheduleClickListener {
     private ImageView tourImage;
     private TextView tourName, tourDescription, tourDuration;
-    private RatingBar tourRating;
+    private TextView tourRate;
     private RecyclerView packagesRecyclerView;
     private RecyclerView schedulesRecyclerView;
     private TourPackageAdapter packageAdapter;
@@ -142,15 +142,27 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
         tourName = findViewById(R.id.tourName);
         tourDescription = findViewById(R.id.tourDescription);
         tourDuration = findViewById(R.id.tourDuration);
-        tourRating = findViewById(R.id.tourRating);
+        tourRate = findViewById(R.id.tourRate);
         packagesRecyclerView = findViewById(R.id.packagesRecyclerView);
         schedulesRecyclerView = findViewById(R.id.schedulesRecyclerView);
         bookingButton = findViewById(R.id.bookingButton);
+
+        // Setup click listener for tour rate
+        tourRate.setOnClickListener(v -> openReviewsActivity());
 
         // Setup schedules RecyclerView
         scheduleAdapter = new TourScheduleAdapter(this, schedules, this);
         schedulesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         schedulesRecyclerView.setAdapter(scheduleAdapter);
+    }
+
+    private void openReviewsActivity() {
+        if (currentTourInfo != null) {
+            Intent intent = new Intent(this, TourReviewsActivity.class);
+            intent.putExtra("tourId", currentTourInfo.getTourId());
+            intent.putExtra("tourName", currentTourInfo.getTourName());
+            startActivity(intent);
+        }
     }
 
     private void displayTourDetails(TourResponseDTO tour) {
@@ -165,6 +177,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
         tourName.setText(tour.getTourName());
         tourDescription.setText(tour.getTourDescription());
         tourDuration.setText(DataUtils.getTourDuration(tour.getDuration()));
+        tourRate.setText( tour.getRatePoint() + "/5 (" + tour.getRateCount() +" đánh giá)");
 //        tourRating.setRating(tour.get());
 
         // Load location images
@@ -390,11 +403,11 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                         .setTitle("Thông báo")
                                         .setMessage(message)
                                         .setIcon(getDrawable(R.drawable.ic_info))
-                                        .setPositiveButton("Đóng", dialog -> {
-                                            // Xử lý khi click nút xác nhận
-//                                            Intent backToHome = new Intent(TourDetailActivity.this, HomeActivity.class);
-//                                            startActivity(backToHome);
-//                                            finish();
+                                        .setPositiveButton((status == 1) ? "Quay về trang chủ" : "Đóng", dialog -> {
+//                                             Xử lý khi click nút xác nhận
+                                            if (status == 1) {
+                                                finish();
+                                            }
                                         })
                                         .setSingleButtonMode(true)
                                         .show();

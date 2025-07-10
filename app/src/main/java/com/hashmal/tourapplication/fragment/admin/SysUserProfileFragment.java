@@ -72,11 +72,7 @@ public class SysUserProfileFragment extends Fragment {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri selectedImageUri = result.getData().getData();
 
-                    // Hiển thị ảnh
-                    Glide.with(this)
-                            .load(selectedImageUri)
-                            .circleCrop()
-                            .into(profileImage);
+
 
                     // Upload ảnh lên server
                     String imagePath = getRealPathFromURI(selectedImageUri);
@@ -298,6 +294,11 @@ public class SysUserProfileFragment extends Fragment {
                                 SysUserDTO newDTO =  user;
                                         newDTO.getProfile().setAvatarUrl((String) response.body().getData());
                                 localDataService.saveUserInfo(newDTO);
+                                // Hiển thị ảnh
+                                Glide.with(SysUserProfileFragment.this)
+                                        .load(uri)
+                                        .circleCrop()
+                                        .into(profileImage);
                                 loadProfileData();
                             } else {
                                 Toast.makeText(requireContext(), "Tải ảnh thất bại", Toast.LENGTH_SHORT).show();

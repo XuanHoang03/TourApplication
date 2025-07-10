@@ -87,17 +87,7 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
         localDataService = LocalDataService.getInstance(requireContext());
 
         // Load user data
-        UserDTO userDTO = localDataService.getCurrentUser();
-        if (userDTO != null) {
-            fullName = userDTO.getProfile().getFullName();
-            avatarUrl = userDTO.getProfile().getAvatarUrl();
-        }
-        userName.setText(fullName);
-        Glide.with(this)
-                .load(avatarUrl)
-                .error(R.drawable.default_avatar)
-                .circleCrop()
-                .into(userAvatar);
+        loadCurrentUserInfo();
 
         if (!isDataLoaded) {
             loadTours();
@@ -112,6 +102,20 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
         });
 
         return view;
+    }
+
+    private void loadCurrentUserInfo() {
+        UserDTO userDTO = localDataService.getCurrentUser();
+        if (userDTO != null) {
+            fullName = userDTO.getProfile().getFullName();
+            avatarUrl = userDTO.getProfile().getAvatarUrl();
+        }
+        userName.setText(fullName);
+        Glide.with(this)
+                .load(avatarUrl)
+                .error(R.drawable.default_avatar)
+                .circleCrop()
+                .into(userAvatar);
     }
 
     private void setupSearchView() {
@@ -185,5 +189,11 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
         String tourJson = gson.toJson(tour);
         intent.putExtra("tour", tourJson);
         startActivity(intent);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadCurrentUserInfo();
+
     }
 } 

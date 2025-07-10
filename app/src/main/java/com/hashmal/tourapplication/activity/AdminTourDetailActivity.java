@@ -104,7 +104,7 @@ public class AdminTourDetailActivity extends AppCompatActivity {
 
 
         localDataService = LocalDataService.getInstance(this);
-        if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
+        if (!localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.SYSTEM_ADMIN.name())) {
             btnEdit.setVisibility(GONE);
             btnDeletePackage.setVisibility(GONE);
             btnAddPackage.setVisibility(GONE);

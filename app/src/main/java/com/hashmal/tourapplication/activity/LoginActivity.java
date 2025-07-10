@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.admin.AdminMainActivity;
 import com.hashmal.tourapplication.enums.Code;
@@ -57,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     private ApiService apiService;
     private LinearLayout formContainer;
     private LocalDataService localDataService;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,14 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         window.setStatusBarColor(Color.TRANSPARENT);
         setContentView(R.layout.activity_login);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
+                    }
+                    token = task.getResult();
+                });
 
         TextView tvWelcome = findViewById(R.id.welcomeText);
         TextView tvSubtext = findViewById(R.id.loginText);
@@ -125,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = edtPassword.getText().toString().trim();
             if (!username.isEmpty() && !password.isEmpty()) {
                 btnLogin.setEnabled(false);
-                login(username, password);
+                login(username, password, token);
 
             } else {
                 Toast.makeText(this, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show();
@@ -151,12 +161,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void login(String username, String password) {
+    private void login(String username, String password, String fcmToken) {
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
 
-        apiService.login(data).enqueue(new Callback<BaseResponse>() {
+        apiService.login(data, fcmToken).enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

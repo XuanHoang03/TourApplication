@@ -64,7 +64,7 @@ public class AdminPackageDetailActivity extends AppCompatActivity {
         tvIsMain.setText(pkg.isMain() ? "Gói chính" : "Gói phụ");
         Button btnEdit = findViewById(R.id.btnEditPackage);
         Button btnDelete = findViewById(R.id.btnDeletePackage);
-        if (localDataService.getSysUser().getAccount().getRoleName() != RoleEnum.SYSTEM_ADMIN.name()) {
+        if (!localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.SYSTEM_ADMIN.name())) {
             btnEdit.setVisibility(GONE);
             btnDelete.setVisibility(GONE);
         }

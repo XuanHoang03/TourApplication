@@ -1,11 +1,13 @@
 package com.hashmal.tourapplication.service;
 
+import com.hashmal.tourapplication.model.TourPackage;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
 import com.hashmal.tourapplication.service.dto.CreateSystemUserRequest;
 import com.hashmal.tourapplication.service.dto.CreateTourRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
 import com.hashmal.tourapplication.service.dto.PaymentResponse;
+import com.hashmal.tourapplication.service.dto.ReviewDTO;
 import com.hashmal.tourapplication.service.dto.StatisticDTO;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.TourGuideScheduleDTO;
@@ -15,6 +17,7 @@ import com.hashmal.tourapplication.service.dto.UpdateProfileRequest;
 import com.hashmal.tourapplication.service.dto.UpdateTourPackageRequest;
 import com.hashmal.tourapplication.service.dto.UpdateTourRequest;
 import com.hashmal.tourapplication.service.dto.UpdateUserByAdminRequest;
+import com.hashmal.tourapplication.service.dto.UserChatInfo;
 import com.hashmal.tourapplication.service.dto.UserManagementDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 import com.hashmal.tourapplication.service.dto.CreatePackageRequest;
@@ -29,6 +32,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -38,7 +42,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("user/login")
-    Call<BaseResponse> login(@Body Map<String, String> body);
+    Call<BaseResponse> login(@Body Map<String, String> body, @Header("fcmToken") String token);
 
     @POST("user/sys-user-login")
     Call<BaseResponse> sysLogin(@Body Map<String, String> body);
@@ -190,6 +194,9 @@ public interface ApiService {
     @GET("/data/user/{userId}")
     Call<UserDTO> getFullUserInformationById(@Path("userId") String userId);
 
+    @GET("/data/user/list")
+    Call<Map<String, UserChatInfo>> getUserChatInfo(@Query("listId") List<String> listId);
+
     @GET("/api/v1/tours/get-scheduled-tour")
     Call<List<TourScheduleResponseDTO>> getScheduledTours(
             @Query("tourScheduleId") String tourScheduleId,
@@ -209,4 +216,10 @@ public interface ApiService {
         @Query("scheduleId") String scheduleId,
         @Query("status") Integer status
     );
+
+    @GET("/api/v1/tours/package/{packageId}")
+    Call<TourPackage> getPackageById(@Path("packageId") Long packageId);
+
+    @GET("/api/v1/tours/reviews/{tourId}")
+    Call<List<ReviewDTO>> getReviewsByTourId(@Path("tourId") String tourId);
 }

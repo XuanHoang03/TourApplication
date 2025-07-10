@@ -110,7 +110,7 @@ public class AdminToursFragment extends Fragment {
                 return true;
             }
         });
-        if (!localDataService.getSysUser().getAccount().getRoleName() .equals( RoleEnum.SYSTEM_ADMIN.name())) {
+        if (!localDataService.getSysUser().getAccount().getRoleName().equals( RoleEnum.SYSTEM_ADMIN.name())) {
             fabAddTour.setVisibility(GONE);
         }
         fabAddTour.setOnClickListener(v -> {

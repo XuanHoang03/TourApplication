@@ -47,7 +47,7 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private ImageView profileImage;
+    private ImageView profileImage, btnBack;
     private TextInputEditText fullNameInput, emailInput, phoneInput, addressInput, dateOfBirthInput;
     private Button changePhotoButton, saveButton, editButton;
 
@@ -62,10 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Uri selectedImageUri = result.getData().getData();
 
                     // Hiển thị ảnh
-                    Glide.with(this)
-                            .load(selectedImageUri)
-                            .circleCrop()
-                            .into(profileImage);
+
 
                     // Upload ảnh lên server
                     String imagePath = getRealPathFromURI(selectedImageUri);
@@ -100,7 +97,8 @@ public class ProfileActivity extends AppCompatActivity {
         changePhotoButton = findViewById(R.id.changePhotoButton);
         saveButton = findViewById(R.id.saveButton);
         editButton = findViewById(R.id.updateButton);
-
+        btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
         calendar = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     }
@@ -269,6 +267,24 @@ public class ProfileActivity extends AppCompatActivity {
                         public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(ProfileActivity.this, "Tải ảnh thành công", Toast.LENGTH_SHORT).show();
+                                Call<UserDTO> call2 = ApiClient.getApiService().getFullUserInformationById(localDataService.getCurrentUser().getAccount().getAccountId());
+                                call2.enqueue(new Callback<UserDTO>() {
+                                    @Override
+                                    public void onResponse(Call<UserDTO> call2, Response<UserDTO> response) {
+                                        if (response.isSuccessful() && response.body() != null) {
+                                            UserDTO userDTO = response.body();
+                                            localDataService.saveUserInfo(userDTO);
+                                            Glide.with(ProfileActivity.this)
+                                                    .load(uri)
+                                                    .circleCrop()
+                                                    .into(profileImage);
+                                            loadUserData();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<UserDTO> call2, Throwable t) {
+                                    }
+                                });
                             } else {
                                 Toast.makeText(ProfileActivity.this, "Tải ảnh thất bại", Toast.LENGTH_SHORT).show();
                             }

@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/red"
-                android:text="- Dừng gói dịch vụ"
+                android:text="- Dừng chương trình"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 

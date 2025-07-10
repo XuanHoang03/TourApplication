@@ -93,13 +93,13 @@ public class GuideCurrentTourFragment extends Fragment {
     }
 
     private void getScheduleData() {
-        // status=1: đang diễn ra, có thể điều chỉnh theo backend
+
         apiService.getTourSchedule(scheduleId)
                 .enqueue(new Callback<TourScheduleResponseDTO>() {
                     @Override
                     public void onResponse(Call<TourScheduleResponseDTO> call, Response<TourScheduleResponseDTO> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            TourScheduleResponseDTO tour = response.body(); // Lấy tour đầu tiên (gần nhất)
+                            TourScheduleResponseDTO tour = response.body();
                             bindTour(tour);
                         } else {
                             showEmpty();
@@ -164,7 +164,7 @@ public class GuideCurrentTourFragment extends Fragment {
                 tvStatus.setBackgroundTintList(getColorStateList(requireContext(),R.color.status_default));
 
                 btnChangeStatus.setText("Kết thúc chuyến Tour");
-                tvStatus.setText("Đã hủy");
+                tvStatus.setText("Đã khởi hành");
                 text = "kết thúc chuyến Tour";
                 statusValue = 1;
                 break;

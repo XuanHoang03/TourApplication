@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,6 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourApplication"
         tools:targetApi="31">
+        <service
+            android:name=".service.AppFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".activity.CalendarActivity"
             android:exported="false" />
@@ -53,6 +61,10 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.TourDetailActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.TourReviewsActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity

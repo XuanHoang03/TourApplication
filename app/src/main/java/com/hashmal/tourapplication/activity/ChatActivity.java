@@ -1,5 +1,7 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.entity.Message;
 import com.hashmal.tourapplication.service.FirebaseService;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.UserChatInfo;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 
 import java.util.ArrayList;
@@ -37,11 +41,11 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageEditText;
     private ImageButton sendButton;
     private RecyclerView recyclerView;
-
+private LinearLayout messageBox ;
     private MessageAdapter messageAdapter;
     private final List<Message> messageList = new ArrayList<>();
     private Gson gson = new Gson();
-    private UserDTO otherUser;
+    private UserChatInfo otherUser;
     private UserDTO currentUser;
     private ImageButton btnBack;
     private ImageView avatarImageView;
@@ -57,22 +61,27 @@ public class ChatActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         avatarImageView = findViewById(R.id.avatarImageView);
         userNameTextView = findViewById(R.id.userNameTextView);
-        btnBack.setOnClickListener(v-> finish());
+        messageBox = findViewById(R.id.messageBox);
+        btnBack.setOnClickListener(v -> finish());
 
         Intent intent = getIntent();
         currentUser = localDataService.getCurrentUser();
         conversationId = intent.getStringExtra("conversationId");
         String otherUserJson = intent.getStringExtra("otherUserJson");
-        otherUser = gson.fromJson(otherUserJson, UserDTO.class);
-
-        userNameTextView.setText(otherUser.getProfile().getFullName());
-        if (otherUser.getProfile().getAvatarUrl() != null) {
+        otherUser = gson.fromJson(otherUserJson, UserChatInfo.class);
+        String fullname;
+        String img;
+        fullname = otherUser.getFullName();
+        img = otherUser.getAvatarUrl();
+        if (otherUser.getAccountId().equals("SYSTEM")) {
+            messageBox.setVisibility(GONE);
+        }
+        userNameTextView.setText(fullname);
             Glide.with(this)
-                    .load(otherUser.getProfile().getAvatarUrl())
+                    .load(img)
                     .circleCrop()
                     .placeholder(R.drawable.ic_person)
                     .into(avatarImageView);
-        }
 
         messageEditText = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
@@ -105,6 +114,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getMessagesRealTime() {
+
+
         FirebaseFirestore.getInstance()
                 .collection(FirebaseConst.Conversation)
                 .document(conversationId)
@@ -125,8 +136,8 @@ public class ChatActivity extends AppCompatActivity {
                             Date createdAt = document.getDate("createdAt");
                             String type = document.getString("type");
 
-                            String name = (otherUser.getAccount().getAccountId().equals(createdBy)) ? otherUser.getProfile().getFullName() : "Bạn";
-                            String avatarUrl = (otherUser.getAccount().getAccountId().equals(createdBy)) ? otherUser.getProfile().getAvatarUrl() : currentUser.getProfile().getAvatarUrl();
+                            String name = (otherUser.getAccountId().equals(createdBy)) ? otherUser.getFullName() : "Bạn";
+                            String avatarUrl = (otherUser.getAccountId().equals(createdBy)) ? otherUser.getAvatarUrl() : currentUser.getProfile().getAvatarUrl();
 
                             Message message = new Message(name, createdAt, updatedAt, type, content, avatarUrl);
                             messageList.add(message);

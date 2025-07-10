@@ -11,10 +11,11 @@ public class TourResponseDTO {
     private Boolean haveTourGuide;
     private String duration;
     private String thumbnailUrl;
-
     private Integer status;
+    private Double ratePoint;
+    private Long rateCount;
 
-    public TourResponseDTO(String tourId, String tourName, String tourType, String tourDescription, Long numberOfPeople, Boolean haveTourGuide, String duration, String thumbnailUrl, String currentStartTime, String currentEndTime, List<LocationDTO> locations, List<TourPackageDTO> packages, Integer status) {
+    public TourResponseDTO(String tourId, String tourName, String tourType, String tourDescription, Long numberOfPeople, Boolean haveTourGuide, String duration, String thumbnailUrl, String currentStartTime, String currentEndTime, List<LocationDTO> locations, List<TourPackageDTO> packages, Integer status, Double ratePoint, Long rateCount) {
         this.tourId = tourId;
         this.tourName = tourName;
         this.tourType = tourType;
@@ -28,6 +29,24 @@ public class TourResponseDTO {
         this.locations = locations;
         this.packages = packages;
         this.status = status;
+        this.ratePoint = ratePoint;
+        this.rateCount = rateCount;
+    }
+
+    public Long getRateCount() {
+        return rateCount;
+    }
+
+    public void setRateCount(Long rateCount) {
+        this.rateCount = rateCount;
+    }
+
+    public Double getRatePoint() {
+        return ratePoint;
+    }
+
+    public void setRatePoint(Double ratePoint) {
+        this.ratePoint = ratePoint;
     }
 
     public Integer getStatus() {

@@ -52,6 +52,7 @@ public class PermissionManager {
         tourGuidePermission.add("view_profile");
         tourGuidePermission.add("manage_work_calendar");
         tourGuidePermission.add("manage_tours");
+        tourGuidePermission.add("manage_current_work");
         rolePermissions.put(RoleEnum.TOUR_GUIDE, tourGuidePermission);
     }
 
@@ -66,6 +67,9 @@ public class PermissionManager {
     }
     public boolean canManageWorkCalendar() {
         return hasPermission("manage_work_calendar");
+    }
+    public boolean canManageCurrentWork() {
+        return hasPermission("manage_current_work");
     }
     public boolean canManageUsers() {
         return hasPermission("manage_users");

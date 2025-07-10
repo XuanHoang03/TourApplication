@@ -225,7 +225,9 @@ public class DataUtils {
                 schedule != null ? schedule.getEndTime() : null,
                 locations,
                 packages,
-                tour.getStatus()
+                tour.getStatus(),
+                null,
+                null
         );
     }
 

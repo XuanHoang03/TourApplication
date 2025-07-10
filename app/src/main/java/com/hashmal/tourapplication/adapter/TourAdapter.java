@@ -62,12 +62,14 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
         private TextView tourName;
         private TextView tourLocation;
         private TextView tourPrice;
+        private TextView tourRating;
 
         public TourViewHolder(@NonNull View itemView) {
             super(itemView);
             tourImage = itemView.findViewById(R.id.tourImage);
             tourName = itemView.findViewById(R.id.tourName);
             tourLocation = itemView.findViewById(R.id.tourLocation);
+            tourRating = itemView.findViewById(R.id.tourRating);
             tourPrice = itemView.findViewById(R.id.tourPrice);
 
             itemView.setOnClickListener(v -> {
@@ -91,7 +93,7 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
                 long price = tour.getPackages().get(0).getPrice();
                 tourPrice.setText(DataUtils.formatCurrency(price));
             }
-
+            tourRating.setText( tour.getRatePoint() + "/5 (" + tour.getRateCount() +" đánh giá)");
             // Load image using Glide
             if (tour.getThumbnailUrl() != null && !tour.getThumbnailUrl().isEmpty()) {
                 Glide.with(context)

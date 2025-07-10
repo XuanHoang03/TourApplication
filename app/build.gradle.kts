@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.firebase:firebase-messaging:23.4.1")
     implementation ("com.prolificinteractive:material-calendarview:1.4.3")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
