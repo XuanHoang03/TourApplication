@@ -1,9 +1,11 @@
 package com.hashmal.tourapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -11,10 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.ViewPagerAdapter;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.AccountFragment;
 import com.hashmal.tourapplication.fragment.CalendarFragment;
 import com.hashmal.tourapplication.fragment.HomeFragment;
 import com.hashmal.tourapplication.fragment.ProfileFragment;
+import com.hashmal.tourapplication.service.LocalDataService;
 
 public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
@@ -22,12 +26,14 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private static MainActivity instance;
 
+    private LocalDataService localDataService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
-
+        localDataService = LocalDataService.getInstance(this);
         viewPager = findViewById(R.id.viewPager);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -85,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public CalendarFragment getCalendarFragment() {
+
+
         return viewPagerAdapter.getCalendarFragment();
     }
 

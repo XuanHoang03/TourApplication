@@ -24,6 +24,7 @@ import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
+import com.hashmal.tourapplication.service.dto.Account;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,7 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         localDataService = LocalDataService.getInstance(this);
         if (Objects.nonNull(localDataService.getCurrentUser())) {
             UserDTO user = localDataService.getCurrentUser();
-            if (user.getAccount().getRoleName().equals(RoleEnum.CUSTOMER.getRoleName())) {
+            List<String> roles = List.of(RoleEnum.CUSTOMER.getRoleName(), RoleEnum.GUEST.getRoleName());
+
+            if (roles.contains( user.getAccount().getRoleName())) {
                 Intent homeIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(homeIntent);
                 finish();
@@ -150,6 +154,10 @@ public class LoginActivity extends AppCompatActivity {
 
         txtGuestLogin.setOnClickListener(v -> {
             Toast.makeText(this, "Guest login clicked", Toast.LENGTH_SHORT).show();
+            localDataService.useGuestAccount();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         txtCreateAccount.setOnClickListener(v -> {

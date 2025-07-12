@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hashmal.tourapplication.service.dto.Account;
+import com.hashmal.tourapplication.service.dto.Profile;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 
@@ -30,6 +32,13 @@ public class LocalDataService {
         return instance;
     }
 
+    public void useGuestAccount() {
+        String guest = "GUEST";
+        Account account = new Account(guest, guest, null, 0, "GUEST",1, null, null);
+        Profile profile = new Profile(null, "Tài khoản khách", guest, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        UserDTO user = new UserDTO(account, profile);
+        saveUserInfo(user);
+    }
 
     public void saveUserInfo(Object data) {
         String json = gson.toJson(data);

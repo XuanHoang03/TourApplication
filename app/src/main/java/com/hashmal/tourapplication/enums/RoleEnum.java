@@ -8,7 +8,8 @@ public enum RoleEnum {
     CUSTOMER(0,"Customer"),
     SYSTEM_ADMIN(11, "System Admin"),
     TOUR_GUIDE(1, "Tour Guide"),
-    TOUR_OPERATOR(2, "Tour Operator");
+    TOUR_OPERATOR(2, "Tour Operator"),
+    GUEST(3, "GUEST");
 
     RoleEnum(Integer roleId, String roleName) {
         this.roleId = roleId;

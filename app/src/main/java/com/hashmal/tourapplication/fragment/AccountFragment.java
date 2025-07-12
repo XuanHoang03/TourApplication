@@ -1,5 +1,7 @@
 package com.hashmal.tourapplication.fragment;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.activity.ProfileActivity;
 import com.hashmal.tourapplication.activity.TourHistoryActivity;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -47,6 +50,8 @@ public class AccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+
+
         // Initialize views
         profileTab = view.findViewById(R.id.profileTab);
         profileTab.setOnClickListener(v -> openProfileActivity());
@@ -56,6 +61,11 @@ public class AccountFragment extends Fragment {
 
         logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
+
+        if (localDataService.getCurrentUser().getAccount().getAccountId().equals(RoleEnum.GUEST.name())) {
+            profileTab.setVisibility(GONE);
+            bookingHistoryTab.setVisibility(GONE);
+        }
         return view;
     }
 

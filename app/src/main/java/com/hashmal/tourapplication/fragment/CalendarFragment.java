@@ -1,5 +1,6 @@
 package com.hashmal.tourapplication.fragment;
 
+import static android.view.View.GONE;
 import static com.hashmal.tourapplication.utils.DataUtils.formatDateValue;
 
 import android.content.Intent;
@@ -13,15 +14,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.reflect.TypeToken;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.activity.YourTourActivity;
 import com.hashmal.tourapplication.adapter.BookingHistoryAdapter;
 import com.hashmal.tourapplication.decorator.SpecialDayDecorator;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
@@ -69,6 +73,7 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
         filteredBookings = new ArrayList<>();
         apiService = ApiClient.getApiService();
         localDataService = LocalDataService.getInstance(requireContext());
+
     }
 
     @Nullable
@@ -79,26 +84,29 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
         tvSelectedDate = view.findViewById(R.id.tvSelectedDate);
         tvNoTours = view.findViewById(R.id.tvNoTours);
         rvBookingsOnDate = view.findViewById(R.id.rvToursOnDate);
+        calendarView = view.findViewById(R.id.calendarView);
+
 
         // Setup RecyclerView
         bookingAdapter = new BookingHistoryAdapter(filteredBookings, requireContext(), this);
         rvBookingsOnDate.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvBookingsOnDate.setAdapter(bookingAdapter);
-
-        loadUserBookings();
-
-        calendarView = view.findViewById(R.id.calendarView);
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
             filterBookingsForDate(DataUtils.buildDateFromCalendarDay(date));
         });
+        loadUserBookings();
+
+
         return view;
     }
 
     private void loadUserBookings() {
         UserDTO currentUser = localDataService.getCurrentUser();
-        if (currentUser == null) {
+        if (currentUser.getAccount().getAccountId().equals(RoleEnum.GUEST.getRoleName())) {
             tvNoTours.setVisibility(View.VISIBLE);
-            tvNoTours.setText("Please login to view your bookings");
+            tvNoTours.setText("Đăng nhập để xem lịch trình của bạn !!");
+            calendarView.setEnabled(false);
+            calendarView.setOnDateChangedListener(null);
             return;
         }
 
@@ -150,21 +158,21 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
                     }).start();
                 } else {
                     tvNoTours.setVisibility(View.VISIBLE);
-                    tvNoTours.setText("Failed to load bookings");
+                    tvNoTours.setText("Tải vé thất bại!");
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
                 tvNoTours.setVisibility(View.VISIBLE);
-                tvNoTours.setText("Error: " + t.getMessage());
+                tvNoTours.setText("Lỗi: " + t.getMessage());
             }
         });
     }
 
     private void filterBookingsForDate(Date selectedDate) {
         filteredBookings.clear();
-        tvSelectedDate.setText("Bookings on " + formatDateValue(selectedDate));
+        tvSelectedDate.setText("Ngày " + formatDateValue(selectedDate));
 
         // Convert selected date to start of day
         Calendar calendar = Calendar.getInstance();
@@ -195,8 +203,8 @@ public class CalendarFragment extends Fragment implements BookingHistoryAdapter.
 
         // Update UI
         bookingAdapter.updateData(filteredBookings);
-        tvNoTours.setVisibility(filteredBookings.isEmpty() ? View.VISIBLE : View.GONE);
-        tvNoTours.setText("No bookings for selected date");
+        tvNoTours.setVisibility(filteredBookings.isEmpty() ? View.VISIBLE : GONE);
+        tvNoTours.setText("Ngày này không có vé cho chuyến Tour nào cả ~!");
     }
 
     @Override

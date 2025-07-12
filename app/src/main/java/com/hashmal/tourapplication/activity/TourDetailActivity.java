@@ -2,6 +2,7 @@ package com.hashmal.tourapplication.activity;
 
 import static android.app.ProgressDialog.show;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +17,14 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
@@ -29,6 +32,7 @@ import com.hashmal.tourapplication.adapter.TourPackageAdapter;
 import com.hashmal.tourapplication.adapter.TourScheduleAdapter;
 import com.hashmal.tourapplication.dialog.CustomDialog;
 import com.hashmal.tourapplication.enums.Code;
+import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.model.TourPackage;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
@@ -103,6 +107,9 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
 
         // Setup booking button
         bookingButton.setOnClickListener(v -> {
+            if (localDataService.getCurrentUser().getAccount().getAccountId().equals( RoleEnum.GUEST.getRoleName())) {
+                requestLogin();
+            }
             if (selectedPackage == null) {
                 Toast.makeText(this, "Vui lòng chọn gói tour", Toast.LENGTH_SHORT).show();
                 return;
@@ -229,6 +236,10 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
             packageAdapter = new TourPackageAdapter(this, tourPackages, new TourPackageAdapter.OnPackageClickListener() {
                 @Override
                 public void onPackageClick(TourPackageDTO tourPackage) {
+                    if (localDataService.getCurrentUser().getAccount().getAccountId().equals( RoleEnum.GUEST.getRoleName())) {
+                        requestLogin();
+                        return;
+                    }
                     selectedPackage = tourPackage;
                     Toast.makeText(TourDetailActivity.this,
                             "Đã chọn gói: " + tourPackage.getPackageName(),
@@ -251,8 +262,12 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
 
     @Override
     public void onScheduleClick(TourScheduleResponseDTO schedule) {
-        selectedSchedule = schedule;
-        Toast.makeText(this, "Đã chọn lịch trình", Toast.LENGTH_SHORT).show();
+        if (localDataService.getCurrentUser().getAccount().getAccountId().equals( RoleEnum.GUEST.getRoleName())) {
+            requestLogin();
+        } else {
+            selectedSchedule = schedule;
+            Toast.makeText(this, "Đã chọn lịch trình", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -440,4 +455,20 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                     }
                 });
     }
+
+    private void requestLogin() {
+        new AlertDialog.Builder(this)
+                .setMessage("Bạn cần phải đăng nhập để thực hiện chức năng này!")
+                .setPositiveButton("Đăng nhập ngay", (dialog, which) -> {
+                    localDataService.clearUserData();
+                    Intent intent = new Intent(TourDetailActivity.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+
+                })
+                .setNegativeButton("Tôi chưa muốn đăng nhập", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+        }
 }
