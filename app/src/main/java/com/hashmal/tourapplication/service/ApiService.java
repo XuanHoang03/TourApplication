@@ -3,6 +3,7 @@ package com.hashmal.tourapplication.service;
 import com.hashmal.tourapplication.model.TourPackage;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.service.dto.CreateBookingRequest;
+import com.hashmal.tourapplication.service.dto.CreateReviewRequest;
 import com.hashmal.tourapplication.service.dto.CreateSystemUserRequest;
 import com.hashmal.tourapplication.service.dto.CreateTourRequest;
 import com.hashmal.tourapplication.service.dto.PaymentRequest;
@@ -222,4 +223,7 @@ public interface ApiService {
 
     @GET("/api/v1/tours/reviews/{tourId}")
     Call<List<ReviewDTO>> getReviewsByTourId(@Path("tourId") String tourId);
+
+    @POST("/api/v1/tours/reviews")
+    Call<BaseResponse> createReview(@Body CreateReviewRequest request);
 }

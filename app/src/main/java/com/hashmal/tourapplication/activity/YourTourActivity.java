@@ -1,8 +1,11 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +45,7 @@ public class YourTourActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Toolbar toolbar;
     private Gson gson = new Gson();
+    private YourTourDTO dto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,7 @@ public class YourTourActivity extends AppCompatActivity {
         }
 
         // Show loading
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(VISIBLE);
 
         // Call API to get tour details
         apiService.getYourTour(bookingId).enqueue(new Callback<YourTourDTO>() {
@@ -111,6 +115,9 @@ public class YourTourActivity extends AppCompatActivity {
 
     private void updateTourDetails(YourTourDTO tour) {
         // Set tour name
+
+        dto = tour;
+
         TextView tvTourName = findViewById(R.id.tvTourName);
         tvTourName.setText(tour.getTourPackage().getPackageName());
 
@@ -139,6 +146,19 @@ public class YourTourActivity extends AppCompatActivity {
             tourProgIntent.putExtra("tour", tourJson);
             startActivity(tourProgIntent);
         });
+        Button btnAddRate = findViewById(R.id.btnAddRate);
+        btnAddRate.setOnClickListener(v -> {
+            // Thuc hien chuyen sang man danh gia Tour
+            Intent reviewIntent = new Intent(YourTourActivity.this, TourReviewActivity.class);
+            reviewIntent.putExtra("tourId", dto.getTour().getTourId());
+            reviewIntent.putExtra("bookingId", String.valueOf( dto.getBooking().getId()));
+            reviewIntent.putExtra("tourName", dto.getTour().getTourName());
+            reviewIntent.putExtra("tourImageUrl", dto.getTour().getThumbnailUrl());
+            reviewIntent.putExtra("tourDate", dto.getTourSchedule().getStartTime());
+            startActivity(reviewIntent);
+
+        });
+
 
         // Set total price
         TextView tvTotalPrice = findViewById(R.id.tvTotalPrice);
@@ -151,6 +171,7 @@ public class YourTourActivity extends AppCompatActivity {
         switch (tour.getTourSchedule().getStatus()) {
             case 1:
                 tvStatus.setBackgroundTintList(getColorStateList(R.color.status_confirmed));
+                btnAddRate.setVisibility(VISIBLE);
                 break;
             case 0:
                 tvStatus.setBackgroundTintList(getColorStateList(R.color.status_pending));
@@ -162,6 +183,7 @@ public class YourTourActivity extends AppCompatActivity {
                 tvStatus.setBackgroundTintList(getColorStateList(R.color.status_default));
                 break;
         }
+
 
         TextView tvHighlightNote = findViewById(R.id.tvHighlightNote);
         tvHighlightNote.setOnClickListener(v -> {

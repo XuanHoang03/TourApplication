@@ -6,9 +6,9 @@ public class ReviewDTO {
     private String reviewerName;
     private Integer rating;
     private String comment;
-    private LocalDateTime reviewTime;
+    private String reviewTime;
 
-    public ReviewDTO(String reviewerName, Integer rating, String comment, LocalDateTime reviewTime) {
+    public ReviewDTO(String reviewerName, Integer rating, String comment, String reviewTime) {
         this.reviewerName = reviewerName;
         this.rating = rating;
         this.comment = comment;
@@ -42,11 +42,11 @@ public class ReviewDTO {
         this.comment = comment;
     }
 
-    public LocalDateTime getReviewTime() {
+    public String getReviewTime() {
         return reviewTime;
     }
 
-    public void setReviewTime(LocalDateTime reviewTime) {
+    public void setReviewTime(String reviewTime) {
         this.reviewTime = reviewTime;
     }
 }

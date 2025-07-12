@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.adapter.ReviewAdapter;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.ReviewDTO;
@@ -24,8 +25,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TourReviewsActivity extends AppCompatActivity {
-    private TextView tvTourName, tvEmpty;
+    private TextView tvTourName;
+    private View layoutEmpty;
     private RecyclerView rvReviews;
+    private ReviewAdapter reviewAdapter;
     private ApiService apiService;
     private String tourId, tourName;
 
@@ -46,8 +49,11 @@ public class TourReviewsActivity extends AppCompatActivity {
 
         // Initialize views
         tvTourName = findViewById(R.id.tvTourName);
-        tvEmpty = findViewById(R.id.tvEmpty);
+        layoutEmpty = findViewById(R.id.layoutEmpty);
         rvReviews = findViewById(R.id.rvReviews);
+        
+        // Setup RecyclerView
+        setupRecyclerView();
 
         // Get data from intent
         tourId = getIntent().getStringExtra("tourId");
@@ -88,21 +94,36 @@ public class TourReviewsActivity extends AppCompatActivity {
         });
     }
 
+    private void setupRecyclerView() {
+        reviewAdapter = new ReviewAdapter(this, new ArrayList<>());
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        rvReviews.setAdapter(reviewAdapter);
+    }
+    
     private void displayReviews(List<ReviewDTO> reviews) {
         rvReviews.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.GONE);
+        layoutEmpty.setVisibility(View.GONE);
         
-        // TODO: Tạo ReviewAdapter và hiển thị danh sách đánh giá
-        // ReviewAdapter adapter = new ReviewAdapter(reviews);
-        // rvReviews.setLayoutManager(new LinearLayoutManager(this));
-        // rvReviews.setAdapter(adapter);
-        
-        // Tạm thời hiển thị số lượng đánh giá
-        Toast.makeText(this, "Có " + reviews.size() + " đánh giá", Toast.LENGTH_SHORT).show();
+        reviewAdapter.updateReviews(reviews);
     }
 
     private void showEmptyState() {
         rvReviews.setVisibility(View.GONE);
-        tvEmpty.setVisibility(View.VISIBLE);
+        layoutEmpty.setVisibility(View.VISIBLE);
+    }
+    
+    public void refreshReviews() {
+        if (tourId != null) {
+            loadReviews(tourId);
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh reviews khi quay lại màn hình
+        if (tourId != null) {
+            loadReviews(tourId);
+        }
     }
 } 

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:mapbox="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
+
     android:layout_height="match_parent">
 
-    <!-- ✅ Toolbar luôn nằm trên cùng, không cuộn -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="0dp"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Booking Detail" />
 
-    <!-- ✅ NestedScrollView chứa nội dung cuộn được -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -33,7 +32,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- Nội dung ở đây, ví dụ: -->
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
@@ -154,6 +152,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAddRate"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/blue_gradient_button"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Đánh giá"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:visibility="gone"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteX="16dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -167,5 +178,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
