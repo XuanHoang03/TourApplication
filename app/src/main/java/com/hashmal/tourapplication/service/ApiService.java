@@ -226,4 +226,7 @@ public interface ApiService {
 
     @POST("/api/v1/tours/reviews")
     Call<BaseResponse> createReview(@Body CreateReviewRequest request);
+
+    @POST("user/change-password")
+    Call<BaseResponse> changePassword(@Body Map<String, String> request);
 }

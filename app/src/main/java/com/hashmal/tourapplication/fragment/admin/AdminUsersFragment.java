@@ -1,6 +1,5 @@
 package com.hashmal.tourapplication.fragment.admin;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +24,9 @@ import androidx.appcompat.widget.SearchView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.bumptech.glide.Glide;
 import com.hashmal.tourapplication.R;
-import com.hashmal.tourapplication.activity.AccountActivity;
-import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.adapter.admin.AdminUsersAdapter;
 import com.hashmal.tourapplication.dialog.CustomDialog;
 import com.hashmal.tourapplication.enums.Code;
-import com.hashmal.tourapplication.enums.StatusEnum;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;

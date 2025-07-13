@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -127,18 +129,18 @@ public class YourTourActivity extends AppCompatActivity {
 
         // Set departure time
         TextView tvDepartureTime = findViewById(R.id.tvDepartureTime);
-        String departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime(), true));
-        tvDepartureTime.setText(departureTime);
+        String[] departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime(), true)).split("T");
+        tvDepartureTime.setText("Khởi hành: " + departureTime[1] + " | " +departureTime[0] );
 
         // Set return time
         TextView tvReturnTime = findViewById(R.id.tvReturnTime);
-        String returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime(), true));
-        tvReturnTime.setText(returnTime);
+        String[] returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime(), true)).split("T");
+        tvReturnTime.setText("Về: " + returnTime[1] + " | " +returnTime[0] );
 
         TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
         tvNumberOfTickets.setText("Số vé: " + tour.getBooking().getQuantity());
 
-        TextView tvTour = findViewById(R.id.tvTour);
+        LinearLayout tvTour = findViewById(R.id.tvTour);
         tvTour.setOnClickListener(v -> {
             Intent tourProgIntent = new Intent(YourTourActivity.this, TourDetailActivity.class);
             TourResponseDTO tourResponseDTO = DataUtils.convertYourTourToTourResponse(tour);
@@ -185,8 +187,8 @@ public class YourTourActivity extends AppCompatActivity {
         }
 
 
-        TextView tvHighlightNote = findViewById(R.id.tvHighlightNote);
-        tvHighlightNote.setOnClickListener(v -> {
+        LinearLayout tvTourRoute = findViewById(R.id.tvTourRoute);
+        tvTourRoute.setOnClickListener(v -> {
 
             Intent mapIntent = new Intent(YourTourActivity.this, TourRouteActivity.class);
             String locationString = gson.toJson(tour.getTourLocationList());

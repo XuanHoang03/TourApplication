@@ -48,13 +48,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 return;
             }
 
-            apiService. sendOtpViaEmail(phone, CodeType.VERIFY_OTP.name()).enqueue(new Callback<BaseResponse>() {
+            Map<String, String> map = new HashMap<>();
+            map.put("phoneNumber", phone);
+
+            apiService.forgotPassword(map).enqueue(new Callback<BaseResponse>() {
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         BaseResponse res = response.body();
                         Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ForgotPasswordActivity.this, VerifyAccountActivity.class);
+                        intent.putExtra("registerUserId", (String) res.getData());
                         startActivity(intent);
                     } else {
                         Toast.makeText(ForgotPasswordActivity.this, "Failed to send reset request", Toast.LENGTH_SHORT).show();

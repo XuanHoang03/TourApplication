@@ -3,172 +3,362 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
-    android:layout_height="match_parent">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <!-- Header with Gradient Background -->
+    <LinearLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="Booking Detail" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_gradient_background"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Chi tiết đặt tour"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- Status Badge -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_status_badge"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:text="ĐÃ XÁC NHẬN"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Tour Name -->
+        <TextView
+            android:id="@+id/tvTourName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="center"
+            android:text="Amazing Tour to Sa Pa"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Ticket Code -->
+        <TextView
+            android:id="@+id/tvTicketCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="center"
+            android:text="Mã vé: TK123456789"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/headerContainer">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
 
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_status_badge"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"
-                android:text="CONFIRMED"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- Các TextView khác giống như bạn viết -->
-            <!-- ... TourName, TicketCode, DepartureTime, ... -->
-
-            <TextView
-                android:id="@+id/tvTourName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Amazing Tour to Sa Pa"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvStatus" />
-
-            <TextView
-                android:id="@+id/tvTicketCode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTourName" />
-
-            <!-- ... (Các TextView tiếp theo) -->
-            <!-- Departure Time -->
-            <TextView
-                android:id="@+id/tvDepartureTime"
+            <!-- Tour Details Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:drawablePadding="8dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@id/tvTicketCode" />
-
-            <!-- Return Time -->
-            <TextView
-                android:id="@+id/tvReturnTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@id/tvDepartureTime" />
-
-            <TextView
-                android:id="@+id/tvNumberOfTickets"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:drawablePadding="8dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@id/tvReturnTime" />
-            <TextView
-                android:id="@+id/tvHighlightNote"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:text="Xem lộ trình Tour"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="16dp"
                 android:elevation="4dp"
-                android:drawableEnd="@drawable/ic_arrow_right"
-                android:drawablePadding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tvNumberOfTickets"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-            <TextView
-                android:id="@+id/tvTour"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:text="Xem chương trình Tour"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:elevation="4dp"
-                android:drawableEnd="@drawable/ic_arrow_right"
-                android:drawablePadding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tvHighlightNote"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-            <!-- Total Price -->
-            <TextView
-                android:id="@+id/tvTotalPrice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/tvTour"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="Thông tin chuyến đi"
+                        android:textColor="#3A3A50"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <!-- Departure Time -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="#0077CC" />
+
+                        <TextView
+                            android:id="@+id/tvDepartureTime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Khởi hành: 08:00 - 15/12/2024"
+                            android:textColor="#222222"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Return Time -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="#0077CC" />
+
+                        <TextView
+                            android:id="@+id/tvReturnTime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Về: 18:00 - 17/12/2024"
+                            android:textColor="#222222"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Number of Tickets -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_ticket"
+                            app:tint="#0077CC" />
+
+                        <TextView
+                            android:id="@+id/tvNumberOfTickets"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Số vé: 2 người"
+                            android:textColor="#222222"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Tour Route Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:id="@+id/tvTourRoute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Lộ trình tour"
+                            android:textColor="#3A3A50"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Xem chi tiết lộ trình và địa điểm"
+                            android:textColor="#7A7A7A"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#0077CC" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Tour Program Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:id="@+id/tvTour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Chương trình tour"
+                            android:textColor="#3A3A50"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Xem chi tiết chương trình và hoạt động"
+                            android:textColor="#7A7A7A"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#0077CC" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Price Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/blue_gradient_button"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="Tổng tiền"
+                        android:textColor="#3A3A50"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTotalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="2,500,000 VNĐ"
+                        android:textColor="@color/money_color"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Rate Button -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAddRate"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:background="@drawable/blue_gradient_button"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="Đánh giá"
+                android:text="Đánh giá tour"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
-                android:visibility="gone"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:layout_editor_absoluteX="16dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:visibility="gone" />
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- ✅ ProgressBar nổi trên toàn bộ layout -->
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -178,6 +368,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

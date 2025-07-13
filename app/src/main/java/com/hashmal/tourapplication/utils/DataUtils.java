@@ -156,13 +156,13 @@ public class DataUtils {
     public static String convertStatusFromInt(Integer integer) {
         switch (integer) {
             case 1:
-                return StatusEnum.Completed.name();
+                return "Đã hoàn thành";
             case 0:
-                return StatusEnum.Pending.name();
+                return "Chưa khởi hành";
             case -1:
-                return StatusEnum.Cancelled.name();
+                return "Đã hủy";
             case 11:
-                return StatusEnum.Progress.name();
+                return "Đã khởi hành";
         }
         return "";
     }

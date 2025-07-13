@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.ChangePasswordActivity;
 import com.hashmal.tourapplication.activity.LoginActivity;
 import com.hashmal.tourapplication.activity.ProfileActivity;
 import com.hashmal.tourapplication.activity.TourHistoryActivity;
@@ -35,7 +36,7 @@ import retrofit2.Response;
 
 public class AccountFragment extends Fragment {
     private Button logoutButton;
-    private LinearLayout profileTab, bookingHistoryTab;
+    private LinearLayout profileTab, bookingHistoryTab, changePasswordTab;
     private LocalDataService localDataService;
 
     @Override
@@ -59,14 +60,23 @@ public class AccountFragment extends Fragment {
         bookingHistoryTab = view.findViewById(R.id.bookingHistoryTab);
         bookingHistoryTab.setOnClickListener(v -> openTourHistoryActivity());
 
+        changePasswordTab = view.findViewById(R.id.changePasswordTab);
+        changePasswordTab.setOnClickListener(v -> openChangePasswordActivity());
+
         logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logout());
 
         if (localDataService.getCurrentUser().getAccount().getAccountId().equals(RoleEnum.GUEST.name())) {
             profileTab.setVisibility(GONE);
             bookingHistoryTab.setVisibility(GONE);
+            changePasswordTab.setVisibility(GONE);
         }
         return view;
+    }
+
+    private void openChangePasswordActivity() {
+        Intent intent = new Intent(requireContext(), ChangePasswordActivity.class);
+        startActivity(intent);
     }
 
     private void openProfileActivity() {
