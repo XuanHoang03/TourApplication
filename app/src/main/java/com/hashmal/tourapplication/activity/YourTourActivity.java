@@ -137,7 +137,7 @@ public class YourTourActivity extends AppCompatActivity {
         String[] returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime(), true)).split("T");
         tvReturnTime.setText("Về: " + returnTime[1] + " | " +returnTime[0] );
 
-        TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
+         TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
         tvNumberOfTickets.setText("Số vé: " + tour.getBooking().getQuantity());
 
         LinearLayout tvTour = findViewById(R.id.tvTour);

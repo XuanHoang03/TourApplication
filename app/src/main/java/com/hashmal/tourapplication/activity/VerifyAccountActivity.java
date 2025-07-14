@@ -86,6 +86,8 @@ public class VerifyAccountActivity extends AppCompatActivity {
 
         intent = getIntent();
         String userId = intent.getStringExtra("registerUserId");
+        String type = intent.getStringExtra("RESET_PASSWORD");
+
         btnVerify = findViewById(R.id.btnVerify);
 
         btnVerify.setOnClickListener(v -> {
@@ -101,7 +103,11 @@ public class VerifyAccountActivity extends AppCompatActivity {
                                 .setCancelable(false)
                                 .setPositiveButton("OK", (dialog, which) -> {
                                     // Chuyển màn hình hoặc đóng dialog
-                                    Intent intent = new Intent(VerifyAccountActivity.this, LoginActivity.class); // thay bằng activity cần chuyển
+                                    Intent intent = new Intent(VerifyAccountActivity.this, LoginActivity.class);
+
+                                    if(type!= null) {
+                                        Toast.makeText(getApplicationContext(), "Chúng tôi đã gửi mật khẩu mới tới email của bạn!", Toast.LENGTH_SHORT).show();
+                                    }
                                     startActivity(intent);
                                 })
                                 .show();

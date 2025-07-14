@@ -51,7 +51,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             Map<String, String> map = new HashMap<>();
             map.put("phoneNumber", phone);
 
-            apiService.forgotPassword(map).enqueue(new Callback<BaseResponse>() {
+            apiService.sendOtpViaEmail(phone, "VERIFY_OTP").enqueue(new Callback<BaseResponse>() {
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
@@ -59,6 +59,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ForgotPasswordActivity.this, VerifyAccountActivity.class);
                         intent.putExtra("registerUserId", (String) res.getData());
+                        intent.putExtra("type", "RESET_PASSWORD");
                         startActivity(intent);
                     } else {
                         Toast.makeText(ForgotPasswordActivity.this, "Failed to send reset request", Toast.LENGTH_SHORT).show();
