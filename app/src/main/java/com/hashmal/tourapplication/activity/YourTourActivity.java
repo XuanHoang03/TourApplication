@@ -1,11 +1,13 @@
 package com.hashmal.tourapplication.activity;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -18,21 +20,26 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
+import com.hashmal.tourapplication.service.FirebaseService;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
 import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
+import com.hashmal.tourapplication.service.dto.UserChatInfo;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -96,7 +103,7 @@ public class YourTourActivity extends AppCompatActivity {
         apiService.getYourTour(bookingId).enqueue(new Callback<YourTourDTO>() {
             @Override
             public void onResponse(Call<YourTourDTO> call, Response<YourTourDTO> response) {
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(GONE);
 
                 if (response.isSuccessful() && response.body() != null) {
                     YourTourDTO tour = response.body();
@@ -109,7 +116,7 @@ public class YourTourActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<YourTourDTO> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(GONE);
                 Toast.makeText(YourTourActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -120,8 +127,10 @@ public class YourTourActivity extends AppCompatActivity {
         // Set tour name
 
         dto = tour;
-
+        ImageView imgTourGuideAvatar = findViewById(R.id.imgTourGuideAvatar);
         TextView tvTourName = findViewById(R.id.tvTourName);
+        TextView tvTourGuideName = findViewById(R.id.tvTourGuideName);
+        TextView tvTourGuidePhone = findViewById(R.id.tvTourGuidePhone);
         tvTourName.setText(tour.getTourPackage().getPackageName());
 
         // Set ticket code
@@ -131,14 +140,14 @@ public class YourTourActivity extends AppCompatActivity {
         // Set departure time
         TextView tvDepartureTime = findViewById(R.id.tvDepartureTime);
         String[] departureTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getStartTime(), true)).split("T");
-        tvDepartureTime.setText("Khởi hành: " + departureTime[1] + " | " +departureTime[0] );
+        tvDepartureTime.setText("Khởi hành: " + departureTime[1] + " | " + departureTime[0]);
 
         // Set return time
         TextView tvReturnTime = findViewById(R.id.tvReturnTime);
         String[] returnTime = (DataUtils.formatDateTimeString(tour.getTourSchedule().getEndTime(), true)).split("T");
-        tvReturnTime.setText("Về: " + returnTime[1] + " | " +returnTime[0] );
+        tvReturnTime.setText("Về: " + returnTime[1] + " | " + returnTime[0]);
 
-         TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
+        TextView tvNumberOfTickets = findViewById(R.id.tvNumberOfTickets);
         tvNumberOfTickets.setText("Số vé: " + tour.getBooking().getQuantity());
 
         LinearLayout tvTour = findViewById(R.id.tvTour);
@@ -154,7 +163,7 @@ public class YourTourActivity extends AppCompatActivity {
             // Thuc hien chuyen sang man danh gia Tour
             Intent reviewIntent = new Intent(YourTourActivity.this, TourReviewActivity.class);
             reviewIntent.putExtra("tourId", dto.getTour().getTourId());
-            reviewIntent.putExtra("bookingId", String.valueOf( dto.getBooking().getId()));
+            reviewIntent.putExtra("bookingId", String.valueOf(dto.getBooking().getId()));
             reviewIntent.putExtra("tourName", dto.getTour().getTourName());
             reviewIntent.putExtra("tourImageUrl", dto.getTour().getThumbnailUrl());
             reviewIntent.putExtra("tourDate", dto.getTourSchedule().getStartTime());
@@ -169,7 +178,7 @@ public class YourTourActivity extends AppCompatActivity {
 
         // Set status
         TextView tvStatus = findViewById(R.id.tvStatus);
-        tvStatus.setText(DataUtils.convertStatusFromInt( tour.getTourSchedule().getStatus()));
+        tvStatus.setText(DataUtils.convertStatusFromInt(tour.getTourSchedule().getStatus()));
         // Set status color based on status
         switch (tour.getTourSchedule().getStatus()) {
             case 1:
@@ -193,13 +202,39 @@ public class YourTourActivity extends AppCompatActivity {
                 public void onResponse(Call<SysUserDTO> call, Response<SysUserDTO> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         SysUserDTO staff = response.body();
+                        if (staff.getProfile().getAvatarUrl() != null) {
+                            Glide.with(YourTourActivity.this)
+                                    .load(staff.getProfile().getAvatarUrl())
+                                    .circleCrop()
+                                    .placeholder(R.drawable.ic_person)
+                                    .into(imgTourGuideAvatar);
+                        }
+                        tvTourGuideName.setText("Hướng dẫn viên: " + staff.getProfile().getFullName());
+                        tvTourGuidePhone.setText("SĐT: "+ staff.getProfile().getPhoneNumber());
+                        ImageButton btnMessageGuide = findViewById(R.id.btnMessageGuide);
+                        btnMessageGuide.setOnClickListener(v->{
+                            Intent chatIntent = new Intent(YourTourActivity.this, ChatActivity.class);
+
+                            UserChatInfo ref = new UserChatInfo(staff.getAccount().getAccountId(), staff.getProfile().getFullName(), staff.getProfile().getAvatarUrl());
+
+                            chatIntent.putExtra("otherUserJson", new Gson().toJson(ref));
+                            FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
+                            String conversationId = firebaseService.getConversationIdOfUsers(List.of(localDataService.getCurrentUser().getAccount().getAccountId()
+                                    , ref.getAccountId()));
+                            chatIntent.putExtra("conversationId", conversationId);
+                            startActivity(chatIntent);
+                        });
                     }
                 }
+
                 @Override
                 public void onFailure(Call<SysUserDTO> call, Throwable throwable) {
 
                 }
             });
+        } else {
+            LinearLayout layoutTourGuide = findViewById(R.id.layoutTourGuide);
+            layoutTourGuide.setVisibility(GONE);
         }
 
 
