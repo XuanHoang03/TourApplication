@@ -37,7 +37,7 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
     private Map<String, UserChatInfo> chatInfo;
     private Context context;
 
-    public UserConversationAdapter(Context context, List<UserConversation> conversations, Map<String, UserChatInfo> chatInfo) {
+    public  UserConversationAdapter(Context context, List<UserConversation> conversations, Map<String, UserChatInfo> chatInfo) {
         this.context = context;
         this.conversations = conversations;
         this.chatInfo = chatInfo;
@@ -52,7 +52,7 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
+    public void onBindViewHolder(ConversationViewHolder holder, int position) {
         FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
         LocalDataService localDataService = LocalDataService.getInstance(context);
         UserConversation conversation = conversations.get(position);

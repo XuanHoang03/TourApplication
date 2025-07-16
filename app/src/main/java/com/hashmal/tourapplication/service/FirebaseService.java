@@ -6,14 +6,11 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hashmal.tourapplication.callback.OnConversationReadyListener;
 import com.hashmal.tourapplication.constants.FirebaseConst;
-import com.hashmal.tourapplication.entity.UserConversation;
 import com.hashmal.tourapplication.enums.MessageType;
 import com.hashmal.tourapplication.utils.DataUtils;
 
@@ -24,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FirebaseService {
     private static final String TAG = "FIREBASE_SERVICE";
@@ -166,6 +164,28 @@ public class FirebaseService {
                 .addOnFailureListener(listener::onError);
 
 
+    }
+
+    public String getConversationIdOfUsers(List<String> listUser) {
+        List<String> sortedUserIds = new ArrayList<>(listUser);
+        Collections.sort(sortedUserIds);
+        // Tạo Conversation ID duy nhất dựa trên userIds
+        String conversationId = TextUtils.join("_", sortedUserIds);
+        database.collection("conversation").document(conversationId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (!document.exists()) {
+                    Map<String, Object> conversationData = new HashMap<>();
+                    conversationData.put("listUserId", listUser);
+                    conversationData.put("createdAt", new Date());
+                    conversationData.put("updatedAt", new Date());
+                    database.collection("conversations")
+                            .document(conversationId)
+                            .set(conversationData);
+                }
+            }
+        });
+        return conversationId;
     }
 
 }

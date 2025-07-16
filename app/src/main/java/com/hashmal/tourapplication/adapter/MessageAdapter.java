@@ -3,7 +3,9 @@ package com.hashmal.tourapplication.adapter;
 import static androidx.appcompat.content.res.AppCompatResources.getColorStateList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +13,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
+import com.hashmal.tourapplication.activity.ChatActivity;
+import com.hashmal.tourapplication.activity.ProfileActivity;
+import com.hashmal.tourapplication.callback.OnConversationReadyListener;
 import com.hashmal.tourapplication.entity.Message;
+import com.hashmal.tourapplication.service.FirebaseService;
 import com.hashmal.tourapplication.service.dto.UserChatInfo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +39,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private final List<Message> messageList;
     private String currentUserId;
     private Context context;
-    public MessageAdapter(List<Message> messageList,String currentUserId, Context context) {
+
+    public interface OnUserReferClickListener {
+        void onUserReferClick(UserChatInfo userInfo);
+    }
+
+    public MessageAdapter(List<Message> messageList, String currentUserId, Context context) {
         this.messageList = messageList;
         this.currentUserId = currentUserId;
         this.context = context;
@@ -52,6 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
         return new MessageViewHolder(view);
     }
+
     @Override
     public int getItemViewType(int position) {
         Message msg = messageList.get(position);
@@ -60,6 +75,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
         return msg.getCreatedBy().equals("Bạn") ? 1 : 0;
     }
+
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
 
@@ -76,6 +92,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     .error(R.drawable.error_image)
                     .circleCrop()
                     .into(holder.avatarRefImageView);
+
+            // Thêm sự kiện click cho USER_REFER message
+            holder.bubbleContainer.setOnClickListener(v -> {
+                        Intent chatIntent = new Intent(context, ChatActivity.class);
+                        chatIntent.putExtra("otherUserJson", content);
+                        FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
+                        String conversationId = firebaseService.getConversationIdOfUsers(List.of(currentUserId, ref.getAccountId()));
+                        Toast.makeText(context, conversationId, Toast.LENGTH_SHORT).show();
+                        chatIntent.putExtra("conversationId", conversationId);
+
+                        context.startActivity(chatIntent);
+                    }
+            );
+
         } else {
             holder.contentTextView.setText(message.getContent());
             holder.senderTextView.setText(message.getCreatedBy());
@@ -89,13 +119,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         }
     }
+
     @Override
     public int getItemCount() {
         return messageList.size();
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView senderTextView, contentTextView, timeTextView,userNameRefTextView;
+        TextView senderTextView, contentTextView, timeTextView, userNameRefTextView;
         LinearLayout bubbleContainer, mainContainer;
         ImageView avatarImageView, avatarRefImageView;
 

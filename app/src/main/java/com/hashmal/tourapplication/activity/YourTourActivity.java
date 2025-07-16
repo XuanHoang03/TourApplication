@@ -26,6 +26,7 @@ import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.LocationDTO;
+import com.hashmal.tourapplication.service.dto.SysUserDTO;
 import com.hashmal.tourapplication.service.dto.TourPackageDTO;
 import com.hashmal.tourapplication.service.dto.TourResponseDTO;
 import com.hashmal.tourapplication.service.dto.YourTourDTO;
@@ -184,6 +185,21 @@ public class YourTourActivity extends AppCompatActivity {
             default:
                 tvStatus.setBackgroundTintList(getColorStateList(R.color.status_default));
                 break;
+        }
+
+        if (tour.getTourSchedule().getTourGuideId() != null) {
+            apiService.getStaffInfo(tour.getTourSchedule().getTourGuideId()).enqueue(new Callback<SysUserDTO>() {
+                @Override
+                public void onResponse(Call<SysUserDTO> call, Response<SysUserDTO> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        SysUserDTO staff = response.body();
+                    }
+                }
+                @Override
+                public void onFailure(Call<SysUserDTO> call, Throwable throwable) {
+
+                }
+            });
         }
 
 

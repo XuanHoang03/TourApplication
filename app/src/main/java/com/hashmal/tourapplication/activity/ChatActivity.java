@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.MessageAdapter;
+import com.hashmal.tourapplication.callback.OnConversationReadyListener;
 import com.hashmal.tourapplication.constants.FirebaseConst;
 import com.hashmal.tourapplication.entity.Message;
 import com.hashmal.tourapplication.service.FirebaseService;
@@ -91,6 +92,7 @@ private LinearLayout messageBox ;
         messageAdapter = new MessageAdapter(messageList, currentUser.getAccount().getAccountId(), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(messageAdapter);
+        
 
         // Init FirebaseService
         firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
