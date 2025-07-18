@@ -13,7 +13,7 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Booking History" />
+        app:title="Lịch sử đặt vé Tour" />
 
     <!-- Main Content -->
     <androidx.constraintlayout.widget.ConstraintLayout

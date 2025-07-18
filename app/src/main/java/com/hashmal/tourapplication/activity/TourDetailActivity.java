@@ -118,6 +118,11 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                 Toast.makeText(this, "Vui lòng chọn lịch trình", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (currentTourInfo.getStatus() == -1) {
+                Toast.makeText(this, "Tour này không còn hoạt động nữa!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             showBookingBottomSheet();
         });
     }

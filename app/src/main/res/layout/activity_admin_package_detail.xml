@@ -1,80 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Quay lại" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@android:color/white">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Quay lại" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Thông tin dịch vụ"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#223E91"
+                android:gravity="center"
+                android:fontFamily="@font/montserrat_regular" />
+        </LinearLayout>
+
+        <!-- Tên gói -->
         <TextView
-            android:layout_width="0dp"
+            android:text="Tên gói dịch vụ"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Thông tin dịch vụ"
-            android:textSize="22sp"
+            android:layout_width="wrap_content"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="2dp"/>
+        <TextView
+            android:id="@+id/tvPackageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên gói dịch vụ"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:gravity="center" />
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tvPackageName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tên gói dịch vụ"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp" />
+            android:textColor="#223E91"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="12dp" />
 
-    <TextView
-        android:id="@+id/tvPackageDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mô tả"
-        android:textSize="16sp"
-        android:layout_marginBottom="12dp" />
+        <!-- Mô tả -->
+        <TextView
+            android:text="Mô tả"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="2dp"/>
+        <TextView
+            android:id="@+id/tvPackageDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mô tả"
+            android:textSize="15sp"
+            android:background="@drawable/rounded_top_corners"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="12dp" />
 
-    <TextView
-        android:id="@+id/tvPackagePrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Giá"
-        android:textSize="16sp"
-        android:layout_marginBottom="12dp" />
-
-    <TextView
-        android:id="@+id/tvIsMain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Loại gói"
-        android:textSize="16sp"
-        android:layout_marginBottom="24dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end">
-        <Button
-            android:id="@+id/btnEditPackage"
+        <!-- Giá -->
+        <TextView
+            android:text="Giá"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="2dp"/>
+        <TextView
+            android:id="@+id/tvPackagePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sửa"
-            android:layout_marginEnd="16dp" />
-        <Button
-            android:id="@+id/btnDeletePackage"
+            android:text="2,000,000 VNĐ"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#0077CC"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Loại gói -->
+        <TextView
+            android:text="Loại gói"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="2dp"/>
+        <TextView
+            android:id="@+id/tvIsMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xóa"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:textColor="@android:color/white" />
+            android:text="Chính/Phụ"
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Nút chức năng -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+            <Button
+                android:id="@+id/btnEditPackage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sửa"
+                android:background="@drawable/blue_gradient_button"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/montserrat_regular"
+                android:layout_marginEnd="16dp" />
+            <Button
+                android:id="@+id/btnDeletePackage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xóa"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/montserrat_regular" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout> 
+</ScrollView> 

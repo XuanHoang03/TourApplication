@@ -520,4 +520,10 @@ public class AdminTourDetailActivity extends AppCompatActivity {
         setResult(RESULT_OK, resultIntent);
         finish();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadTourInfo(tourId);
+    }
 }
