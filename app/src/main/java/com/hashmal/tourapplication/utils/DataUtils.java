@@ -141,6 +141,26 @@ public class DataUtils {
         }
     }
 
+    public static String formatDateTimeStringV2(String dateString, boolean haveTime) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat outputFormat2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        try {
+            // Cắt bớt phần dư nếu có
+            if (dateString.length() > 23) {
+                dateString = dateString.substring(0, 23); // "2025-05-22T16:17:19.035"
+            }
+            Date date = inputFormat.parse(dateString);
+            if (haveTime) {
+                return outputFormat.format(date);
+            } else return outputFormat2.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return dateString;  // fallback
+        }
+    }
+
     public static String parseDateOfBirth(String dateString) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         SimpleDateFormat outputFormat2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -153,6 +173,20 @@ public class DataUtils {
         }
     }
 
+    public static String convertBookingStatusFromInt(Integer integer) {
+        switch (integer) {
+            case 1:
+                return "Đã thanh toán";
+            case 0:
+                return "Chưa thanh toán";
+            case -1:
+                return "Đã hủy thanh toán";
+            case -11:
+                return "Đã hủy vé";
+        }
+        return "";
+    }
+
     public static String convertStatusFromInt(Integer integer) {
         switch (integer) {
             case 1:
@@ -163,6 +197,8 @@ public class DataUtils {
                 return "Đã hủy";
             case 11:
                 return "Đã khởi hành";
+            case -11:
+                return "Đã hủy";
         }
         return "";
     }

@@ -32,6 +32,7 @@ import com.hashmal.tourapplication.service.dto.Profile;
 import com.hashmal.tourapplication.service.dto.SystemAccount;
 import com.hashmal.tourapplication.service.dto.TourGuideScheduleDTO;
 import com.hashmal.tourapplication.adapter.TourGuideScheduleAdapter;
+import com.hashmal.tourapplication.utils.DataUtils;
 
 import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
@@ -152,7 +153,7 @@ public class TourGuideDetailActivity extends AppCompatActivity {
         }
         tvGender.setText(genderStr);
         // Ngày sinh
-        tvDob.setText(profile != null && profile.getDob() != null ? profile.getDob() : "Chưa cập nhật");
+        tvDob.setText(profile != null && profile.getDob() != null ? DataUtils.parseDateOfBirth(profile.getDob()) : "Chưa cập nhật");
         // Địa chỉ
         String address = "";
         if (profile != null) {

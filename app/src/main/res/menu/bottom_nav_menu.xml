@@ -3,15 +3,15 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="Trang chủ" />
     <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/ic_calendar"
-        android:title="Calendar" />
+        android:title="Lịch trình" />
     <item
         android:id="@+id/navigation_account"
         android:icon="@drawable/ic_account"
-        android:title="Account" />
+        android:title="Tài khoản" />
 <!--    <item-->
 <!--        android:id="@+id/navigation_schedule"-->
 <!--        android:icon="@drawable/ic_account"-->

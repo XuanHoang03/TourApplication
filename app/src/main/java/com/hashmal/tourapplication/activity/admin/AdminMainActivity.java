@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,9 +16,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.activity.LoginActivity;
+import com.hashmal.tourapplication.activity.UserConversationFragment;
 import com.hashmal.tourapplication.enums.RoleEnum;
 import com.hashmal.tourapplication.fragment.CustomerTicketsFragment;
 import com.hashmal.tourapplication.fragment.GuideCurrentTourFragment;
@@ -95,17 +98,19 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.nav_tour_guide).setVisible(permissionManager.canViewTourGuide());
         navigationView.getMenu().findItem(R.id.nav_work_calendar).setVisible(permissionManager.canManageWorkCalendar());
         navigationView.getMenu().findItem(R.id.nav_current_work).setVisible(permissionManager.canManageCurrentWork());
+        navigationView.getMenu().findItem(R.id.nav_message).setVisible(permissionManager.canChat());
     }
 
     private void loadDefaultFragment() {
         Fragment fragment = null;
         if (permissionManager.canViewDashboard()) {
-            toolbar.setTitle("Dashboard");
+            toolbar.setTitle("Thống kê");
             fragment = new AdminDashboardFragment();
             navigationView.setCheckedItem(R.id.nav_dashboard);
-        } else if (permissionManager.canManageTours()) {
-            fragment = new AdminToursFragment();
-            navigationView.setCheckedItem(R.id.nav_tours);
+        } else if (permissionManager.canChat()) {
+            toolbar.setTitle("Nhắn tin");
+            fragment = new UserConversationFragment();
+            navigationView.setCheckedItem(R.id.nav_message);
         } else if (permissionManager.canViewProfile()) {
             // TODO: Load profile fragment
             navigationView.setCheckedItem(R.id.nav_profile);
@@ -120,6 +125,14 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         View headerView = navigationView.getHeaderView(0);
         TextView tvAdminEmail = headerView.findViewById(R.id.tvAdminEmail);
         TextView tvName = headerView.findViewById(R.id.tvName);
+        ImageView userAvatar = headerView.findViewById(R.id.userAvatar);
+
+        if (currentUser.getProfile().getAvatarUrl() != null) {
+            Glide.with(this)
+                    .load(currentUser.getProfile().getAvatarUrl())
+                    .circleCrop()
+                    .into(userAvatar);
+        }
 
         tvAdminEmail.setText(currentUser.getProfile().getEmail());
         tvName.setText(currentUser.getProfile().getFullName());
@@ -140,32 +153,35 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         Fragment fragment = null;
 
         if (itemId == R.id.nav_dashboard && permissionManager.canViewDashboard()) {
-            toolbar.setTitle("Dashboard");
+            toolbar.setTitle("Thống kê");
             fragment = new AdminDashboardFragment();
         } else if (itemId == R.id.nav_users && permissionManager.canManageUsers()) {
-            toolbar.setTitle("User Management");
+            toolbar.setTitle("Quản lý khách hàng");
             fragment = new AdminUsersFragment();
         } else if (itemId == R.id.nav_staff && permissionManager.canManageStaff()) {
-            toolbar.setTitle("Staff Management");
+            toolbar.setTitle("Quản lý nhân viên");
             fragment = new AdminStaffFragment();
         } else if (itemId == R.id.nav_tours && permissionManager.canManageTours()) {
-            toolbar.setTitle("Tour Program Management");
+            toolbar.setTitle("Quản lý chương trình Tour");
             fragment = new AdminToursFragment();
         } else if (itemId == R.id.nav_bookings && permissionManager.canManageBookings()) {
             // TODO: Load bookings fragment
             fragment = new AdminToursFragment();
-            toolbar.setTitle("Booking Management");
+            toolbar.setTitle("Quản lý đặt vé");
         } else if (itemId == R.id.nav_profile && permissionManager.canViewProfile()) {
-            toolbar.setTitle("Profile");
+            toolbar.setTitle("Thông tin cá nhân");
             fragment = new SysUserProfileFragment();
         } else if (itemId == R.id.nav_work_calendar && permissionManager.canManageWorkCalendar()) {
-            toolbar.setTitle("Work");
+            toolbar.setTitle("Quản lý công việc");
             fragment = new CustomerTicketsFragment();
         } else if (itemId == R.id.nav_current_work && permissionManager.canManageWorkCalendar()) {
-            toolbar.setTitle("Current Tour");
+            toolbar.setTitle("Công việc hiện tại");
             fragment = new GuideCurrentTourFragment();
+        } else if (itemId == R.id.nav_message && permissionManager.canChat()) {
+            toolbar.setTitle("Nhắn tin");
+            fragment = new UserConversationFragment();
         } else if (itemId == R.id.nav_tour_guide && permissionManager.canViewTourGuide()) {
-            toolbar.setTitle("View tour guide");
+            toolbar.setTitle("Xem hướng dẫn vieên");
             fragment = new TourGuideViewActivity();
         } else if (itemId == R.id.nav_logout) {
             handleLogout();

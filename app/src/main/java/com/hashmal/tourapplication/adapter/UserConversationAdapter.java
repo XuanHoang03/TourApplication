@@ -53,13 +53,16 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ConversationViewHolder holder, int position) {
+        android.util.Log.d("UserConversationAdapter", "Binding position: " + position);
         FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
         LocalDataService localDataService = LocalDataService.getInstance(context);
         UserConversation conversation = conversations.get(position);
+        android.util.Log.d("UserConversationAdapter", "Conversation ID: " + conversation.getId());
 
         String currentUserId = localDataService.getCurrentUser().getAccount().getAccountId();
 
         firebaseService.getListUserInChat(conversation.getId(), userIds -> {
+            android.util.Log.d("UserConversationAdapter", "Got userIds: " + userIds.size());
             // 1️⃣ Lấy được user khác
             String otherUserId = null;
             for (String id : userIds) {
@@ -68,9 +71,11 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
                     break;
                 }
             }
+            android.util.Log.d("UserConversationAdapter", "Other user ID: " + otherUserId);
 
             UserChatInfo info = chatInfo.get(otherUserId);
                     if (info != null) {
+                    android.util.Log.d("UserConversationAdapter", "Found user info: " + info.getFullName());
                     holder.usernameTextView.setText(info.getFullName());
                         Glide.with(context)
                                 .load(info.getAvatarUrl())
@@ -84,6 +89,7 @@ public class UserConversationAdapter extends RecyclerView.Adapter<UserConversati
                         holder.lastMessage.setText(conversation.getLastMessageContent());
                     }
                 } else {
+                     android.util.Log.d("UserConversationAdapter", "User info not found, using system message");
                      info = new UserChatInfo("SYSTEM","Tin nhắn hệ thống", "" );
                      chatInfo.put(info.getAccountId(), info);
 

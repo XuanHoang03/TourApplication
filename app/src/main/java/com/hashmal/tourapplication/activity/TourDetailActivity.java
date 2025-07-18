@@ -80,7 +80,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Toast.makeText(this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
                     updatePaymentStatusOfBooking(bookingId, 1);
                 } else {
                     updatePaymentStatusOfBooking(bookingId, -1);
@@ -427,9 +427,9 @@ public class TourDetailActivity extends AppCompatActivity implements TourPackage
                                         .setSingleButtonMode(true)
                                         .show();
                             } else {
-                                Toast.makeText(TourDetailActivity.this,
-                                        res.getMessage(),
-                                        Toast.LENGTH_LONG).show();
+//                                Toast.makeText(TourDetailActivity.this,
+//                                        res.getMessage(),
+//                                        Toast.LENGTH_LONG).show();
                                 new CustomDialog.Builder(TourDetailActivity.this)
                                         .setTitle("Thông báo")
                                         .setMessage("Thanh toán vé thất bại!")

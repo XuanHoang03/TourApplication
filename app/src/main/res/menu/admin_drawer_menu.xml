@@ -4,52 +4,56 @@
         <item
             android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_dashboard"
-            android:title="Dashboard" />
+            android:title="Thống kê" />
 
         <item
             android:id="@+id/nav_users"
             android:icon="@drawable/ic_users"
-            android:title="User Management" />
+            android:title="Quản lý khách hàng" />
 
         <item
             android:id="@+id/nav_staff"
             android:icon="@drawable/ic_staff"
-            android:title="Staff Management" />
+            android:title="Quản lý  nhân viên" />
 
         <item
             android:id="@+id/nav_tours"
             android:icon="@drawable/ic_tour"
-            android:title="Tour Management" />
+            android:title="Quản lý chương trình Tour" />
         <item
             android:id="@+id/nav_tour_guide"
             android:icon="@drawable/ic_tour_guide"
-            android:title="Tour Guide" />
+            android:title="Xem hướng dẫn viên" />
 
         <item
             android:id="@+id/nav_bookings"
             android:icon="@drawable/ic_booking"
-            android:title="Booking Management" />
+            android:title="Quản lý đặt vé" />
         <item
             android:id="@+id/nav_work_calendar"
             android:icon="@drawable/ic_booking"
-            android:title="Work Management" />
+            android:title="Quản lý công việc" />
         <item
             android:id="@+id/nav_current_work"
             android:icon="@drawable/ic_booking"
-            android:title="Current work" />
+            android:title="Công việc hiện tại" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_chat_bubble"
+            android:title="Nhắn tin" />
 
     </group>
 
-    <item android:title="Account">
+    <item android:title="Tài khoản">
         <menu>
             <item
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/ic_profile"
-                android:title="Profile" />
+                android:title="Thông tin cá nhân" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Logout" />
+                android:title="Đăng xuất" />
         </menu>
     </item>
 </menu> 

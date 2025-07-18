@@ -88,6 +88,7 @@ public class FirebaseService {
              if (task.isSuccessful()) {
                  DocumentSnapshot doc = task.getResult();
                  if (doc.exists()) {
+
                      return (List<String>) doc.get("listUserId");
                  } else {
                      return new ArrayList<>();

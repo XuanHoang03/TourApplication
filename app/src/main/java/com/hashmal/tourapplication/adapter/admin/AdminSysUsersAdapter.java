@@ -152,14 +152,17 @@ public class AdminSysUsersAdapter extends RecyclerView.Adapter<AdminSysUsersAdap
                     case 1:
                         tvStatus.setText("Đang hoạt động");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_green_dark));
+                        btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.holo_red_dark));
                         break;
                     case -1:
                         tvStatus.setText("Đã vô hiệu hóa");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_red_dark));
+                        btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.holo_green_dark));
                         break;
                     case 0:
                         tvStatus.setText("Chưa kích hoạt");
                         tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.darker_gray));
+                        btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.darker_gray));
                         break;
                     default:
                         tvStatus.setText("");

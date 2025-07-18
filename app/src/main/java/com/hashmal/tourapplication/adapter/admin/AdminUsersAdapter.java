@@ -72,13 +72,15 @@ public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.Us
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvStatus;
+        private TextView tvName, tvStatus, tvRole;
         private ImageButton btnEdit, btnDelete;
         private ImageView imgAvatar;
 
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
+            tvRole = itemView.findViewById(R.id.tvRole);
+
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
             imgAvatar = itemView.findViewById(R.id.imgAvatar);
@@ -108,19 +110,26 @@ public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.Us
 
         void bind(UserDTO user) {
             tvName.setText(user.getProfile().getFullName());
+            tvRole.setText("Khách hàng");
             Integer status = user.getAccount().getStatus();
-            switch  (status) {
+            switch (status) {
                 case 1:
-                    tvStatus.setText("Active");
+                    tvStatus.setText("Đang hoạt động");
                     tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_green_dark));
+                    btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.holo_red_dark));
                     break;
                 case -1:
-                    tvStatus.setText("Inactive");
+                    tvStatus.setText("Đã vô hiệu hóa");
                     tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.holo_red_dark));
+                    btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.holo_green_dark));
                     break;
                 case 0:
-                    tvStatus.setText("Registered");
+                    tvStatus.setText("Chưa kích hoạt");
                     tvStatus.setTextColor(itemView.getResources().getColor(android.R.color.darker_gray));
+                    btnDelete.setColorFilter(itemView.getResources().getColor(android.R.color.darker_gray));
+                    break;
+                default:
+                    tvStatus.setText("");
                     break;
             }
             String avatarUrl = user.getProfile().getAvatarUrl();

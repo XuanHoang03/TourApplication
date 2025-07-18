@@ -23,6 +23,7 @@ import androidx.appcompat.widget.SearchView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textview.MaterialTextView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.admin.AdminUsersAdapter;
 import com.hashmal.tourapplication.dialog.CustomDialog;
@@ -109,8 +110,7 @@ public class AdminUsersFragment extends Fragment {
 
                 new CustomDialog.Builder(requireContext())
                         .setTitle("Thông báo")
-                        .setMessage("Bạn muốn " + action + " tài khoản này?" +
-                                " ,vui lòng xác nhận.")
+                        .setMessage("Bạn muốn " + action + " tài khoản này?" )
                         .setPositiveButton("Đúng", dialog -> {
                             UpdateUserByAdminRequest req = new UpdateUserByAdminRequest();
                             req.setAccountId(user.getAccount().getAccountId());
@@ -209,30 +209,30 @@ public class AdminUsersFragment extends Fragment {
         TextView tvStatus = dialogView.findViewById(R.id.tvStatus);
 
         tvName.setText(user.getProfile().getFullName());
-        tvUsername.setText("Username: " + user.getAccount().getUsername());
+        tvUsername.setText("Họ tên: " + user.getAccount().getUsername());
         tvEmail.setText("Email: " + user.getProfile().getEmail());
-        tvPhone.setText("Phone: " + user.getProfile().getPhoneNumber());
-        tvAddress.setText("Address: " + (user.getProfile().getAddress() != null ? user.getProfile().getAddress() : ""));
-        tvRole.setText("Role: " + (user.getAccount().getRoleName() != null ? user.getAccount().getRoleName() : ""));
+        tvPhone.setText("Số điện thoại: " + user.getProfile().getPhoneNumber());
+        tvAddress.setText("Địa chỉ: " + (user.getProfile().getAddress() != null ? user.getProfile().getAddress() : ""));
+        tvRole.setText("Vai trò: " + (user.getAccount().getRoleName() != null ? user.getAccount().getRoleName() : ""));
         Integer gender = user.getProfile().getGender();
         String genderStr = "";
         if (gender != null) {
-            if (gender == 1) genderStr = "Male";
-            else if (gender == 0) genderStr = "Female";
-            else genderStr = "Other";
+            if (gender == 1) genderStr = "Nam";
+            else if (gender == 0) genderStr = "Nữ";
+            else genderStr = "Khác";
         }
-        tvGender.setText("Gender: " + genderStr);
-        tvDob.setText("Date of birth: " + (user.getProfile().getDob() != null ? user.getProfile().getDob() : ""));
+        tvGender.setText("Giới tính: " + genderStr);
+        tvDob.setText("Ngày sinh: " + (user.getProfile().getDob() != null ? DataUtils.parseDateOfBirth( user.getProfile().getDob() ): ""));
 
         Integer status = user.getAccount().getStatus();
         if (status != null && status == 1) {
-            tvStatus.setText("Active");
+            tvStatus.setText("Đang hoạt động");
             tvStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         } else if (status != null && status == -1) {
-            tvStatus.setText("Inactive");
+            tvStatus.setText("Đã vô hiệu hóa");
             tvStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         } else {
-            tvStatus.setText("Registered");
+            tvStatus.setText("Chưa kích hoạt");
             tvStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
         }
         String avatarUrl = user.getProfile().getAvatarUrl();
@@ -263,7 +263,7 @@ public class AdminUsersFragment extends Fragment {
         EditText edtRole = dialogView.findViewById(R.id.edtRole);
         Spinner spinnerGender = dialogView.findViewById(R.id.spinnerGender);
         EditText edtDob = dialogView.findViewById(R.id.edtDob);
-        EditText edtStatus = dialogView.findViewById(R.id.edtStatus);
+        MaterialTextView edtStatus = dialogView.findViewById(R.id.edtStatus);
         Button btnSave = dialogView.findViewById(R.id.btnSave);
 
         // Set data
@@ -276,7 +276,7 @@ public class AdminUsersFragment extends Fragment {
         edtRole.setText(user.getAccount().getRoleName());
         Integer gender = user.getProfile().getGender();
         // Gender spinner setup
-        String[] genderOptions = {"Male", "Female", "Other"};
+        String[] genderOptions = {"Nam", "Nữ", "Khác"};
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, genderOptions);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(genderAdapter);
@@ -290,9 +290,9 @@ public class AdminUsersFragment extends Fragment {
         edtDob.setText(DataUtils.parseDateOfBirth(user.getProfile().getDob()));
         Integer status = user.getAccount().getStatus();
         String statusStr = "";
-        if (status != null && status == 1) statusStr = "Active";
-        else if (status != null && status == -1) statusStr = "Inactive";
-        else statusStr = "Registered";
+        if (status != null && status == 1) statusStr = "Đang hoạt động";
+        else if (status != null && status == -1) statusStr = "Đã vô hiệu hóa";
+        else statusStr = "Chưa kích hoạt";
         edtStatus.setText(statusStr);
 
         // Password show/hide
@@ -331,8 +331,8 @@ public class AdminUsersFragment extends Fragment {
             // Gender parse
             int genderVal = 2;
             String genderStr = spinnerGender.getSelectedItem().toString();
-            if (genderStr.equalsIgnoreCase("male")) genderVal = 1;
-            else if (genderStr.equalsIgnoreCase("female")) genderVal = 0;
+            if (genderStr.equalsIgnoreCase("Nam")) genderVal = 1;
+            else if (genderStr.equalsIgnoreCase("Nữ")) genderVal = 0;
 
             UpdateUserByAdminRequest req = new UpdateUserByAdminRequest();
             req.setAccountId(user.getAccount().getAccountId());

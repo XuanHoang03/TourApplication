@@ -38,11 +38,11 @@ public class PermissionManager {
 
         // Staff permissions
         Set<String> staffPermissions = new HashSet<>();
-        staffPermissions.add("view_dashboard");
         staffPermissions.add("manage_bookings");
         staffPermissions.add("view_profile");
         staffPermissions.add("edit_profile");
         staffPermissions.add("view_tour_guide");
+        staffPermissions.add("chat");
         rolePermissions.put(RoleEnum.TOUR_OPERATOR, staffPermissions);
 
 
@@ -53,6 +53,7 @@ public class PermissionManager {
         tourGuidePermission.add("manage_work_calendar");
         tourGuidePermission.add("manage_tours");
         tourGuidePermission.add("manage_current_work");
+        tourGuidePermission.add("chat");
         rolePermissions.put(RoleEnum.TOUR_GUIDE, tourGuidePermission);
     }
 
@@ -67,6 +68,10 @@ public class PermissionManager {
     }
     public boolean canManageWorkCalendar() {
         return hasPermission("manage_work_calendar");
+    }
+
+    public boolean canChat() {
+        return hasPermission("chat");
     }
     public boolean canManageCurrentWork() {
         return hasPermission("manage_current_work");

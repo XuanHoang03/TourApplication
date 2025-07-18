@@ -124,7 +124,9 @@ public class TourGuideViewActivity extends Fragment {
         for (SysUserDTO staff : allStaffs) {
             if (staff.getProfile().getFullName().toLowerCase().contains(lower)
                     || staff.getProfile().getEmail().toLowerCase().contains(lower)
-                    || staff.getAccount().getUsername().toLowerCase().contains(lower)) {
+                    || staff.getProfile().getPhoneNumber().toLowerCase().contains(lower)
+                    || staff.getAccount().getUsername().toLowerCase().contains(lower)
+                    || staff.getAccount().getAccountId().toLowerCase().contains(lower)) {
                 filtered.add(staff);
             }
         }

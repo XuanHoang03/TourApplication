@@ -50,17 +50,15 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         // Set tour name
         holder.tvTourName.setText(booking.getBookingName());
-
         // Set dates
-        holder.tvBookingDate.setText("Booked on: " + DataUtils.formatDateTimeString(booking.getBookingDate(), true));
-        holder.tvTourDate.setText("Tour date: " + booking.getStartTime());
+        holder.tvBookingDate.setText("Đặt ngày: " + DataUtils.formatDateTimeString(booking.getBookingDate(), true));
+        holder.tvTourDate.setText("Khởi hành: " + DataUtils.formatDateTimeStringV2(booking.getStartTime(), true));
 
         // Set number of people and price
-        holder.tvNumberOfPeople.setText(booking.getQuantity().toString() + (booking.getQuantity() > 1 ? " tickets" : " ticket"));
+        holder.tvNumberOfPeople.setText(booking.getQuantity() + " vé");
         holder.tvTotalPrice.setText(DataUtils.formatCurrency(booking.getTotalPrice()));
 
         // Set status with color
-//        holder.tvStatus.setText(booking.getPaymentStatus());
         setStatusColor(holder.tvStatus, booking.getPaymentStatus());
 
     }
@@ -84,11 +82,15 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
             case 1:
                 colorResId = R.color.status_completed;
                 break;
+            case -11:
+                colorResId = R.color.status_cancelled;
+                break;
             default:
                 colorResId = R.color.status_default;
         }
 
-        statusView.setTextColor(ContextCompat.getColor(context, colorResId));
+        statusView.setBackgroundColor(ContextCompat.getColor(context, colorResId));
+        statusView.setText(DataUtils.convertBookingStatusFromInt(status));
     }
 
     public void updateData(List<DisplayBookingDTO> newBookingList) {

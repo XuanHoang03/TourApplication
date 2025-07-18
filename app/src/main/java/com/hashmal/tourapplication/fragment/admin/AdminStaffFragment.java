@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textview.MaterialTextView;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.adapter.admin.AdminSysUsersAdapter;
 import com.hashmal.tourapplication.adapter.admin.AdminUsersAdapter;
@@ -137,30 +138,30 @@ public class AdminStaffFragment extends Fragment {
         TextView tvStatus = dialogView.findViewById(R.id.tvStatus);
 
         tvName.setText(staff.getProfile().getFullName());
-        tvUsername.setText("Username: " + staff.getAccount().getUsername());
+        tvUsername.setText("Họ tên: " + staff.getAccount().getUsername());
         tvEmail.setText("Email: " + staff.getProfile().getEmail());
-        tvPhone.setText("Phone: " + staff.getProfile().getPhoneNumber());
-        tvAddress.setText("Address: " + (staff.getProfile().getAddress() != null ? staff.getProfile().getAddress() : ""));
-        tvRole.setText("Role: " + (staff.getAccount().getRoleName() != null ? staff.getAccount().getRoleName() : ""));
+        tvPhone.setText("Số điện thoại: " + staff.getProfile().getPhoneNumber());
+        tvAddress.setText("Thường trú: " + (staff.getProfile().getAddress() != null ? staff.getProfile().getAddress() : ""));
+        tvRole.setText("Chức vụ: " + (staff.getAccount().getRoleName() != null ? staff.getAccount().getRoleName() : ""));
         Integer gender = staff.getProfile().getGender();
         String genderStr = "";
         if (gender != null) {
-            if (gender == 1) genderStr = "Male";
-            else if (gender == 0) genderStr = "Female";
-            else genderStr = "Other";
+            if (gender == 1) genderStr = "Nam";
+            else if (gender == 0) genderStr = "Nữ";
+            else genderStr = "Khác";
         }
-        tvGender.setText("Gender: " + genderStr);
-        tvDob.setText("Date of birth: " + (staff.getProfile().getDob() != null ? staff.getProfile().getDob() : ""));
+        tvGender.setText("Giới tính: " + genderStr);
+        tvDob.setText("Ngày sinh: " + (staff.getProfile().getDob() != null ? DataUtils.parseDateOfBirth( staff.getProfile().getDob()) : ""));
 
         Integer status = staff.getAccount().getStatus();
         if (status != null && status == 1) {
-            tvStatus.setText("Active");
+            tvStatus.setText("Đang hoạt động");
             tvStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         } else if (status != null && status == -1) {
-            tvStatus.setText("Inactive");
+            tvStatus.setText("Đã vô hiệu hóa");
             tvStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         } else {
-            tvStatus.setText("Registered");
+            tvStatus.setText("Chưa kích hoạt");
             tvStatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
         }
         String avatarUrl = staff.getProfile().getAvatarUrl();
@@ -191,7 +192,7 @@ public class AdminStaffFragment extends Fragment {
         EditText edtRole = dialogView.findViewById(R.id.edtRole);
         Spinner spinnerGender = dialogView.findViewById(R.id.spinnerGender);
         EditText edtDob = dialogView.findViewById(R.id.edtDob);
-        EditText edtStatus = dialogView.findViewById(R.id.edtStatus);
+        MaterialTextView edtStatus = dialogView.findViewById(R.id.edtStatus);
         Button btnSave = dialogView.findViewById(R.id.btnSave);
 
         // Set data
@@ -204,7 +205,7 @@ public class AdminStaffFragment extends Fragment {
         edtRole.setText(staff.getAccount().getRoleName());
         Integer gender = staff.getProfile().getGender();
         // Gender spinner setup
-        String[] genderOptions = {"Male", "Female", ""};
+        String[] genderOptions = {"Nam", "Nữ", ""};
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, genderOptions);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(genderAdapter);
@@ -218,9 +219,9 @@ public class AdminStaffFragment extends Fragment {
         edtDob.setText(DataUtils.parseDateOfBirth(staff.getProfile().getDob()));
         Integer status = staff.getAccount().getStatus();
         String statusStr = "";
-        if (status != null && status == 1) statusStr = "Active";
-        else if (status != null && status == -1) statusStr = "Inactive";
-        else statusStr = "Registered";
+        if (status != null && status == 1) statusStr = "Đang hoạt động";
+        else if (status != null && status == -1) statusStr = "Đã vô hiệu hóa";
+        else statusStr = "Chưa kích hoạt";
         edtStatus.setText(statusStr);
 
         // Password show/hide
@@ -259,8 +260,8 @@ public class AdminStaffFragment extends Fragment {
             // Gender parse
             int genderVal = 2;
             String genderStr = spinnerGender.getSelectedItem().toString();
-            if (genderStr.equalsIgnoreCase("male")) genderVal = 1;
-            else if (genderStr.equalsIgnoreCase("female")) genderVal = 0;
+            if (genderStr.equalsIgnoreCase("Nam")) genderVal = 1;
+            else if (genderStr.equalsIgnoreCase("Nữ")) genderVal = 0;
 
             UpdateUserByAdminRequest req = new UpdateUserByAdminRequest();
             req.setAccountId(staff.getAccount().getAccountId());
@@ -359,8 +360,8 @@ public class AdminStaffFragment extends Fragment {
             }
             int genderVal = 2;
             String genderStr = spinnerGender.getSelectedItem().toString();
-            if (genderStr.equalsIgnoreCase("male")) genderVal = 1;
-            else if (genderStr.equalsIgnoreCase("female")) genderVal = 0;
+            if (genderStr.equalsIgnoreCase("Nam")) genderVal = 1;
+            else if (genderStr.equalsIgnoreCase("Nữ")) genderVal = 0;
 
             String roleName = spinnerRole.getSelectedItem().toString();
 

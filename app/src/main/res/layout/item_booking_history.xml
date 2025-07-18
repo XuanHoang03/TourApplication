@@ -3,84 +3,120 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="16dp"
+        android:background="@android:color/white">
 
+        <!-- Tour Image -->
         <ImageView
             android:id="@+id/ivTourImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_image" />
+            android:src="@drawable/ic_ticket_placeholder"
+            android:background="@drawable/rounded_top_corners"
+            android:contentDescription="Tour Image" />
 
+        <!-- Content Section -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
             android:orientation="vertical">
 
+            <!-- Tour Name -->
             <TextView
                 android:id="@+id/tvTourName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:text="Amazing Tour to Sa Pa"
+                android:textColor="#333333"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat_regular"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
+            <!-- Booking Date -->
             <TextView
                 android:id="@+id/tvBookingDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:layout_marginTop="6dp"
+                android:text="Đặt ngày: 15/12/2024 14:30"
+                android:textColor="#666666"
+                android:textSize="13sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
+            <!-- Tour Date -->
             <TextView
                 android:id="@+id/tvTourDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:text="Khởi hành: 20/12/2024 08:00"
+                android:textColor="#666666"
+                android:textSize="13sp"
+                android:fontFamily="@font/montserrat_regular"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
+            <!-- Number of People and Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvNumberOfPeople"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:text="2 người"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_regular" />
 
                 <TextView
                     android:id="@+id/tvTotalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:text="2,500,000 VNĐ"
+                    android:textColor="#0077CC"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat_regular" />
             </LinearLayout>
 
+            <!-- Status Badge -->
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:padding="4dp"
+                android:layout_marginTop="10dp"
+                android:text="ĐÃ XÁC NHẬN"
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/montserrat_regular"
+                android:background="@drawable/bg_status_badge"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp" />
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView> 

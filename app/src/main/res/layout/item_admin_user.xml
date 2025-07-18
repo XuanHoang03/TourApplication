@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_delete" />
+                android:src="@drawable/ic_sync" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView> 
