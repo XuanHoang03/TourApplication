@@ -31,11 +31,32 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"/>
 
+        <!-- Nút nhắn tin -->
+        <Button
+            android:id="@+id/btnMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nhắn tin"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_regular"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
+            app:icon="@drawable/ic_send"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="@android:color/white"
+            style="@style/Widget.MaterialComponents.Button"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"/>
 
         <LinearLayout

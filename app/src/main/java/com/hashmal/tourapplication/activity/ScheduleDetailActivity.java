@@ -3,6 +3,7 @@ package com.hashmal.tourapplication.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,10 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.enums.RoleEnum;
+import com.hashmal.tourapplication.service.FirebaseService;
 import com.hashmal.tourapplication.service.LocalDataService;
 import com.hashmal.tourapplication.service.dto.TourScheduleResponseDTO;
 
@@ -58,6 +61,7 @@ import com.hashmal.tourapplication.adapter.GuideSelectAdapter;
 import com.hashmal.tourapplication.adapter.UserBookingAdapter;
 import com.hashmal.tourapplication.service.dto.UserBookingDTO;
 import com.hashmal.tourapplication.adapter.TourScheduleListAdapter;
+import com.hashmal.tourapplication.service.dto.UserChatInfo;
 import com.hashmal.tourapplication.service.dto.UserDTO;
 import com.hashmal.tourapplication.utils.DataUtils;
 
@@ -164,7 +168,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                         guideActionButtons.setVisibility(VISIBLE);
                         if (localDataService.getSysUser().getAccount().getRoleName().equals(RoleEnum.TOUR_GUIDE.name())) {
                             guideActionButtons.setVisibility(GONE);
-                            btnChangeStatus.setVisibility(VISIBLE);
+                            btnChangeStatus.setVisibility(GONE);
                             btnChangeStatus.setText(DataUtils.convertStatusFromInt(schedule.getStatus()));
                             btnChangeStatus.setOnClickListener(v -> changeStatusClick());
                         }
@@ -189,7 +193,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                                     tvName.setText(staff.getProfile() != null && staff.getProfile().getFullName() != null ? staff.getProfile().getFullName() : "Chưa cập nhật");
                                     // Bind role
                                     TextView tvRole = staffCard.findViewById(R.id.tvRole);
-                                    tvRole.setText(staff.getAccount() != null && staff.getAccount().getRoleName() != null ? staff.getAccount().getRoleName() : "");
+                                    tvRole.setText(staff.getAccount() != null && staff.getAccount().getRoleName() != null ? "Hướng dẫn viên" : "");
                                     // Bind status
                                     TextView tvStatus = staffCard.findViewById(R.id.tvStatus);
                                     if (staff.getAccount() != null && staff.getAccount().getStatus() != null) {
@@ -499,6 +503,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
         TextView tvPhone = dialogView.findViewById(R.id.tvPhone);
         TextView tvAddress = dialogView.findViewById(R.id.tvAddress);
         Button btnClose = dialogView.findViewById(R.id.btnClose);
+        Button btnMessage = dialogView.findViewById(R.id.btnMessage);
 
         // Load avatar
         Glide.with(this)
@@ -515,6 +520,19 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
         tvAddress.setText(user.getProfile().getAddress());
 
         btnClose.setOnClickListener(v -> dialog.dismiss());
+        btnMessage.setOnClickListener(v -> {
+            Intent chatIntent = new Intent(ScheduleDetailActivity.this, ChatActivity.class);
+
+            UserChatInfo ref = new UserChatInfo(user.getAccount().getAccountId(), user.getProfile().getFullName(), user.getProfile().getAvatarUrl());
+
+            chatIntent.putExtra("otherUserJson", new Gson().toJson(ref));
+            FirebaseService firebaseService = new FirebaseService(FirebaseFirestore.getInstance());
+            String conversationId = firebaseService.getConversationIdOfUsers(List.of(localDataService.getCurrentUser().getAccount().getAccountId()
+                    , ref.getAccountId()));
+            chatIntent.putExtra("conversationId", conversationId);
+            startActivity(chatIntent);
+        });
+
         dialog.show();
     }
 }

@@ -4,225 +4,301 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@drawable/header_gradient_background"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- CardView cho thông tin lịch trình -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardScheduleInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingBottom="100dp">
 
-            <!-- Header với icon -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingBottom="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="@color/primary_color" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Thông tin lịch trình"
-                    android:textColor="@color/primary_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="20dp"
-                android:alpha="0.3"
-                android:background="@color/divider_color" />
-
-            <!-- Tên lịch trình với style card -->
+            <!-- CardView cho thông tin lịch trình -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardScheduleInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/schedule_name_bg"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <TextView
-                    android:id="@+id/tvScheduleName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:text="Lịch trình tour"
-                    android:textColor="@color/schedule_name_text"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_tour" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Thông tin chi tiết trong container -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/info_container_bg"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Ngày tháng -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="12dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="12dp"
-                        android:src="@drawable/ic_calendar"
-                        app:tint="@color/icon_tint" />
-
-                    <TextView
-                        android:id="@+id/tvDateRange"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="19/06/2024 - 21/06/2024"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <!-- Số vé còn lại -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="12dp"
-                        android:src="@drawable/ic_ticket"
-                        app:tint="@color/icon_tint" />
-
-                    <TextView
-                        android:id="@+id/tvTicketCount"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Còn 10 vé"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Status badge với animation -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/statusCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:cardBackgroundColor="@color/status_open_bg"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="4dp">
+                app:cardElevation="12dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp">
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:background="@android:color/white">
 
-                    <!-- Dot indicator -->
+                    <!-- Header với icon -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="#223E91" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Thông tin lịch trình"
+                            android:textColor="#223E91"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/montserrat_regular" />
+
+                    </LinearLayout>
+
+                    <!-- Divider -->
                     <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/status_dot" />
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="20dp"
+                        android:alpha="0.2"
+                        android:background="#223E91" />
 
-                    <TextView
-                        android:id="@+id/tvStatus"
+                    <!-- Tên lịch trình với style card -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardBackgroundColor="#F8F9FF"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp">
+
+                        <TextView
+                            android:id="@+id/tvScheduleName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="12dp"
+                            android:gravity="center"
+                            android:padding="20dp"
+                            android:text="Lịch trình tour"
+                            android:textColor="#223E91"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/montserrat_regular"
+                            app:drawableStartCompat="@drawable/ic_tour" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Thông tin chi tiết trong container -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/detail_background"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Ngày tháng -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="16dp"
+                                android:src="@drawable/ic_calendar"
+                                app:tint="#223E91" />
+
+                            <TextView
+                                android:id="@+id/tvDateRange"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="19/06/2024 - 21/06/2024"
+                                android:textColor="#333333"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/montserrat_regular" />
+
+                        </LinearLayout>
+
+                        <!-- Số vé còn lại -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="16dp"
+                                android:src="@drawable/ic_ticket"
+                                app:tint="#223E91" />
+
+                            <TextView
+                                android:id="@+id/tvTicketCount"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Còn 10 vé"
+                                android:textColor="#333333"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/montserrat_regular" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Status badge với animation -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/statusCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="0.1"
-                        android:text="Đang mở"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_gravity="center_horizontal"
+                        app:cardBackgroundColor="#4CAF50"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="6dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="24dp"
+                            android:paddingVertical="12dp">
+
+                            <!-- Dot indicator -->
+                            <View
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:background="@drawable/status_dot" />
+
+                            <TextView
+                                android:id="@+id/tvStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0.1"
+                                android:text="ĐANG MỞ"
+                                android:textAllCaps="true"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/montserrat_regular" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
+            <!-- Tiêu đề hướng dẫn viên -->
+            <TextView
+                android:id="@+id/tvGuideTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="Hướng dẫn viên"
+                android:textColor="#223E91"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <LinearLayout
+                android:id="@+id/staffCardContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/guideActionButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnRemoveGuide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/blue_gradient_button"
+                    android:text="Xóa"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="12dp" />
+
+                <Button
+                    android:id="@+id/btnChangeGuide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/blue_gradient_button"
+                    android:text="Thay đổi"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="12dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvBuyersTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="Người mua vé"
+                android:textColor="#223E91"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat_regular" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBuyers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:nestedScrollingEnabled="false" />
+
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Tiêu đề hướng dẫn viên -->
-    <TextView
-        android:id="@+id/tvGuideTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="Hướng dẫn viên"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardScheduleInfo" />
-
-    <LinearLayout
-        android:id="@+id/staffCardContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvGuideTitle" />
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddGuide"
@@ -232,73 +308,24 @@
         android:contentDescription="Thêm hướng dẫn viên"
         android:src="@drawable/ic_add"
         android:visibility="gone"
+        app:backgroundTint="#223E91"
+        app:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/guideActionButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/staffCardContainer">
-
-        <Button
-            android:id="@+id/btnRemoveGuide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/status_cancelled"
-            android:text="Xóa"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:id="@+id/btnChangeGuide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
-            android:text="Thay đổi"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvBuyersTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="Người mua vé"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideActionButtons" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBuyers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="80dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvBuyersTitle" />
 
     <Button
         android:id="@+id/btnChangeStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/blue"
+        android:layout_margin="16dp"
+        android:background="@drawable/blue_gradient_button"
         android:text="Chuyển trạng thái"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat_regular"
         android:visibility="gone"
-        android:background="@drawable/bottom_sheet_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        android:paddingVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

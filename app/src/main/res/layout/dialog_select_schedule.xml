@@ -3,28 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:background="@android:color/white">
 
+    <!-- Header -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Chọn lịch trình mới"
         android:textStyle="bold"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textColor="#223E91"
+        android:fontFamily="@font/montserrat_regular"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="16dp" />
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSchedules"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:overScrollMode="never"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="16dp"
+        android:background="#F5F5F5"
+        android:padding="8dp" />
 
+    <!-- Nút đóng -->
     <Button
         android:id="@+id/btnCloseDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đóng" />
+        android:text="Đóng"
+        android:background="@drawable/blue_gradient_button"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat_regular" />
 </LinearLayout> 

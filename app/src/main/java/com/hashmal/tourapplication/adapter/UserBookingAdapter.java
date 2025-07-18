@@ -64,7 +64,6 @@ public class UserBookingAdapter extends RecyclerView.Adapter<UserBookingAdapter.
         Glide.with(context)
             .load(avatarUrl)
             .placeholder(R.drawable.ic_profile)
-            .error(R.drawable.ic_profile)
             .circleCrop()
             .into(holder.imgUserIcon);
 
