@@ -89,7 +89,7 @@ public class RegisterStep2 extends AppCompatActivity {
             String gender = intent.getStringExtra("gender");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDateTime birthDateVal = LocalDate.parse(birthDate, formatter).atStartOfDay();
-            Integer genderVal = (gender.equals( "Male" ) ? 1 : 0);
+            Integer genderVal = (gender.equals( "Nam" ) ? 1 : 0);
             String email = edtEmail.getText().toString();
             String password= edtPassword.getText().toString();
 
@@ -102,6 +102,7 @@ public class RegisterStep2 extends AppCompatActivity {
             req.put("gender", genderVal);
             req.put("address", address);
 
+            nextBtn.setEnabled(false);
 
             apiService.registerUser(req).enqueue(new Callback<BaseResponse>() {
                 @Override
@@ -116,20 +117,25 @@ public class RegisterStep2 extends AppCompatActivity {
                                 Intent intent = new Intent(RegisterStep2.this, VerifyAccountActivity.class);
                                 intent.putExtra("registerUserId", userId );
                                 startActivity(intent);
+                                nextBtn.setEnabled(true);
+
                             }
                         } else {
-                            Log.e("API", "Response failed: " + response.errorBody().string());
-                            Toast.makeText(RegisterStep2.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterStep2.this, "Đăng ký thất bại ", Toast.LENGTH_SHORT).show();
+                            nextBtn.setEnabled(true);
                         }
                     } catch (Exception e) {
                         Log.e("API", "Exception in response: " + e.getMessage(), e);
+                        nextBtn.setEnabled(true);
+
                     }
                 }
 
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
-                    Log.e("API", "Call failed: " + t.getMessage(), t);
-                    Toast.makeText(RegisterStep2.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterStep2.this, "Đăng ký thất bại ", Toast.LENGTH_SHORT).show();
+                    nextBtn.setEnabled(true);
+
                 }
             });
         });
