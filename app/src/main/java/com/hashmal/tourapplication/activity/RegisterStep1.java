@@ -81,20 +81,40 @@ public class RegisterStep1 extends AppCompatActivity {
         });
         nextBtn = findViewById(R.id.btnNext);
         nextBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterStep1.this, RegisterStep2.class);
-
             String address = edtAddress.getText().toString();
             String birthDate = edtBirthDate.getText().toString();
             String phoneNumber = edtPhoneNumber.getText().toString();
             String fullName = edtFullName.getText().toString();
             String gender = spnGender.getSelectedItem().toString();
 
+            // Validate
+            if (!fullName.matches("^[\\p{L} .'-]{2,50}$")) {
+                edtFullName.setError("Họ và tên không hợp lệ");
+                edtFullName.requestFocus();
+                return;
+            }
+            if (!phoneNumber.matches("^(0[3|5|7|8|9])+([0-9]{8})$")) {
+                edtPhoneNumber.setError("Số điện thoại không hợp lệ");
+                edtPhoneNumber.requestFocus();
+                return;
+            }
+            if (address.length() < 5) {
+                edtAddress.setError("Địa chỉ phải từ 5 ký tự trở lên");
+                edtAddress.requestFocus();
+                return;
+            }
+            if (birthDate.isEmpty()) {
+                edtBirthDate.setError("Vui lòng chọn ngày sinh");
+                edtBirthDate.requestFocus();
+                return;
+            }
+
+            Intent intent = new Intent(RegisterStep1.this, RegisterStep2.class);
             intent.putExtra("fullName", fullName);
             intent.putExtra("phone", phoneNumber);
             intent.putExtra("address", address);
             intent.putExtra("birthDate", birthDate);
             intent.putExtra("gender", gender);
-
             startActivity(intent);
         });
     }

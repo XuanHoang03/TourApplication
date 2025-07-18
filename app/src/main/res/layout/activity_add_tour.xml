@@ -8,108 +8,134 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Quay lại" />
+        android:padding="24dp"
+        android:background="@android:color/white">
 
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thêm Tour"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_gravity="center" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Quay lại" />
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Thêm Tour"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#223E91"
+                android:gravity="center"
+                android:fontFamily="@font/montserrat_regular" />
+        </LinearLayout>
 
+        <!-- Các trường nhập liệu -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên tour">
-
+            android:hint="Tên tour"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtTourName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Loại tour">
-
+            android:hint="Loại tour"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtTourType"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mô tả">
-
+            android:hint="Mô tả"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtTourDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="2" />
+                android:minLines="2"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Số người">
-
+            android:hint="Số người"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtNumberOfPeople"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:inputType="number"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Thời lượng">
-
+            android:hint="Thời lượng"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtDuration"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Khởi hành">
-
+            android:hint="Khởi hành"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtStart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Kết thúc">
-
+            android:hint="Kết thúc"
+            android:layout_marginBottom="10dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtEnd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Ảnh đại diện -->
         <Button
             android:id="@+id/btnPickImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn ảnh đại diện" />
+            android:text="Chọn hình ảnh"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp" />
 
         <ImageView
             android:id="@+id/imgThumbnailPreview"
@@ -118,14 +144,20 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_tour" />
+            android:src="@drawable/ic_tour"
+            android:background="@drawable/rounded_top_corners" />
 
+        <!-- Chọn địa điểm -->
         <Button
             android:id="@+id/btnPickLocations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Chọn địa điểm" />
+            android:text="Chọn địa điểm"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:id="@+id/layoutSelectedLocations"
@@ -139,13 +171,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Chưa chọn địa điểm nào" />
+            android:text="Chưa chọn địa điểm nào"
+            android:textColor="#888888"
+            android:fontFamily="@font/montserrat_regular" />
 
+        <!-- Nút lưu -->
         <Button
             android:id="@+id/btnSaveTour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Lưu chương trình" />
+            android:layout_marginTop="20dp"
+            android:text="Lưu chương trình"
+            android:background="@drawable/blue_gradient_button"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_regular" />
     </LinearLayout>
 </ScrollView>

@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Tên số điện thoại *"
+                android:text="Số điện thoại *"
                 android:fontFamily="@font/montserrat_regular"
                 android:textColor="#222222"
                 android:textSize="15sp"

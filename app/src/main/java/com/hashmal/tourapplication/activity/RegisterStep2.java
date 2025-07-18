@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -42,6 +43,7 @@ public class RegisterStep2 extends AppCompatActivity {
     private Button nextBtn;
     private Intent intent;
     private ApiService apiService;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class RegisterStep2 extends AppCompatActivity {
 
         View rootView = findViewById(R.id.rootRegisterContainer);
         formContainer = findViewById(R.id.registerContainer);
+        progressBar = findViewById(R.id.progressBar);
 
         if (rootView == null || formContainer == null) {
             // Log error or throw exception
@@ -82,6 +85,12 @@ public class RegisterStep2 extends AppCompatActivity {
         edtRetypePassword = findViewById(R.id.edtRetypePassword);
 
         nextBtn.setOnClickListener(v -> {
+            // Ẩn bàn phím
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (getCurrentFocus() != null) {
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+            progressBar.setVisibility(View.VISIBLE);
             String fullName = intent.getStringExtra("fullName");
             String phone = intent.getStringExtra("phone");
             String address = intent.getStringExtra("address");
@@ -92,6 +101,24 @@ public class RegisterStep2 extends AppCompatActivity {
             Integer genderVal = (gender.equals( "Nam" ) ? 1 : 0);
             String email = edtEmail.getText().toString();
             String password= edtPassword.getText().toString();
+            String retypePassword = edtRetypePassword.getText().toString();
+
+            // Validate
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                edtEmail.setError("Email không hợp lệ");
+                edtEmail.requestFocus();
+                return;
+            }
+            if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-=]{6,}$")) {
+                edtPassword.setError("Mật khẩu phải từ 6 ký tự, có chữ và số");
+                edtPassword.requestFocus();
+                return;
+            }
+            if (!password.equals(retypePassword)) {
+                edtRetypePassword.setError("Mật khẩu nhập lại không khớp");
+                edtRetypePassword.requestFocus();
+                return;
+            }
 
             Map<String, Object> req = new HashMap<>();
             req.put("fullName", fullName);
@@ -107,6 +134,7 @@ public class RegisterStep2 extends AppCompatActivity {
             apiService.registerUser(req).enqueue(new Callback<BaseResponse>() {
                 @Override
                 public void onResponse(Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                    progressBar.setVisibility(View.GONE);
                     try {
                         if (response.isSuccessful() && response.body() != null) {
                             BaseResponse resp = response.body();
@@ -133,6 +161,7 @@ public class RegisterStep2 extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(RegisterStep2.this, "Đăng ký thất bại ", Toast.LENGTH_SHORT).show();
                     nextBtn.setEnabled(true);
 

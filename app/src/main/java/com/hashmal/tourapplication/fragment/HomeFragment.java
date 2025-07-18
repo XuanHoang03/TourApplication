@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements TourAdapter.OnTourClickLis
         // Setup notification bell click listener
         notificationBell.setOnClickListener(v -> {
             // TODO: Handle notification click
-            Toast.makeText(requireContext(), "Notifications clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Chuyển tới trang nhắn tin", Toast.LENGTH_SHORT).show();
             Intent messageIntent = new Intent(requireContext(), UserConversationActivity.class);
             startActivity(messageIntent);
         });

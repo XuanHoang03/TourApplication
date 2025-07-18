@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +23,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.hashmal.tourapplication.R;
 import com.hashmal.tourapplication.entity.GenericKeyEvent;
 import com.hashmal.tourapplication.entity.GenericTextWatcher;
+import com.hashmal.tourapplication.enums.Code;
 import com.hashmal.tourapplication.network.ApiClient;
 import com.hashmal.tourapplication.service.ApiService;
 import com.hashmal.tourapplication.service.dto.BaseResponse;
 import com.hashmal.tourapplication.utils.DataUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +43,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
 
     private Button btnVerify;
     private Intent intent;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
 
         View rootView = findViewById(R.id.rootVerifyContainer);
         formContainer = findViewById(R.id.verifyContainer);
+        progressBar = findViewById(R.id.progressBar);
         if (rootView == null || formContainer == null) {
             // Log error or throw exception
             return;
@@ -87,26 +94,46 @@ public class VerifyAccountActivity extends AppCompatActivity {
         intent = getIntent();
         String userId = intent.getStringExtra("registerUserId");
         String type = intent.getStringExtra("RESET_PASSWORD");
+        String phoneNumber = intent.getStringExtra("phoneNumber");
 
         btnVerify = findViewById(R.id.btnVerify);
 
         btnVerify.setOnClickListener(v -> {
+            // Ẩn bàn phím
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (getCurrentFocus() != null) {
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+            progressBar.setVisibility(View.VISIBLE);
             String code = otp1.getText().toString() + otp2.getText().toString() + otp3.getText().toString() + otp4.getText().toString();
             Call<BaseResponse> call = apiService.verifyCode(code, userId);
             call.enqueue(new Callback<BaseResponse>() {
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    progressBar.setVisibility(View.GONE);
                     if (response.isSuccessful() && response.body() != null) {
                         new AlertDialog.Builder(VerifyAccountActivity.this) // hoặc YourActivityName.this
                                 .setTitle("Xác thực thành công")
-                                .setMessage(response.body().getMessage())
                                 .setCancelable(false)
                                 .setPositiveButton("OK", (dialog, which) -> {
                                     // Chuyển màn hình hoặc đóng dialog
                                     Intent intent = new Intent(VerifyAccountActivity.this, LoginActivity.class);
 
                                     if(type!= null) {
-                                        Toast.makeText(getApplicationContext(), "Chúng tôi đã gửi mật khẩu mới tới email của bạn!", Toast.LENGTH_SHORT).show();
+                                        Map<String, String> map = new HashMap<>();
+                                        map.put("phoneNumber", phoneNumber);
+                                        apiService.forgotPassword(map).enqueue(new Callback<BaseResponse>() {
+                                            @Override
+                                            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                                if (response.body().getCode().equals(Code.SUCCESS.getCode())) {
+                                                    Toast.makeText(getApplicationContext(), "Chúng tôi đã gửi mật khẩu mới tới email của bạn!", Toast.LENGTH_SHORT).show();
+                                                }
+                                                }
+                                            @Override
+                                            public void onFailure(Call<BaseResponse> call, Throwable throwable) {
+                                            }
+                                        });
+
                                     }
                                     startActivity(intent);
                                 })
@@ -119,6 +146,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), "Lỗi mạng hoặc server!", Toast.LENGTH_SHORT).show();
                     Log.e("VerifyAPI", "Error: " + t.getMessage());
                 }
