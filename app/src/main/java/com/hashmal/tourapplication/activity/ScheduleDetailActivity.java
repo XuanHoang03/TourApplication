@@ -229,7 +229,8 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
                         @Override
                         public void onResponse(Call<List<UserBookingDTO>> call, Response<List<UserBookingDTO>> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                buyerAdapter = new UserBookingAdapter(response.body(), ScheduleDetailActivity.this);
+                                String userRole = localDataService.getSysUser().getAccount().getRoleName();
+                                buyerAdapter = new UserBookingAdapter(response.body(), ScheduleDetailActivity.this, userRole);
                                 buyerAdapter.setOnItemClickListener(booking -> showUserProfileDialog(booking.getUser()));
                                 rvBuyers.setLayoutManager(new LinearLayoutManager(ScheduleDetailActivity.this));
                                 rvBuyers.setAdapter(buyerAdapter);
@@ -468,6 +469,9 @@ public class ScheduleDetailActivity extends AppCompatActivity implements UserBoo
             public void onResponse(retrofit2.Call<List<UserBookingDTO>> call, retrofit2.Response<List<UserBookingDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     buyerAdapter.updateData(response.body());
+                    // Đảm bảo userRole vẫn được set
+                    String userRole = localDataService.getSysUser().getAccount().getRoleName();
+                    buyerAdapter.setUserRole(userRole);
                 }
             }
 

@@ -20,6 +20,7 @@ public class UserBookingAdapter extends RecyclerView.Adapter<UserBookingAdapter.
     private OnBuyerActionListener listener;
     private OnItemClickListener itemClickListener;
     private Context context;
+    private String userRole; // Thêm userRole
 
     public interface OnBuyerActionListener {
         void onModifyBooking(UserBookingDTO booking);
@@ -39,8 +40,21 @@ public class UserBookingAdapter extends RecyclerView.Adapter<UserBookingAdapter.
         this.listener = listener;
     }
 
+    // Constructor mới với userRole
+    public UserBookingAdapter(List<UserBookingDTO> buyers, OnBuyerActionListener listener, String userRole) {
+        this.buyers = buyers;
+        this.listener = listener;
+        this.userRole = userRole;
+    }
+
     public void updateData(List<UserBookingDTO> buyers) {
         this.buyers = buyers;
+        notifyDataSetChanged();
+    }
+
+    // Method để set userRole
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
         notifyDataSetChanged();
     }
 
@@ -66,6 +80,15 @@ public class UserBookingAdapter extends RecyclerView.Adapter<UserBookingAdapter.
             .placeholder(R.drawable.ic_profile)
             .circleCrop()
             .into(holder.imgUserIcon);
+
+        // Kiểm tra role để ẩn/hiện buttons
+        if ("TOUR_GUIDE".equals(userRole)) {
+            holder.btnModify.setVisibility(View.GONE);
+            holder.btnCancel.setVisibility(View.GONE);
+        } else {
+            holder.btnModify.setVisibility(View.VISIBLE);
+            holder.btnCancel.setVisibility(View.VISIBLE);
+        }
 
         // Set border đỏ nếu status = -11
         Integer status = buyer.getBooking() != null ? buyer.getBooking().getPaymentStatus() : null;
